@@ -1,0 +1,18 @@
+{
+  "Kezdő súly (kg)": 98.55,
+  "Célsúly (kg)": 75.0,
+  "Aktuális súly (kg)": 98.55,
+  "Edzés-szint (1–5)": 1,
+  "Anchor dátum (mintakezdés)": "2026-01-19",
+  "Mintakezdés műszak": "Nappal",
+  "Megjegyzés": "A 3 kg/nap nem biztonságos és nem reális (többnyire vízvesztés lenne). Célozz 0,5–1,0 kg/hét (kb. 2–4 kg/hónap) tartományt, és 2 hetente igazíts a kcal célon a mérések alapján.",
+  "• Munkanap: Mobilitás + séta (minimum rutin).\n• Pihenőnap: Erő/Kardió rotáció.\n• A szintek az aktuális súly alapján emelik az edzés mennyiségét.": null,
+  "Napi kcal cél – alap (pihenőnap)": 2300.0,
+  "Kardió nap +kcal": 150.0,
+  "Erő nap +kcal": 200.0,
+  "Fehérje cél (g/nap)": 160.0,
+  "Munkanap lépésszám (átlag)": 6500.0,
+  "Pihenőnap lépésszám cél": 8500.0,
+  "Reális fogyás cél (kg/hét)": 0.75,
+  "Reális fogyás cél (kg/hónap)": 3.0
+}

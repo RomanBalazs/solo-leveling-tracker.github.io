@@ -1,0 +1,3287 @@
+[
+  {
+    "date": "2026-01-01",
+    "month": 1,
+    "day": 1,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "1\nN/MO"
+  },
+  {
+    "date": "2026-01-02",
+    "month": 1,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "2\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-01-03",
+    "month": 1,
+    "day": 3,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "3\nP/EA\nB"
+  },
+  {
+    "date": "2026-01-04",
+    "month": 1,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "4\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-01-05",
+    "month": 1,
+    "day": 5,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "5\nÉ/MO"
+  },
+  {
+    "date": "2026-01-06",
+    "month": 1,
+    "day": 6,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nÉ/MO"
+  },
+  {
+    "date": "2026-01-07",
+    "month": 1,
+    "day": 7,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F",
+    "raw": "7\nP/EA\nRM F"
+  },
+  {
+    "date": "2026-01-08",
+    "month": 1,
+    "day": 8,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "8\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-01-09",
+    "month": 1,
+    "day": 9,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nÉ/MO"
+  },
+  {
+    "date": "2026-01-10",
+    "month": 1,
+    "day": 10,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "10\nÉ/MO"
+  },
+  {
+    "date": "2026-01-11",
+    "month": 1,
+    "day": 11,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nÉ/MO"
+  },
+  {
+    "date": "2026-01-12",
+    "month": 1,
+    "day": 12,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "12\nP/EB"
+  },
+  {
+    "date": "2026-01-13",
+    "month": 1,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "13\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-01-14",
+    "month": 1,
+    "day": 14,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "14\nÉ/MO"
+  },
+  {
+    "date": "2026-01-15",
+    "month": 1,
+    "day": 15,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "15\nÉ/MO"
+  },
+  {
+    "date": "2026-01-16",
+    "month": 1,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "16\nP/K\nRM F"
+  },
+  {
+    "date": "2026-01-17",
+    "month": 1,
+    "day": 17,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "17\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-01-18",
+    "month": 1,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "18\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-01-19",
+    "month": 1,
+    "day": 19,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "19\nN/MO"
+  },
+  {
+    "date": "2026-01-20",
+    "month": 1,
+    "day": 20,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nN/MO"
+  },
+  {
+    "date": "2026-01-21",
+    "month": 1,
+    "day": 21,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "21\nP/EA\nM T"
+  },
+  {
+    "date": "2026-01-22",
+    "month": 1,
+    "day": 22,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "22\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-01-23",
+    "month": 1,
+    "day": 23,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nN/MO"
+  },
+  {
+    "date": "2026-01-24",
+    "month": 1,
+    "day": 24,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "24\nN/MO"
+  },
+  {
+    "date": "2026-01-25",
+    "month": 1,
+    "day": 25,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nN/MO"
+  },
+  {
+    "date": "2026-01-26",
+    "month": 1,
+    "day": 26,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "26\nP/EB"
+  },
+  {
+    "date": "2026-01-27",
+    "month": 1,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "27\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-01-28",
+    "month": 1,
+    "day": 28,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "28\nN/MO"
+  },
+  {
+    "date": "2026-01-29",
+    "month": 1,
+    "day": 29,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "29\nN/MO"
+  },
+  {
+    "date": "2026-01-30",
+    "month": 1,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "30\nP/K"
+  },
+  {
+    "date": "2026-01-31",
+    "month": 1,
+    "day": 31,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F B",
+    "raw": "31\nP/EA\nRM F B"
+  },
+  {
+    "date": "2026-02-01",
+    "month": 2,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "1\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-02-02",
+    "month": 2,
+    "day": 2,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nÉ/MO"
+  },
+  {
+    "date": "2026-02-03",
+    "month": 2,
+    "day": 3,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nÉ/MO"
+  },
+  {
+    "date": "2026-02-04",
+    "month": 2,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "4\nP/EA"
+  },
+  {
+    "date": "2026-02-05",
+    "month": 2,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "5\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-02-06",
+    "month": 2,
+    "day": 6,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nÉ/MO"
+  },
+  {
+    "date": "2026-02-07",
+    "month": 2,
+    "day": 7,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nÉ/MO"
+  },
+  {
+    "date": "2026-02-08",
+    "month": 2,
+    "day": 8,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nÉ/MO"
+  },
+  {
+    "date": "2026-02-09",
+    "month": 2,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "9\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-02-10",
+    "month": 2,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "10\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-02-11",
+    "month": 2,
+    "day": 11,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nÉ/MO"
+  },
+  {
+    "date": "2026-02-12",
+    "month": 2,
+    "day": 12,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nÉ/MO"
+  },
+  {
+    "date": "2026-02-13",
+    "month": 2,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "13\nP/K"
+  },
+  {
+    "date": "2026-02-14",
+    "month": 2,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "14\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-02-15",
+    "month": 2,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "15\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-02-16",
+    "month": 2,
+    "day": 16,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nN/MO"
+  },
+  {
+    "date": "2026-02-17",
+    "month": 2,
+    "day": 17,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nN/MO"
+  },
+  {
+    "date": "2026-02-18",
+    "month": 2,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F",
+    "raw": "18\nP/EA\nM RM T F"
+  },
+  {
+    "date": "2026-02-19",
+    "month": 2,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "19\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-02-20",
+    "month": 2,
+    "day": 20,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nN/MO"
+  },
+  {
+    "date": "2026-02-21",
+    "month": 2,
+    "day": 21,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nN/MO"
+  },
+  {
+    "date": "2026-02-22",
+    "month": 2,
+    "day": 22,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nN/MO"
+  },
+  {
+    "date": "2026-02-23",
+    "month": 2,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "23\nP/EB"
+  },
+  {
+    "date": "2026-02-24",
+    "month": 2,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "24\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-02-25",
+    "month": 2,
+    "day": 25,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nN/MO"
+  },
+  {
+    "date": "2026-02-26",
+    "month": 2,
+    "day": 26,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nN/MO"
+  },
+  {
+    "date": "2026-02-27",
+    "month": 2,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "27\nP/K\nRM F"
+  },
+  {
+    "date": "2026-02-28",
+    "month": 2,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "28\nP/EA\nB"
+  },
+  {
+    "date": "2026-03-01",
+    "month": 3,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "1\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-03-02",
+    "month": 3,
+    "day": 2,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nÉ/MO"
+  },
+  {
+    "date": "2026-03-03",
+    "month": 3,
+    "day": 3,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nÉ/MO"
+  },
+  {
+    "date": "2026-03-04",
+    "month": 3,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "4\nP/EA"
+  },
+  {
+    "date": "2026-03-05",
+    "month": 3,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "5\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-03-06",
+    "month": 3,
+    "day": 6,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nÉ/MO"
+  },
+  {
+    "date": "2026-03-07",
+    "month": 3,
+    "day": 7,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nÉ/MO"
+  },
+  {
+    "date": "2026-03-08",
+    "month": 3,
+    "day": 8,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nÉ/MO"
+  },
+  {
+    "date": "2026-03-09",
+    "month": 3,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "9\nP/EB"
+  },
+  {
+    "date": "2026-03-10",
+    "month": 3,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "10\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-03-11",
+    "month": 3,
+    "day": 11,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nÉ/MO"
+  },
+  {
+    "date": "2026-03-12",
+    "month": 3,
+    "day": 12,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nÉ/MO"
+  },
+  {
+    "date": "2026-03-13",
+    "month": 3,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "13\nP/K"
+  },
+  {
+    "date": "2026-03-14",
+    "month": 3,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F B",
+    "raw": "14\nP/EA\nM RM T F B"
+  },
+  {
+    "date": "2026-03-15",
+    "month": 3,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "15\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-03-16",
+    "month": 3,
+    "day": 16,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nN/MO"
+  },
+  {
+    "date": "2026-03-17",
+    "month": 3,
+    "day": 17,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nN/MO"
+  },
+  {
+    "date": "2026-03-18",
+    "month": 3,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "18\nP/EA\nM T"
+  },
+  {
+    "date": "2026-03-19",
+    "month": 3,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "19\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-03-20",
+    "month": 3,
+    "day": 20,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nN/MO"
+  },
+  {
+    "date": "2026-03-21",
+    "month": 3,
+    "day": 21,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nN/MO"
+  },
+  {
+    "date": "2026-03-22",
+    "month": 3,
+    "day": 22,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nN/MO"
+  },
+  {
+    "date": "2026-03-23",
+    "month": 3,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "23\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-03-24",
+    "month": 3,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "24\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-03-25",
+    "month": 3,
+    "day": 25,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nN/MO"
+  },
+  {
+    "date": "2026-03-26",
+    "month": 3,
+    "day": 26,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nN/MO"
+  },
+  {
+    "date": "2026-03-27",
+    "month": 3,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "27\nP/K"
+  },
+  {
+    "date": "2026-03-28",
+    "month": 3,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "28\nP/EA\nB"
+  },
+  {
+    "date": "2026-03-29",
+    "month": 3,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "29\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-03-30",
+    "month": 3,
+    "day": 30,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "30\nÉ/MO"
+  },
+  {
+    "date": "2026-03-31",
+    "month": 3,
+    "day": 31,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "31\nÉ/MO"
+  },
+  {
+    "date": "2026-04-01",
+    "month": 4,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F",
+    "raw": "1\nP/EA\nRM F"
+  },
+  {
+    "date": "2026-04-02",
+    "month": 4,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "2\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-04-03",
+    "month": 4,
+    "day": 3,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nÉ/MO"
+  },
+  {
+    "date": "2026-04-04",
+    "month": 4,
+    "day": 4,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nÉ/MO"
+  },
+  {
+    "date": "2026-04-05",
+    "month": 4,
+    "day": 5,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "5\nÉ/MO"
+  },
+  {
+    "date": "2026-04-06",
+    "month": 4,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "6\nP/EB"
+  },
+  {
+    "date": "2026-04-07",
+    "month": 4,
+    "day": 7,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "7\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-04-08",
+    "month": 4,
+    "day": 8,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nÉ/MO"
+  },
+  {
+    "date": "2026-04-09",
+    "month": 4,
+    "day": 9,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nÉ/MO"
+  },
+  {
+    "date": "2026-04-10",
+    "month": 4,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "10\nP/K\nRM F"
+  },
+  {
+    "date": "2026-04-11",
+    "month": 4,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "11\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-04-12",
+    "month": 4,
+    "day": 12,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "12\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-04-13",
+    "month": 4,
+    "day": 13,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nN/MO"
+  },
+  {
+    "date": "2026-04-14",
+    "month": 4,
+    "day": 14,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "14\nN/MO"
+  },
+  {
+    "date": "2026-04-15",
+    "month": 4,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "15\nP/EA\nM T"
+  },
+  {
+    "date": "2026-04-16",
+    "month": 4,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "16\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-04-17",
+    "month": 4,
+    "day": 17,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nN/MO"
+  },
+  {
+    "date": "2026-04-18",
+    "month": 4,
+    "day": 18,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nN/MO"
+  },
+  {
+    "date": "2026-04-19",
+    "month": 4,
+    "day": 19,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "19\nN/MO"
+  },
+  {
+    "date": "2026-04-20",
+    "month": 4,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "20\nP/EB"
+  },
+  {
+    "date": "2026-04-21",
+    "month": 4,
+    "day": 21,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "21\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-04-22",
+    "month": 4,
+    "day": 22,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nN/MO"
+  },
+  {
+    "date": "2026-04-23",
+    "month": 4,
+    "day": 23,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nN/MO"
+  },
+  {
+    "date": "2026-04-24",
+    "month": 4,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "24\nP/K"
+  },
+  {
+    "date": "2026-04-25",
+    "month": 4,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F B",
+    "raw": "25\nP/EA\nRM F B"
+  },
+  {
+    "date": "2026-04-26",
+    "month": 4,
+    "day": 26,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "26\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-04-27",
+    "month": 4,
+    "day": 27,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nÉ/MO"
+  },
+  {
+    "date": "2026-04-28",
+    "month": 4,
+    "day": 28,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "28\nÉ/MO"
+  },
+  {
+    "date": "2026-04-29",
+    "month": 4,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "29\nP/EA"
+  },
+  {
+    "date": "2026-04-30",
+    "month": 4,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "30\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-05-01",
+    "month": 5,
+    "day": 1,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "1\nÉ/MO"
+  },
+  {
+    "date": "2026-05-02",
+    "month": 5,
+    "day": 2,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nÉ/MO"
+  },
+  {
+    "date": "2026-05-03",
+    "month": 5,
+    "day": 3,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nÉ/MO"
+  },
+  {
+    "date": "2026-05-04",
+    "month": 5,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "4\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-05-05",
+    "month": 5,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "5\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-05-06",
+    "month": 5,
+    "day": 6,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nÉ/MO"
+  },
+  {
+    "date": "2026-05-07",
+    "month": 5,
+    "day": 7,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nÉ/MO"
+  },
+  {
+    "date": "2026-05-08",
+    "month": 5,
+    "day": 8,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "8\nP/K"
+  },
+  {
+    "date": "2026-05-09",
+    "month": 5,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "9\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-05-10",
+    "month": 5,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "10\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-05-11",
+    "month": 5,
+    "day": 11,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nN/MO"
+  },
+  {
+    "date": "2026-05-12",
+    "month": 5,
+    "day": 12,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nN/MO"
+  },
+  {
+    "date": "2026-05-13",
+    "month": 5,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F",
+    "raw": "13\nP/EA\nM RM T F"
+  },
+  {
+    "date": "2026-05-14",
+    "month": 5,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "14\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-05-15",
+    "month": 5,
+    "day": 15,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "15\nN/MO"
+  },
+  {
+    "date": "2026-05-16",
+    "month": 5,
+    "day": 16,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nN/MO"
+  },
+  {
+    "date": "2026-05-17",
+    "month": 5,
+    "day": 17,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nN/MO"
+  },
+  {
+    "date": "2026-05-18",
+    "month": 5,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "18\nP/EB"
+  },
+  {
+    "date": "2026-05-19",
+    "month": 5,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "19\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-05-20",
+    "month": 5,
+    "day": 20,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nN/MO"
+  },
+  {
+    "date": "2026-05-21",
+    "month": 5,
+    "day": 21,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nN/MO"
+  },
+  {
+    "date": "2026-05-22",
+    "month": 5,
+    "day": 22,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "22\nP/K\nRM F"
+  },
+  {
+    "date": "2026-05-23",
+    "month": 5,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "23\nP/EA\nB"
+  },
+  {
+    "date": "2026-05-24",
+    "month": 5,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "24\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-05-25",
+    "month": 5,
+    "day": 25,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nÉ/MO"
+  },
+  {
+    "date": "2026-05-26",
+    "month": 5,
+    "day": 26,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nÉ/MO"
+  },
+  {
+    "date": "2026-05-27",
+    "month": 5,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "27\nP/EA"
+  },
+  {
+    "date": "2026-05-28",
+    "month": 5,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "28\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-05-29",
+    "month": 5,
+    "day": 29,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "29\nÉ/MO"
+  },
+  {
+    "date": "2026-05-30",
+    "month": 5,
+    "day": 30,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "30\nÉ/MO"
+  },
+  {
+    "date": "2026-05-31",
+    "month": 5,
+    "day": 31,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "31\nÉ/MO"
+  },
+  {
+    "date": "2026-06-01",
+    "month": 6,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "1\nP/EB"
+  },
+  {
+    "date": "2026-06-02",
+    "month": 6,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "2\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-06-03",
+    "month": 6,
+    "day": 3,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nÉ/MO"
+  },
+  {
+    "date": "2026-06-04",
+    "month": 6,
+    "day": 4,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nÉ/MO"
+  },
+  {
+    "date": "2026-06-05",
+    "month": 6,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "5\nP/K"
+  },
+  {
+    "date": "2026-06-06",
+    "month": 6,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F B",
+    "raw": "6\nP/EA\nM RM T F B"
+  },
+  {
+    "date": "2026-06-07",
+    "month": 6,
+    "day": 7,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "7\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-06-08",
+    "month": 6,
+    "day": 8,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nN/MO"
+  },
+  {
+    "date": "2026-06-09",
+    "month": 6,
+    "day": 9,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nN/MO"
+  },
+  {
+    "date": "2026-06-10",
+    "month": 6,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "10\nP/EA\nM T"
+  },
+  {
+    "date": "2026-06-11",
+    "month": 6,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "11\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-06-12",
+    "month": 6,
+    "day": 12,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nN/MO"
+  },
+  {
+    "date": "2026-06-13",
+    "month": 6,
+    "day": 13,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nN/MO"
+  },
+  {
+    "date": "2026-06-14",
+    "month": 6,
+    "day": 14,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "14\nN/MO"
+  },
+  {
+    "date": "2026-06-15",
+    "month": 6,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "15\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-06-16",
+    "month": 6,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "16\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-06-17",
+    "month": 6,
+    "day": 17,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nN/MO"
+  },
+  {
+    "date": "2026-06-18",
+    "month": 6,
+    "day": 18,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nN/MO"
+  },
+  {
+    "date": "2026-06-19",
+    "month": 6,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "19\nP/K"
+  },
+  {
+    "date": "2026-06-20",
+    "month": 6,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "20\nP/EA\nB"
+  },
+  {
+    "date": "2026-06-21",
+    "month": 6,
+    "day": 21,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "21\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-06-22",
+    "month": 6,
+    "day": 22,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nÉ/MO"
+  },
+  {
+    "date": "2026-06-23",
+    "month": 6,
+    "day": 23,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nÉ/MO"
+  },
+  {
+    "date": "2026-06-24",
+    "month": 6,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F",
+    "raw": "24\nP/EA\nRM F"
+  },
+  {
+    "date": "2026-06-25",
+    "month": 6,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "25\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-06-26",
+    "month": 6,
+    "day": 26,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nÉ/MO"
+  },
+  {
+    "date": "2026-06-27",
+    "month": 6,
+    "day": 27,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nÉ/MO"
+  },
+  {
+    "date": "2026-06-28",
+    "month": 6,
+    "day": 28,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "28\nÉ/MO"
+  },
+  {
+    "date": "2026-06-29",
+    "month": 6,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "29\nP/EB"
+  },
+  {
+    "date": "2026-06-30",
+    "month": 6,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "30\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-07-01",
+    "month": 7,
+    "day": 1,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "1\nÉ/MO"
+  },
+  {
+    "date": "2026-07-02",
+    "month": 7,
+    "day": 2,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nÉ/MO"
+  },
+  {
+    "date": "2026-07-03",
+    "month": 7,
+    "day": 3,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "3\nP/K\nRM F"
+  },
+  {
+    "date": "2026-07-04",
+    "month": 7,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "4\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-07-05",
+    "month": 7,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "5\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-07-06",
+    "month": 7,
+    "day": 6,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nN/MO"
+  },
+  {
+    "date": "2026-07-07",
+    "month": 7,
+    "day": 7,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nN/MO"
+  },
+  {
+    "date": "2026-07-08",
+    "month": 7,
+    "day": 8,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "8\nP/EA\nM T"
+  },
+  {
+    "date": "2026-07-09",
+    "month": 7,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "9\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-07-10",
+    "month": 7,
+    "day": 10,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "10\nN/MO"
+  },
+  {
+    "date": "2026-07-11",
+    "month": 7,
+    "day": 11,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nN/MO"
+  },
+  {
+    "date": "2026-07-12",
+    "month": 7,
+    "day": 12,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nN/MO"
+  },
+  {
+    "date": "2026-07-13",
+    "month": 7,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "13\nP/EB"
+  },
+  {
+    "date": "2026-07-14",
+    "month": 7,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "14\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-07-15",
+    "month": 7,
+    "day": 15,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "15\nN/MO"
+  },
+  {
+    "date": "2026-07-16",
+    "month": 7,
+    "day": 16,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nN/MO"
+  },
+  {
+    "date": "2026-07-17",
+    "month": 7,
+    "day": 17,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "17\nP/K"
+  },
+  {
+    "date": "2026-07-18",
+    "month": 7,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F B",
+    "raw": "18\nP/EA\nRM F B"
+  },
+  {
+    "date": "2026-07-19",
+    "month": 7,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "19\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-07-20",
+    "month": 7,
+    "day": 20,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nÉ/MO"
+  },
+  {
+    "date": "2026-07-21",
+    "month": 7,
+    "day": 21,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nÉ/MO"
+  },
+  {
+    "date": "2026-07-22",
+    "month": 7,
+    "day": 22,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "22\nP/EA"
+  },
+  {
+    "date": "2026-07-23",
+    "month": 7,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "23\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-07-24",
+    "month": 7,
+    "day": 24,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "24\nÉ/MO"
+  },
+  {
+    "date": "2026-07-25",
+    "month": 7,
+    "day": 25,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nÉ/MO"
+  },
+  {
+    "date": "2026-07-26",
+    "month": 7,
+    "day": 26,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nÉ/MO"
+  },
+  {
+    "date": "2026-07-27",
+    "month": 7,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "27\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-07-28",
+    "month": 7,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "28\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-07-29",
+    "month": 7,
+    "day": 29,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "29\nÉ/MO"
+  },
+  {
+    "date": "2026-07-30",
+    "month": 7,
+    "day": 30,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "30\nÉ/MO"
+  },
+  {
+    "date": "2026-07-31",
+    "month": 7,
+    "day": 31,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "31\nP/K"
+  },
+  {
+    "date": "2026-08-01",
+    "month": 8,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "1\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-08-02",
+    "month": 8,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "2\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-08-03",
+    "month": 8,
+    "day": 3,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nN/MO"
+  },
+  {
+    "date": "2026-08-04",
+    "month": 8,
+    "day": 4,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nN/MO"
+  },
+  {
+    "date": "2026-08-05",
+    "month": 8,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F",
+    "raw": "5\nP/EA\nM RM T F"
+  },
+  {
+    "date": "2026-08-06",
+    "month": 8,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "6\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-08-07",
+    "month": 8,
+    "day": 7,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nN/MO"
+  },
+  {
+    "date": "2026-08-08",
+    "month": 8,
+    "day": 8,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nN/MO"
+  },
+  {
+    "date": "2026-08-09",
+    "month": 8,
+    "day": 9,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nN/MO"
+  },
+  {
+    "date": "2026-08-10",
+    "month": 8,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "10\nP/EB"
+  },
+  {
+    "date": "2026-08-11",
+    "month": 8,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "11\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-08-12",
+    "month": 8,
+    "day": 12,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nN/MO"
+  },
+  {
+    "date": "2026-08-13",
+    "month": 8,
+    "day": 13,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nN/MO"
+  },
+  {
+    "date": "2026-08-14",
+    "month": 8,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "14\nP/K\nRM F"
+  },
+  {
+    "date": "2026-08-15",
+    "month": 8,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "15\nP/EA\nB"
+  },
+  {
+    "date": "2026-08-16",
+    "month": 8,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "16\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-08-17",
+    "month": 8,
+    "day": 17,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nÉ/MO"
+  },
+  {
+    "date": "2026-08-18",
+    "month": 8,
+    "day": 18,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nÉ/MO"
+  },
+  {
+    "date": "2026-08-19",
+    "month": 8,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "19\nP/EA"
+  },
+  {
+    "date": "2026-08-20",
+    "month": 8,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "20\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-08-21",
+    "month": 8,
+    "day": 21,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nÉ/MO"
+  },
+  {
+    "date": "2026-08-22",
+    "month": 8,
+    "day": 22,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nÉ/MO"
+  },
+  {
+    "date": "2026-08-23",
+    "month": 8,
+    "day": 23,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nÉ/MO"
+  },
+  {
+    "date": "2026-08-24",
+    "month": 8,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "24\nP/EB"
+  },
+  {
+    "date": "2026-08-25",
+    "month": 8,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "25\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-08-26",
+    "month": 8,
+    "day": 26,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nÉ/MO"
+  },
+  {
+    "date": "2026-08-27",
+    "month": 8,
+    "day": 27,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nÉ/MO"
+  },
+  {
+    "date": "2026-08-28",
+    "month": 8,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "28\nP/K"
+  },
+  {
+    "date": "2026-08-29",
+    "month": 8,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F B",
+    "raw": "29\nP/EA\nM RM T F B"
+  },
+  {
+    "date": "2026-08-30",
+    "month": 8,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "30\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-08-31",
+    "month": 8,
+    "day": 31,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "31\nN/MO"
+  },
+  {
+    "date": "2026-09-01",
+    "month": 9,
+    "day": 1,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "1\nN/MO"
+  },
+  {
+    "date": "2026-09-02",
+    "month": 9,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "2\nP/EA\nM T"
+  },
+  {
+    "date": "2026-09-03",
+    "month": 9,
+    "day": 3,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "3\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-09-04",
+    "month": 9,
+    "day": 4,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nN/MO"
+  },
+  {
+    "date": "2026-09-05",
+    "month": 9,
+    "day": 5,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "5\nN/MO"
+  },
+  {
+    "date": "2026-09-06",
+    "month": 9,
+    "day": 6,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "6\nN/MO"
+  },
+  {
+    "date": "2026-09-07",
+    "month": 9,
+    "day": 7,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "7\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-09-08",
+    "month": 9,
+    "day": 8,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "8\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-09-09",
+    "month": 9,
+    "day": 9,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nN/MO"
+  },
+  {
+    "date": "2026-09-10",
+    "month": 9,
+    "day": 10,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "10\nN/MO"
+  },
+  {
+    "date": "2026-09-11",
+    "month": 9,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "11\nP/K"
+  },
+  {
+    "date": "2026-09-12",
+    "month": 9,
+    "day": 12,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "12\nP/EA\nB"
+  },
+  {
+    "date": "2026-09-13",
+    "month": 9,
+    "day": 13,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "13\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-09-14",
+    "month": 9,
+    "day": 14,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "14\nÉ/MO"
+  },
+  {
+    "date": "2026-09-15",
+    "month": 9,
+    "day": 15,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "15\nÉ/MO"
+  },
+  {
+    "date": "2026-09-16",
+    "month": 9,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F",
+    "raw": "16\nP/EA\nRM F"
+  },
+  {
+    "date": "2026-09-17",
+    "month": 9,
+    "day": 17,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "17\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-09-18",
+    "month": 9,
+    "day": 18,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nÉ/MO"
+  },
+  {
+    "date": "2026-09-19",
+    "month": 9,
+    "day": 19,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "19\nÉ/MO"
+  },
+  {
+    "date": "2026-09-20",
+    "month": 9,
+    "day": 20,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "20\nÉ/MO"
+  },
+  {
+    "date": "2026-09-21",
+    "month": 9,
+    "day": 21,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "21\nP/EB"
+  },
+  {
+    "date": "2026-09-22",
+    "month": 9,
+    "day": 22,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "22\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-09-23",
+    "month": 9,
+    "day": 23,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nÉ/MO"
+  },
+  {
+    "date": "2026-09-24",
+    "month": 9,
+    "day": 24,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "24\nÉ/MO"
+  },
+  {
+    "date": "2026-09-25",
+    "month": 9,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "25\nP/K\nRM F"
+  },
+  {
+    "date": "2026-09-26",
+    "month": 9,
+    "day": 26,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "26\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-09-27",
+    "month": 9,
+    "day": 27,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "27\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-09-28",
+    "month": 9,
+    "day": 28,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "28\nN/MO"
+  },
+  {
+    "date": "2026-09-29",
+    "month": 9,
+    "day": 29,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "29\nN/MO"
+  },
+  {
+    "date": "2026-09-30",
+    "month": 9,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "30\nP/EA\nM T"
+  },
+  {
+    "date": "2026-10-01",
+    "month": 10,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "1\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-10-02",
+    "month": 10,
+    "day": 2,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nN/MO"
+  },
+  {
+    "date": "2026-10-03",
+    "month": 10,
+    "day": 3,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nN/MO"
+  },
+  {
+    "date": "2026-10-04",
+    "month": 10,
+    "day": 4,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nN/MO"
+  },
+  {
+    "date": "2026-10-05",
+    "month": 10,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "5\nP/EB"
+  },
+  {
+    "date": "2026-10-06",
+    "month": 10,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "6\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-10-07",
+    "month": 10,
+    "day": 7,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nN/MO"
+  },
+  {
+    "date": "2026-10-08",
+    "month": 10,
+    "day": 8,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nN/MO"
+  },
+  {
+    "date": "2026-10-09",
+    "month": 10,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "9\nP/K"
+  },
+  {
+    "date": "2026-10-10",
+    "month": 10,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F B",
+    "raw": "10\nP/EA\nRM F B"
+  },
+  {
+    "date": "2026-10-11",
+    "month": 10,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "11\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-10-12",
+    "month": 10,
+    "day": 12,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nÉ/MO"
+  },
+  {
+    "date": "2026-10-13",
+    "month": 10,
+    "day": 13,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nÉ/MO"
+  },
+  {
+    "date": "2026-10-14",
+    "month": 10,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "14\nP/EA"
+  },
+  {
+    "date": "2026-10-15",
+    "month": 10,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "15\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-10-16",
+    "month": 10,
+    "day": 16,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nÉ/MO"
+  },
+  {
+    "date": "2026-10-17",
+    "month": 10,
+    "day": 17,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nÉ/MO"
+  },
+  {
+    "date": "2026-10-18",
+    "month": 10,
+    "day": 18,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nÉ/MO"
+  },
+  {
+    "date": "2026-10-19",
+    "month": 10,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "19\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-10-20",
+    "month": 10,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "20\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-10-21",
+    "month": 10,
+    "day": 21,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nÉ/MO"
+  },
+  {
+    "date": "2026-10-22",
+    "month": 10,
+    "day": 22,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nÉ/MO"
+  },
+  {
+    "date": "2026-10-23",
+    "month": 10,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "23\nP/K"
+  },
+  {
+    "date": "2026-10-24",
+    "month": 10,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "24\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-10-25",
+    "month": 10,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "25\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-10-26",
+    "month": 10,
+    "day": 26,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nN/MO"
+  },
+  {
+    "date": "2026-10-27",
+    "month": 10,
+    "day": 27,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nN/MO"
+  },
+  {
+    "date": "2026-10-28",
+    "month": 10,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F",
+    "raw": "28\nP/EA\nM RM T F"
+  },
+  {
+    "date": "2026-10-29",
+    "month": 10,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "29\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-10-30",
+    "month": 10,
+    "day": 30,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "30\nN/MO"
+  },
+  {
+    "date": "2026-10-31",
+    "month": 10,
+    "day": 31,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "31\nN/MO"
+  },
+  {
+    "date": "2026-11-01",
+    "month": 11,
+    "day": 1,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "1\nN/MO"
+  },
+  {
+    "date": "2026-11-02",
+    "month": 11,
+    "day": 2,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "2\nP/EB"
+  },
+  {
+    "date": "2026-11-03",
+    "month": 11,
+    "day": 3,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "3\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-11-04",
+    "month": 11,
+    "day": 4,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "4\nN/MO"
+  },
+  {
+    "date": "2026-11-05",
+    "month": 11,
+    "day": 5,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "5\nN/MO"
+  },
+  {
+    "date": "2026-11-06",
+    "month": 11,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "6\nP/K\nRM F"
+  },
+  {
+    "date": "2026-11-07",
+    "month": 11,
+    "day": 7,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "7\nP/EA\nB"
+  },
+  {
+    "date": "2026-11-08",
+    "month": 11,
+    "day": 8,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "8\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-11-09",
+    "month": 11,
+    "day": 9,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "9\nÉ/MO"
+  },
+  {
+    "date": "2026-11-10",
+    "month": 11,
+    "day": 10,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "10\nÉ/MO"
+  },
+  {
+    "date": "2026-11-11",
+    "month": 11,
+    "day": 11,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "",
+    "raw": "11\nP/EA"
+  },
+  {
+    "date": "2026-11-12",
+    "month": 11,
+    "day": 12,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "12\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-11-13",
+    "month": 11,
+    "day": 13,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nÉ/MO"
+  },
+  {
+    "date": "2026-11-14",
+    "month": 11,
+    "day": 14,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "14\nÉ/MO"
+  },
+  {
+    "date": "2026-11-15",
+    "month": 11,
+    "day": 15,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "15\nÉ/MO"
+  },
+  {
+    "date": "2026-11-16",
+    "month": 11,
+    "day": 16,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "16\nP/EB"
+  },
+  {
+    "date": "2026-11-17",
+    "month": 11,
+    "day": 17,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "17\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-11-18",
+    "month": 11,
+    "day": 18,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "18\nÉ/MO"
+  },
+  {
+    "date": "2026-11-19",
+    "month": 11,
+    "day": 19,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "19\nÉ/MO"
+  },
+  {
+    "date": "2026-11-20",
+    "month": 11,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "20\nP/K"
+  },
+  {
+    "date": "2026-11-21",
+    "month": 11,
+    "day": 21,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M RM T F B",
+    "raw": "21\nP/EA\nM RM T F B"
+  },
+  {
+    "date": "2026-11-22",
+    "month": 11,
+    "day": 22,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "22\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-11-23",
+    "month": 11,
+    "day": 23,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "23\nN/MO"
+  },
+  {
+    "date": "2026-11-24",
+    "month": 11,
+    "day": 24,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "24\nN/MO"
+  },
+  {
+    "date": "2026-11-25",
+    "month": 11,
+    "day": 25,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "25\nP/EA\nM T"
+  },
+  {
+    "date": "2026-11-26",
+    "month": 11,
+    "day": 26,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "26\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-11-27",
+    "month": 11,
+    "day": 27,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nN/MO"
+  },
+  {
+    "date": "2026-11-28",
+    "month": 11,
+    "day": 28,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "28\nN/MO"
+  },
+  {
+    "date": "2026-11-29",
+    "month": 11,
+    "day": 29,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "29\nN/MO"
+  },
+  {
+    "date": "2026-11-30",
+    "month": 11,
+    "day": 30,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "RM F",
+    "raw": "30\nP/EB\nRM F"
+  },
+  {
+    "date": "2026-12-01",
+    "month": 12,
+    "day": 1,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "1\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-12-02",
+    "month": 12,
+    "day": 2,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "2\nN/MO"
+  },
+  {
+    "date": "2026-12-03",
+    "month": 12,
+    "day": 3,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "3\nN/MO"
+  },
+  {
+    "date": "2026-12-04",
+    "month": 12,
+    "day": 4,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "",
+    "raw": "4\nP/K"
+  },
+  {
+    "date": "2026-12-05",
+    "month": 12,
+    "day": 5,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "B",
+    "raw": "5\nP/EA\nB"
+  },
+  {
+    "date": "2026-12-06",
+    "month": 12,
+    "day": 6,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "M RM T F B",
+    "raw": "6\nP/R\nM RM T F B"
+  },
+  {
+    "date": "2026-12-07",
+    "month": 12,
+    "day": 7,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "7\nÉ/MO"
+  },
+  {
+    "date": "2026-12-08",
+    "month": 12,
+    "day": 8,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "8\nÉ/MO"
+  },
+  {
+    "date": "2026-12-09",
+    "month": 12,
+    "day": 9,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "RM F",
+    "raw": "9\nP/EA\nRM F"
+  },
+  {
+    "date": "2026-12-10",
+    "month": 12,
+    "day": 10,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "10\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-12-11",
+    "month": 12,
+    "day": 11,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "11\nÉ/MO"
+  },
+  {
+    "date": "2026-12-12",
+    "month": 12,
+    "day": 12,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "12\nÉ/MO"
+  },
+  {
+    "date": "2026-12-13",
+    "month": 12,
+    "day": 13,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "13\nÉ/MO"
+  },
+  {
+    "date": "2026-12-14",
+    "month": 12,
+    "day": 14,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "14\nP/EB"
+  },
+  {
+    "date": "2026-12-15",
+    "month": 12,
+    "day": 15,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "15\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-12-16",
+    "month": 12,
+    "day": 16,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "16\nÉ/MO"
+  },
+  {
+    "date": "2026-12-17",
+    "month": 12,
+    "day": 17,
+    "shift": "É",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "17\nÉ/MO"
+  },
+  {
+    "date": "2026-12-18",
+    "month": 12,
+    "day": 18,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "RM F",
+    "raw": "18\nP/K\nRM F"
+  },
+  {
+    "date": "2026-12-19",
+    "month": 12,
+    "day": 19,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T B",
+    "raw": "19\nP/EA\nM T B"
+  },
+  {
+    "date": "2026-12-20",
+    "month": 12,
+    "day": 20,
+    "shift": "P",
+    "workoutCode": "R",
+    "extra": "RM F B",
+    "raw": "20\nP/R\nRM F B"
+  },
+  {
+    "date": "2026-12-21",
+    "month": 12,
+    "day": 21,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "21\nN/MO"
+  },
+  {
+    "date": "2026-12-22",
+    "month": 12,
+    "day": 22,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "22\nN/MO"
+  },
+  {
+    "date": "2026-12-23",
+    "month": 12,
+    "day": 23,
+    "shift": "P",
+    "workoutCode": "EA",
+    "extra": "M T",
+    "raw": "23\nP/EA\nM T"
+  },
+  {
+    "date": "2026-12-24",
+    "month": 12,
+    "day": 24,
+    "shift": "P",
+    "workoutCode": "K",
+    "extra": "M RM T F",
+    "raw": "24\nP/K\nM RM T F"
+  },
+  {
+    "date": "2026-12-25",
+    "month": 12,
+    "day": 25,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "25\nN/MO"
+  },
+  {
+    "date": "2026-12-26",
+    "month": 12,
+    "day": 26,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "26\nN/MO"
+  },
+  {
+    "date": "2026-12-27",
+    "month": 12,
+    "day": 27,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "27\nN/MO"
+  },
+  {
+    "date": "2026-12-28",
+    "month": 12,
+    "day": 28,
+    "shift": "P",
+    "workoutCode": "EB",
+    "extra": "",
+    "raw": "28\nP/EB"
+  },
+  {
+    "date": "2026-12-29",
+    "month": 12,
+    "day": 29,
+    "shift": "P",
+    "workoutCode": "MO",
+    "extra": "M RM T F",
+    "raw": "29\nP/MO\nM RM T F"
+  },
+  {
+    "date": "2026-12-30",
+    "month": 12,
+    "day": 30,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "30\nN/MO"
+  },
+  {
+    "date": "2026-12-31",
+    "month": 12,
+    "day": 31,
+    "shift": "N",
+    "workoutCode": "MO",
+    "extra": "",
+    "raw": "31\nN/MO"
+  }
+]
