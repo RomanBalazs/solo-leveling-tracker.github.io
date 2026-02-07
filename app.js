@@ -106,13 +106,13 @@ function awardExp(profile, amount, reason=''){
 let DATA = null;
 const SHEET_ID = '1JyLDUZbtrNHrf_n3JguzCgnwupnZQnoWvOmxQvxHr1o';
 const SHEETS = {
-  settings: 'Beállítás',
-  training_levels: 'Edzés terv',
-  daily_plan_2026: 'Napi terv 2026',
-  menu_2026: 'Menü 2026',
-  measurements: 'Mérés',
-  summary: 'Összegzés',
-  calendar_2026: 'Naptár 2026',
+  settings: ['Beállítás', 'Beallitas', 'Settings'],
+  training_levels: ['Edzés terv', 'Edzes terv', 'Training'],
+  daily_plan_2026: ['Napi terv 2026', 'Napi terv', 'Daily plan 2026'],
+  menu_2026: ['Menü 2026', 'Menu 2026', 'Menu'],
+  measurements: ['Mérés', 'Meres', 'Measurements'],
+  summary: ['Összegzés', 'Osszegzes', 'Summary'],
+  calendar_2026: ['Naptár 2026', 'Naptar 2026', 'Calendar 2026'],
 };
 
 async function loadData(){
@@ -182,29 +182,33 @@ async function loadFromGoogleSheets(){
   return data;
 }
 
-async function fetchSheetObjects(sheetName){
-  const table = await fetchSheetTable(sheetName);
+async function fetchSheetObjects(sheetNames){
+  const table = await fetchSheetTable(sheetNames);
   return tableToObjects(table);
 }
 
-async function fetchSheetRows(sheetName){
-  const table = await fetchSheetTable(sheetName);
+async function fetchSheetRows(sheetNames){
+  const table = await fetchSheetTable(sheetNames);
   if (!table) return [];
   return (table.rows || []).map((row)=> (row.c || []).map((cell)=> cell?.v ?? cell?.f ?? null));
 }
 
-async function fetchSheetTable(sheetName){
-  if (!sheetName) return null;
-  const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
-  try{
-    const r = await fetch(url);
-    if (!r.ok) throw new Error(`Failed to load sheet ${sheetName}`);
-    const text = await r.text();
-    const json = parseGvizResponse(text);
-    return json?.table ?? null;
-  }catch{
-    return null;
+async function fetchSheetTable(sheetNames){
+  const names = Array.isArray(sheetNames) ? sheetNames : [sheetNames];
+  for (const sheetName of names){
+    if (!sheetName) continue;
+    const url = `https://docs.google.com/spreadsheets/d/${SHEET_ID}/gviz/tq?tqx=out:json&sheet=${encodeURIComponent(sheetName)}`;
+    try{
+      const r = await fetch(url);
+      if (!r.ok) throw new Error(`Failed to load sheet ${sheetName}`);
+      const text = await r.text();
+      const json = parseGvizResponse(text);
+      if (json?.table) return json.table;
+    }catch{
+      continue;
+    }
   }
+  return null;
 }
 
 function parseGvizResponse(text){
