@@ -14,6 +14,7 @@ const LS_KEYS = {
   quest: 'system_questlog_v1',
   inputs: 'system_inputs_v1',
   settingsOverrides: 'system_settings_overrides_v1',
+  ui: 'system_ui_state_v1',
 };
 
 function $(sel){ return document.querySelector(sel); }
@@ -105,21 +106,30 @@ function awardExp(profile, amount, reason=''){
 let DATA = null;
 
 async function loadData(){
-  const files = [
-    'settings.json',
-    'training_levels.json',
-    'daily_plan_2026.json',
-    'menu_2026.json',
-    'measurements.json',
-    'summary_cells.json',
-    'calendar_2026.json',
-  ];
+  const files = {
+    settings: { file: 'settings.json', fallback: {} },
+    training_levels: { file: 'training_levels.json', fallback: [] },
+    daily_plan_2026: { file: 'daily_plan_2026.json', fallback: [] },
+    menu_2026: { file: 'menu_2026.json', fallback: [] },
+    measurements: { file: 'measurements.json', fallback: [] },
+    summary_cells: { file: 'summary_cells.json', fallback: [] },
+    calendar_2026: { file: 'calendar_2026.json', fallback: [] },
+  };
   const out = {};
-  for (const f of files){
-    const r = await fetch(`./data/${f}`);
-    out[f.replace('.json','')] = await r.json();
+  for (const [key, entry] of Object.entries(files)){
+    out[key] = await fetchJSON(`./data/${entry.file}`, entry.fallback);
   }
   return out;
+}
+
+async function fetchJSON(path, fallback){
+  try{
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(`Failed to load ${path}`);
+    return await r.json();
+  }catch{
+    return fallback;
+  }
 }
 
 function toast(title, msg){
@@ -149,6 +159,15 @@ function getMergedSettings(){
   const base = DATA.settings || {};
   const ovr = loadLS(LS_KEYS.settingsOverrides, {});
   return { ...base, ...ovr };
+}
+
+function getUIState(){
+  return loadLS(LS_KEYS.ui, { scheduleMonth: null, foodMonth: null });
+}
+
+function setUIState(next){
+  const current = getUIState();
+  saveLS(LS_KEYS.ui, { ...current, ...next });
 }
 
 function renderTabs(active){
@@ -182,6 +201,28 @@ function renderProfile(){
   const levels = DATA.training_levels || [];
   const currentLevel = Number(settings['Edzés-szint (1–5)'] || 1);
   const lvlRow = levels.find(x => Number(x['Szint']) === currentLevel);
+  const trainingExtras = renderTrainingExtras(levels);
+  const statLabels = {
+    STR: 'Erő',
+    END: 'Állóképesség',
+    REC: 'Regeneráció',
+    DISC: 'Fegyelem',
+  };
+
+  const settingsInfoKeys = [
+    'Napi kcal cél – alap (pihenőnap)',
+    'Kardió nap +kcal',
+    'Erő nap +kcal',
+    'Fehérje cél (g/nap)',
+    'Munkanap lépésszám (átlag)',
+    'Pihenőnap lépésszám cél',
+    'Reális fogyás cél (kg/hét)',
+    'Reális fogyás cél (kg/hónap)',
+  ];
+  const settingsNotes = [];
+  if (settings['Megjegyzés']) settingsNotes.push(settings['Megjegyzés']);
+  const bulletNotes = Object.keys(settings).filter(key => key.trim().startsWith('•'));
+  settingsNotes.push(...bulletNotes);
 
   const expNeed = neededExp(profile.level);
   const expPct = Math.max(0, Math.min(100, Math.round((profile.exp/expNeed)*100)));
@@ -206,24 +247,9 @@ function renderProfile(){
     el('h3', { html:'Stat pontok' }),
     el('div', { class:'row' }, Object.keys(profile.stats).map(key=>{
       const wrap = el('div', { class:'kpi' }, [
-        el('div', { class:'label', html:key }),
+        el('div', { class:'label', html: statLabels[key] ?? key }),
         el('div', { class:'value', html:String(profile.stats[key]) }),
       ]);
-      const btnRow = el('div', { class:'row' }, [
-        el('button', { class:'btn secondary', onClick: ()=> {
-          if (profile.stats[key] <= 0) return;
-          profile.stats[key] -= 1; profile.unspent += 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('−')),
-        el('button', { class:'btn', onClick: ()=> {
-          if (profile.unspent <= 0) return;
-          profile.stats[key] += 1; profile.unspent -= 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('+')),
-      ]);
-      // quick fix: create real nodes
       wrap.append(el('div', { class:'row' }, [
         el('button', { class:'btn secondary', onClick: ()=> {
           const p = getProfile();
@@ -245,7 +271,7 @@ function renderProfile(){
   ]);
 
   // Settings + training level card
-  const setCard = el('div', { class:'card' }, [
+  const setChildren = [
     el('h2', { html:'Beállítások + Edzés szint (1–5)' }),
     el('div', { class:'row' }, [
       fieldNumber('Kezdő súly (kg)', settings, (k,v)=> saveSetting(k,v)),
@@ -277,7 +303,23 @@ function renderProfile(){
       infoRow('Lépés cél (átlag)', lvlRow['Lépés cél (átlag)']),
       infoRow('Megjegyzés', lvlRow['Megjegyzés']),
     ]) : el('div', { class:'badge', html:'Nincs edzés terv sor ehhez a szinthez.' }),
-  ]);
+  ];
+  if (trainingExtras){
+    setChildren.push(el('div', { class:'hr' }), trainingExtras);
+  }
+  setChildren.push(
+    el('div', { class:'hr' }),
+    el('h3', { html:'Célok és irányelvek' }),
+    el('div', { class:'grid cols2' }, settingsInfoKeys.map((key)=> infoRow(key, settings[key] ?? '—')))
+  );
+  if (settingsNotes.length){
+    setChildren.push(
+      el('div', { class:'grid', style:'margin-top:10px' }, settingsNotes.map((note)=> (
+        el('div', { class:'badge', style:'white-space:pre-line', html: escapeHTML(String(note)) })
+      )))
+    );
+  }
+  const setCard = el('div', { class:'card' }, setChildren);
 
   // Measurements + summary
   const meas = el('div', { class:'card' }, [
@@ -444,9 +486,9 @@ function renderQuests(){
 
     // editable inputs
     const inState = inputs[date] || {};
-    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
-    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
-    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
+    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
+    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
+    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
 
     card.append(el('div', { class:'row', style:'margin-top:10px' }, [
       el('div', { class:'field' }, [el('label', { html:'Lépés (db)' }), steps]),
@@ -543,34 +585,46 @@ function setQuestCheck(date, qkey, checked, exp, label){
 function renderSchedule(){
   const isoToday = todayISO();
   const month = isoToday.slice(0,7); // YYYY-MM
+  const uiState = getUIState();
+  const selectedMonth = uiState.scheduleMonth || month;
   const entries = (DATA.calendar_2026 || []).slice().sort((a,b)=> a.date<b.date?-1:1);
+  const dailyPlan = DATA.daily_plan_2026 || [];
+  const planByDate = new Map(dailyPlan.map(r => [r['Dátum'], r]));
 
   const wrap = el('div', { class:'card' }, [
     el('h2', { html:'Beosztás – Naptár 2026' }),
   ]);
 
-  const sel = el('input', { type:'month', value: month, onChange:()=> render() });
+  const sel = el('input', { type:'month', value: selectedMonth, onChange:(e)=> {
+    setUIState({ scheduleMonth: e.target.value });
+    render();
+  } });
   wrap.append(el('div', { class:'row' }, [
     el('div', { class:'field' }, [el('label', { html:'Hónap' }), sel]),
   ]));
 
-  const selected = (document.querySelector('input[type="month"]')?.value) || month;
-  const list = entries.filter(e => e.date.startsWith(selected));
+  const list = entries.filter(e => e.date.startsWith(selectedMonth));
 
   const table = el('table', { class:'table' }, []);
   table.append(el('thead', {}, [el('tr', {}, [
     el('th', { html:'Dátum' }),
     el('th', { html:'Műszak' }),
     el('th', { html:'Edzés kód' }),
+    el('th', { html:'Edzés javaslat' }),
     el('th', { html:'Teendők' }),
     el('th', { html:'Nyers' }),
   ])]));
   const tb = el('tbody');
   for (const e of list){
+    const plan = planByDate.get(e.date);
+    const shiftLabel = formatShiftLabel(e.shift);
+    const shiftClass = shiftLabel.className;
+    const workoutSuggestion = plan?.['Edzés javaslat'] ?? '';
     tb.append(el('tr', {}, [
       el('td', { html: e.date }),
-      el('td', { html: escapeHTML(e.shift || '') }),
+      el('td', { class: `shift-cell ${shiftClass}`.trim(), html: escapeHTML(shiftLabel.label) }),
       el('td', { html: escapeHTML(e.workoutCode || '') }),
+      el('td', { html: escapeHTML(workoutSuggestion) }),
       el('td', { html: escapeHTML(e.extra || '') }),
       el('td', { html: escapeHTML(e.raw || '') }),
     ]));
@@ -581,28 +635,53 @@ function renderSchedule(){
   return wrap;
 }
 
+function formatShiftLabel(shift){
+  if (!shift) return { label: '—', className: '' };
+  const raw = String(shift).trim();
+  const lower = raw.toLowerCase();
+  if (lower === 'n' || lower.includes('éjj') || lower.includes('ejj')){
+    return { label: 'Éjjeles', className: 'shift-night' };
+  }
+  if (lower === 'p' || lower.includes('pihen')){
+    return { label: 'Pihenő', className: 'shift-rest' };
+  }
+  if (lower === 'd' || lower.includes('nappal')){
+    return { label: 'Nappal', className: 'shift-day' };
+  }
+  return { label: raw, className: '' };
+}
+
 function renderFood(){
   const isoToday = todayISO();
   const month = isoToday.slice(0,7);
+  const uiState = getUIState();
+  const selectedMonth = uiState.foodMonth || month;
   const menu = DATA.menu_2026 || [];
   const byDate = new Map(menu.map(r => [r['Dátum'], r]));
-  const today = byDate.get(isoToday);
+  const weekStart = startOfWeekISO(isoToday);
+  const weekDates = Array.from({length:7}, (_,i)=> addDaysISO(weekStart,i));
 
   const wrap = el('div', { class:'grid cols2' }, []);
 
-  const todayCard = el('div', { class:'card' }, [
-    el('h2', { html:'Étkezés – Mai menü' }),
-    today ? el('div', { class:'grid' }, [
-      infoRow('Dátum', today['Dátum']),
-      infoRow('Menü típus', today['Menü típus']),
-      infoRow('Leves', today['Leves (ha főzés/maradék)'] ?? '—'),
-      infoRow('Főétel', today['Főétel'] ?? '—'),
-      infoRow('Csomagolható', today['Csomagolható'] ?? '—'),
-      infoRow('Ebéd+vacsora kcal (becsült)', today['Ebéd+vacsora kcal (becsült)'] ?? '—'),
-      infoRow('Napi kcal cél', today['Napi kcal cél'] ?? '—'),
-      infoRow('Fehérje cél (g/nap)', today['Fehérje cél (g/nap)'] ?? '—'),
-      infoRow('Megjegyzés', today['Megjegyzés'] ?? '—'),
-    ]) : el('div', { class:'badge', html:'Nincs adat erre a napra.' }),
+  const weekCard = el('div', { class:'card' }, [
+    el('h2', { html:'Étkezés – Aktuális hét' }),
+    el('div', { class:'badge', html:`Heti nézet: <b>${weekStart}</b>–<b>${weekDates[6]}</b>` }),
+    el('div', { class:'hr' }),
+    el('div', { class:'grid' }, weekDates.map((date)=>{
+      const row = byDate.get(date);
+      if (!row){
+        return el('div', { class:'kpi' }, [
+          el('div', { class:'label', html: date }),
+          el('div', { class:'value', html: '—' }),
+        ]);
+      }
+      return el('div', { class:'kpi' }, [
+        el('div', { class:'label', html: row['Dátum'] }),
+        el('div', { class:'value', html: escapeHTML(String(row['Menü típus'] ?? '—')) }),
+        el('div', { class:'label', html: 'Főétel' }),
+        el('div', { class:'value', html: escapeHTML(String(row['Főétel'] ?? '—')) }),
+      ]);
+    })),
   ]);
 
   const listCard = el('div', { class:'card' }, [
@@ -610,14 +689,16 @@ function renderFood(){
     el('div', { class:'row' }, [
       el('div', { class:'field' }, [
         el('label', { html:'Hónap' }),
-        el('input', { type:'month', value: month, onChange:()=> render() }),
+        el('input', { type:'month', value: selectedMonth, onChange:(e)=> {
+          setUIState({ foodMonth: e.target.value });
+          render();
+        } }),
       ]),
     ]),
     el('div', { class:'hr' }),
   ]);
 
-  const selected = document.querySelectorAll('input[type="month"]')[1]?.value || month;
-  const list = menu.filter(r => (r['Dátum']||'').startsWith(selected));
+  const list = menu.filter(r => (r['Dátum']||'').startsWith(selectedMonth));
 
   const table = el('table', { class:'table' }, []);
   table.append(el('thead', {}, [el('tr', {}, [
@@ -640,7 +721,7 @@ function renderFood(){
   table.append(tb);
   listCard.append(table);
 
-  wrap.append(todayCard);
+  wrap.append(weekCard);
   wrap.append(listCard);
   return wrap;
 }
@@ -656,12 +737,23 @@ window.addEventListener('hashchange', render);
   }
   // ensure profile exists
   saveLS(LS_KEYS.profile, getProfile());
-  // build tabs
-  const tabs = $('#tabs');
-  for (const t of TABS){
-    const b = el('button', { class:'tabbtn' }, [document.createTextNode(t.label)]);
-    b.addEventListener('click', ()=> location.hash = `#${t.id}`);
-    tabs.append(b);
-  }
   render();
 })();
+
+function renderTrainingExtras(levels){
+  const extras = (levels || []).filter((row)=> typeof row['Szint'] === 'string' && row['Szint'].trim());
+  if (!extras.length) return null;
+  const blocks = extras.map((row)=>{
+    const entries = Object.entries(row)
+      .filter(([key, value])=> key !== 'Szint' && value)
+      .map(([key, value])=> infoRow(key, value));
+    return el('div', { class:'card' }, [
+      el('h3', { html: escapeHTML(row['Szint']) }),
+      ...entries,
+    ]);
+  });
+  return el('div', { class:'grid' }, [
+    el('h3', { html:'Edzés blokkok' }),
+    el('div', { class:'grid cols2' }, blocks),
+  ]);
+}
