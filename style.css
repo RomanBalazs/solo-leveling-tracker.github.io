@@ -223,13 +223,22 @@ input, select{
 .list{display:flex; flex-direction:column; gap:10px}
 .week{
   display:grid;
-  grid-template-columns: repeat(7, minmax(0,1fr));
+  grid-template-columns: 1fr;
   gap: 10px;
-  overflow:auto;
 }
+@media (min-width: 600px){
+  .week{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+@media (min-width: 980px){
+  .week{ grid-template-columns: repeat(3, minmax(0,1fr)); }
+}
+@media (min-width: 1280px){
+  .week{ grid-template-columns: repeat(4, minmax(0,1fr)); }
+}
+
 .dayCard{
-  min-width: 170px;
-  border:1px solid var(--line);
+  width: 100%;
+border:1px solid var(--line);
   background: rgba(11,15,23,.35);
   border-radius: var(--radius2);
   padding: 10px;
@@ -295,3 +304,5 @@ input, select{
 }
 .summary .box span{display:block;color:var(--muted);font-size:12px}
 .summary .box strong{display:block;font-family:var(--mono);font-size:16px}
+
+.dayCard{break-inside: avoid;}
