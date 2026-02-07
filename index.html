@@ -1,32 +1,217 @@
 <!doctype html>
 <html lang="hu">
 <head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="theme-color" content="#0b0f17" />
   <base href="./">
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>System Tracker 2026</title>
   <link rel="stylesheet" href="./style.css" />
 </head>
 <body>
   <header class="topbar">
     <div class="brand">
-      <div class="logo">SYSTEM</div>
-      <div>
-        <div class="title">System Tracker 2026</div>
-        <div class="subtitle">Profil • Küldetések • Beosztás • Étkezés</div>
+      <div class="badge">SYSTEM</div>
+      <div class="title">
+        <div class="h1">System Tracker 2026</div>
+        <div class="h2">Profil • Küldetések • Beosztás • Étkezés</div>
       </div>
     </div>
-    <nav class="tabs" id="tabs"></nav>
+
+    <nav class="tabs" aria-label="Fő menü">
+      <button class="tab active" data-tab="profile">Profil</button>
+      <button class="tab" data-tab="quests">Küldetések</button>
+      <button class="tab" data-tab="schedule">Beosztás</button>
+      <button class="tab" data-tab="meal">Étkezés</button>
+    </nav>
   </header>
 
   <main class="container">
-    <section id="view"></section>
+    <section id="view-profile" class="view active">
+      <div class="grid">
+        <div class="card">
+          <div class="cardTitle">Profil</div>
+          <div class="row">
+            <div class="pill" id="rankPill">Rank: –</div>
+            <div class="pill" id="levelPill">Lv –</div>
+            <div class="pill" id="pointsPill">Pont: –</div>
+          </div>
+
+          <div class="progress">
+            <div class="progressLabel">
+              <span>EXP</span>
+              <span id="expLabel">–</span>
+            </div>
+            <div class="bar">
+              <div class="fill" id="expFill" style="width:0%"></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="cardTitle">Stat pontok</div>
+          <div class="stats">
+            <div class="stat">
+              <div class="statName">STR</div>
+              <div class="statVal" id="statSTR">0</div>
+              <button class="btn small" data-stat="STR">+1</button>
+            </div>
+            <div class="stat">
+              <div class="statName">END</div>
+              <div class="statVal" id="statEND">0</div>
+              <button class="btn small" data-stat="END">+1</button>
+            </div>
+            <div class="stat">
+              <div class="statName">REC</div>
+              <div class="statVal" id="statREC">0</div>
+              <button class="btn small" data-stat="REC">+1</button>
+            </div>
+            <div class="stat">
+              <div class="statName">DISC</div>
+              <div class="statVal" id="statDISC">0</div>
+              <button class="btn small" data-stat="DISC">+1</button>
+            </div>
+          </div>
+
+          <div class="hint">Szintlépéskor kapsz pontot, amit itt el tudsz költeni.</div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">Beállítások</div>
+
+          <div class="formGrid">
+            <label class="field">
+              <span>Kezdő súly (kg)</span>
+              <input type="number" step="0.1" id="setStartWeight">
+            </label>
+            <label class="field">
+              <span>Célsúly (kg)</span>
+              <input type="number" step="0.1" id="setGoalWeight">
+            </label>
+            <label class="field">
+              <span>Aktuális súly (kg)</span>
+              <input type="number" step="0.1" id="setCurrentWeight">
+            </label>
+            <label class="field">
+              <span>Edzés szint (1–5)</span>
+              <select id="trainingLevel">
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="row">
+            <button class="btn" id="saveSettings">Mentés</button>
+            <button class="btn ghost" id="resetLocal">Helyi adatok törlése</button>
+          </div>
+
+          <div class="divider"></div>
+          <div class="cardTitle">Edzés terv (skálázva)</div>
+          <div id="trainingCards" class="stack"></div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">Mérés</div>
+          <div class="formGrid">
+            <label class="field">
+              <span>Dátum</span>
+              <input type="date" id="mDate">
+            </label>
+            <label class="field">
+              <span>Súly (kg)</span>
+              <input type="number" step="0.1" id="mWeight">
+            </label>
+            <label class="field">
+              <span>Derék (cm)</span>
+              <input type="number" step="0.1" id="mWaist">
+            </label>
+            <label class="field">
+              <span>Megjegyzés</span>
+              <input type="text" id="mNote" placeholder="opcionális">
+            </label>
+          </div>
+          <div class="row">
+            <button class="btn" id="addMeasurement">Hozzáadás</button>
+          </div>
+
+          <div class="divider"></div>
+          <div class="cardTitle">Mérések listája</div>
+          <div id="measureList" class="list"></div>
+        </div>
+
+        <div class="card">
+          <div class="cardTitle">Összegzés</div>
+          <div id="summaryBox" class="summary"></div>
+          <div class="hint">Helyi számítás (localStorage).</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-quests" class="view">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <div class="cardTitle">Küldetések</div>
+            <div class="hint">
+              Heti bontás. Az aktív napot (fent) tudod pipálni és menteni; a kiválasztott hónapon belül visszamenőleg is rögzíthetsz.
+              A küldetések a “Napi terv 2026” tényleges oszlopai alapján generálódnak.
+            </div>
+          </div>
+          <div class="pill" id="todayPill">Ma: –</div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <label class="field" style="min-width:220px">
+            <span>Aktív hónap</span>
+            <input type="month" id="activeMonth">
+          </label>
+          <label class="field" style="min-width:220px">
+            <span>Aktív nap (módosítható)</span>
+            <input type="date" id="activeDate">
+          </label>
+          <button class="btn" id="lockDayBtn">Nap mentése + lezárás</button>
+          <button class="btn ghost" id="unlockDayBtn" title="Csak ha tévedésből zártad le">Feloldás</button>
+        </div>
+
+        <div class="divider"></div>
+        <div id="weekStrip" class="week"></div>
+      </div>
+    </section>
+
+    <section id="view-schedule" class="view">
+      <div class="card">
+        <div class="cardTitle">Beosztás</div>
+        <div class="divider"></div>
+        <div id="scheduleList" class="list"></div>
+      </div>
+    </section>
+
+    <section id="view-meal" class="view">
+      <div class="card">
+        <div class="row space">
+          <div>
+            <div class="cardTitle">Étkezés</div>
+            <div class="hint">Menü 2026 adatok.</div>
+          </div>
+          <div class="pill" id="mealPill">–</div>
+        </div>
+        <div class="divider"></div>
+        <div id="mealToday" class="stack"></div>
+        <div class="divider"></div>
+        <div id="mealList" class="list"></div>
+      </div>
+    </section>
   </main>
 
   <footer class="footer">
     <span>Adatok: Excel → JSON. Mentés: localStorage.</span>
+    <span id="statusMsg" class="status"></span>
   </footer>
 
-  <script src="./app.js" type="module"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
