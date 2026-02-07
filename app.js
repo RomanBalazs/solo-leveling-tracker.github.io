@@ -106,21 +106,30 @@ function awardExp(profile, amount, reason=''){
 let DATA = null;
 
 async function loadData(){
-  const files = [
-    'settings.json',
-    'training_levels.json',
-    'daily_plan_2026.json',
-    'menu_2026.json',
-    'measurements.json',
-    'summary_cells.json',
-    'calendar_2026.json',
-  ];
+  const files = {
+    settings: { file: 'settings.json', fallback: {} },
+    training_levels: { file: 'training_levels.json', fallback: [] },
+    daily_plan_2026: { file: 'daily_plan_2026.json', fallback: [] },
+    menu_2026: { file: 'menu_2026.json', fallback: [] },
+    measurements: { file: 'measurements.json', fallback: [] },
+    summary_cells: { file: 'summary_cells.json', fallback: [] },
+    calendar_2026: { file: 'calendar_2026.json', fallback: [] },
+  };
   const out = {};
-  for (const f of files){
-    const r = await fetch(`./data/${f}`);
-    out[f.replace('.json','')] = await r.json();
+  for (const [key, entry] of Object.entries(files)){
+    out[key] = await fetchJSON(`./data/${entry.file}`, entry.fallback);
   }
   return out;
+}
+
+async function fetchJSON(path, fallback){
+  try{
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(`Failed to load ${path}`);
+    return await r.json();
+  }catch{
+    return fallback;
+  }
 }
 
 function toast(title, msg){
