@@ -443,6 +443,58 @@ function setActiveDate(v){
   if(el) el.value = v;
 }
 
+// Build quests from daily_plan_2026 row for date
+function buildQuestsFromDailyRow(row, dateKey){
+  const quests = [];
+
+  // Edzés javaslat
+  const workout = row?.['Edzés javaslat'];
+  if(workout && String(workout).trim()){
+    quests.push({
+      id: `q_${dateKey}_edzes`,
+      text: `Edzés: ${workout}`,
+      exp: 30
+    });
+  }
+
+  // Teendők (oszlopok kód alapján)
+  const chores = [
+    ['Mosogatás','Mosogatás',10],
+    ['Ruhamosás','Ruhamosás',10],
+    ['Takarítás','Takarítás',10],
+    ['Főzés','Főzés',10],
+    ['Barátok','Barátok',10],
+  ];
+
+  for(const [col, label, exp] of chores){
+    const v = row?.[col];
+    if(v && String(v).trim()){
+      quests.push({
+        id: `q_${dateKey}_${col.toLowerCase()}`,
+        text: label,
+        exp
+      });
+    }
+  }
+
+  // Műszakhoz kötött “regeneráció” javaslat (ha éjszaka)
+  const shift = row?.['Műszak'];
+  if(shift && String(shift).toLowerCase().includes('éj')){
+    quests.push({
+      id: `q_${dateKey}_regen`,
+      text: 'Regeneráció: 10 perc nyújtás / lazítás',
+      exp: 10
+    });
+  }
+
+  // Ha semmi nem jött ki, fallback
+  if(quests.length === 0){
+    quests.push({ id:`q_${dateKey}_nap`, text:'Napi minimum: 10 perc séta', exp: 10 });
+  }
+
+  return quests;
+}
+
 function renderQuests(){
   const todayKey = fmtDate(new Date());
   const todayPill = document.getElementById("todayPill");
@@ -460,11 +512,19 @@ function renderQuests(){
   state.ui.activeDate = activeKey;
   saveState();
 
+  // Index daily plan by date for quick lookup
+  const byDate = {};
+  const rows = (window.data && data.daily_plan_2026) ? data.daily_plan_2026 : null;
+  if(Array.isArray(rows)){
+    for(const r of rows){
+      const d = r?.['Dátum'];
+      if(d) byDate[String(d)] = r;
+    }
+  }
+
   const weekStart = startOfWeek(new Date(activeKey));
   const strip = document.getElementById("weekStrip");
   strip.innerHTML = "";
-
-  const expPer = 15;
 
   for(let i=0;i<7;i++){
     const d = addDays(weekStart,i);
@@ -475,36 +535,24 @@ function renderQuests(){
     const q = ensureQuestDay(key);
     const locked = q.closed || !withinMonth || !isActive;
 
+    const row = byDate[key] || null;
+    const quests = buildQuestsFromDailyRow(row, key);
+
+    // sync editable numeric fields from stored state (user input)
+    // If row has numeric columns, show them but user can overwrite in localStorage
     const dayCard = document.createElement("div");
     dayCard.className = "dayCard" + (locked ? " lock" : "");
-    const name = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].name : ["H","K","Sze","Cs","P","Szo","V"][i];
 
-    // Prefer real plan if present
-    let questTexts = [];
-    if(window.data && data.daily_plan_2026){
-      // If your existing app already builds daily quests from daily_plan_2026, leave it.
-      // Fallback: keep template quests so the UI always works.
-      questTexts = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].quests : [];
-    }else{
-      questTexts = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].quests : [];
-    }
-
-    const checks = questTexts.map((txt, idx)=>{
-      const id = `q_${key}_${idx}`;
-      return { id, txt, checked: !!q.checks[id] };
-    });
-
-    const allChecksDone = checks.length ? checks.every(c=>c.checked) : true;
-    const allDone = allChecksDone && q.cleared;
+    const dayName = row?.['Nap'] || ['Hétfő','Kedd','Szerda','Csütörtök','Péntek','Szombat','Vasárnap'][i];
 
     dayCard.innerHTML = `
       <div class="dayHead">
-        <div class="dayName">${name}</div>
+        <div class="dayName">${dayName}</div>
         <div class="dayDate">${key}</div>
       </div>
 
       <div class="itemMeta">
-        ${withinMonth ? "Küldetések" : "Másik hónap"} (+${expPer} EXP / pipa)
+        ${withinMonth ? (row ? `Műszak: <b>${row['Műszak'] || '-'}</b> · ${row['Idő'] || ''}` : "Nincs adat erre a napra") : "Másik hónap"}
         ${q.closed ? " · <b>LEZÁRVA</b>" : ""}
       </div>
 
@@ -517,27 +565,30 @@ function renderQuests(){
       </div>
 
       <div class="row" style="margin-top:10px">
-        <button class="btn ${locked ? "ghost" : ""}" id="clear_${key}" ${locked ? "disabled" : ""}>${allDone ? "Lezárva ✓" : "Napi mentés + lezárás"}</button>
-        <div class="pill">Státusz: <span id="st_${key}">${allDone ? "KÉSZ" : (q.closed ? "LEZÁRVA" : (isActive ? "AKTÍV" : "ZÁRT"))}</span></div>
+        <button class="btn ${locked ? "ghost" : ""}" id="save_${key}" ${locked ? "disabled" : ""}>Nap mentése + lezárás</button>
+        <div class="pill">Státusz: <span id="st_${key}">${q.closed ? "LEZÁRVA" : (isActive ? "AKTÍV" : "ZÁRT")}</span></div>
       </div>
     `;
+
     strip.appendChild(dayCard);
 
     const checksBox = dayCard.querySelector(`#checks_${key}`);
-    checks.forEach(c=>{
+    quests.forEach(qt=>{
       const line = document.createElement("div");
       line.className = "check";
+      const checked = !!q.checks[qt.id];
       line.innerHTML = `
-        <label>${c.txt}</label>
-        <input type="checkbox" ${c.checked ? "checked":""} ${locked ? "disabled" : ""} />
+        <label>${qt.text} <span style="color:var(--muted); font-family:var(--mono)">(+${qt.exp} EXP)</span></label>
+        <input type="checkbox" ${checked ? "checked":""} ${locked ? "disabled" : ""} />
       `;
       checksBox.appendChild(line);
+
       const cb = line.querySelector("input");
       cb.addEventListener("change", ()=>{
         if(locked) return;
-        const prev = !!q.checks[c.id];
-        q.checks[c.id] = cb.checked;
-        if(!prev && cb.checked) grantExp(expPer);
+        const prev = !!q.checks[qt.id];
+        q.checks[qt.id] = cb.checked;
+        if(!prev && cb.checked) grantExp(qt.exp);
         saveState();
       });
     });
@@ -549,18 +600,19 @@ function renderQuests(){
     const bind = (el, prop)=> el && el.addEventListener("input", ()=>{ if(!locked){ q[prop]=el.value; saveState(); }});
     bind(stepsEl,"steps"); bind(sleepEl,"sleep"); bind(weightEl,"weight");
 
-    // Save & lock day
-    const clearBtn = dayCard.querySelector(`#clear_${key}`);
-    clearBtn.addEventListener("click", ()=>{
+    // save + lock button
+    const saveBtn = dayCard.querySelector(`#save_${key}`);
+    saveBtn.addEventListener("click", ()=>{
       if(locked) return;
-      q.cleared = true;
       q.closed = true;
+      q.cleared = true;
       saveState();
       setStatus("MENTVE/LEZÁRVA");
       renderQuests();
     });
   }
 
+  // Global lock/unlock for active day
   const activeDay = ensureQuestDay(activeKey);
   const lockBtn = document.getElementById("lockDayBtn");
   const unlockBtn = document.getElementById("unlockDayBtn");
