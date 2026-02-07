@@ -14,6 +14,7 @@ const LS_KEYS = {
   quest: 'system_questlog_v1',
   inputs: 'system_inputs_v1',
   settingsOverrides: 'system_settings_overrides_v1',
+  ui: 'system_ui_state_v1',
 };
 
 function $(sel){ return document.querySelector(sel); }
@@ -105,21 +106,30 @@ function awardExp(profile, amount, reason=''){
 let DATA = null;
 
 async function loadData(){
-  const files = [
-    'settings.json',
-    'training_levels.json',
-    'daily_plan_2026.json',
-    'menu_2026.json',
-    'measurements.json',
-    'summary_cells.json',
-    'calendar_2026.json',
-  ];
+  const files = {
+    settings: { file: 'settings.json', fallback: {} },
+    training_levels: { file: 'training_levels.json', fallback: [] },
+    daily_plan_2026: { file: 'daily_plan_2026.json', fallback: [] },
+    menu_2026: { file: 'menu_2026.json', fallback: [] },
+    measurements: { file: 'measurements.json', fallback: [] },
+    summary_cells: { file: 'summary_cells.json', fallback: [] },
+    calendar_2026: { file: 'calendar_2026.json', fallback: [] },
+  };
   const out = {};
-  for (const f of files){
-    const r = await fetch(`./data/${f}`);
-    out[f.replace('.json','')] = await r.json();
+  for (const [key, entry] of Object.entries(files)){
+    out[key] = await fetchJSON(`./data/${entry.file}`, entry.fallback);
   }
   return out;
+}
+
+async function fetchJSON(path, fallback){
+  try{
+    const r = await fetch(path);
+    if (!r.ok) throw new Error(`Failed to load ${path}`);
+    return await r.json();
+  }catch{
+    return fallback;
+  }
 }
 
 function toast(title, msg){
@@ -149,6 +159,15 @@ function getMergedSettings(){
   const base = DATA.settings || {};
   const ovr = loadLS(LS_KEYS.settingsOverrides, {});
   return { ...base, ...ovr };
+}
+
+function getUIState(){
+  return loadLS(LS_KEYS.ui, { scheduleMonth: null, foodMonth: null });
+}
+
+function setUIState(next){
+  const current = getUIState();
+  saveLS(LS_KEYS.ui, { ...current, ...next });
 }
 
 function renderTabs(active){
@@ -182,6 +201,22 @@ function renderProfile(){
   const levels = DATA.training_levels || [];
   const currentLevel = Number(settings['Edzés-szint (1–5)'] || 1);
   const lvlRow = levels.find(x => Number(x['Szint']) === currentLevel);
+  const trainingExtras = renderTrainingExtras(levels);
+
+  const settingsInfoKeys = [
+    'Napi kcal cél – alap (pihenőnap)',
+    'Kardió nap +kcal',
+    'Erő nap +kcal',
+    'Fehérje cél (g/nap)',
+    'Munkanap lépésszám (átlag)',
+    'Pihenőnap lépésszám cél',
+    'Reális fogyás cél (kg/hét)',
+    'Reális fogyás cél (kg/hónap)',
+  ];
+  const settingsNotes = [];
+  if (settings['Megjegyzés']) settingsNotes.push(settings['Megjegyzés']);
+  const bulletNotes = Object.keys(settings).filter(key => key.trim().startsWith('•'));
+  settingsNotes.push(...bulletNotes);
 
   const expNeed = neededExp(profile.level);
   const expPct = Math.max(0, Math.min(100, Math.round((profile.exp/expNeed)*100)));
@@ -209,21 +244,6 @@ function renderProfile(){
         el('div', { class:'label', html:key }),
         el('div', { class:'value', html:String(profile.stats[key]) }),
       ]);
-      const btnRow = el('div', { class:'row' }, [
-        el('button', { class:'btn secondary', onClick: ()=> {
-          if (profile.stats[key] <= 0) return;
-          profile.stats[key] -= 1; profile.unspent += 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('−')),
-        el('button', { class:'btn', onClick: ()=> {
-          if (profile.unspent <= 0) return;
-          profile.stats[key] += 1; profile.unspent -= 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('+')),
-      ]);
-      // quick fix: create real nodes
       wrap.append(el('div', { class:'row' }, [
         el('button', { class:'btn secondary', onClick: ()=> {
           const p = getProfile();
@@ -245,7 +265,7 @@ function renderProfile(){
   ]);
 
   // Settings + training level card
-  const setCard = el('div', { class:'card' }, [
+  const setChildren = [
     el('h2', { html:'Beállítások + Edzés szint (1–5)' }),
     el('div', { class:'row' }, [
       fieldNumber('Kezdő súly (kg)', settings, (k,v)=> saveSetting(k,v)),
@@ -277,7 +297,23 @@ function renderProfile(){
       infoRow('Lépés cél (átlag)', lvlRow['Lépés cél (átlag)']),
       infoRow('Megjegyzés', lvlRow['Megjegyzés']),
     ]) : el('div', { class:'badge', html:'Nincs edzés terv sor ehhez a szinthez.' }),
-  ]);
+  ];
+  if (trainingExtras){
+    setChildren.push(el('div', { class:'hr' }), trainingExtras);
+  }
+  setChildren.push(
+    el('div', { class:'hr' }),
+    el('h3', { html:'Célok és irányelvek' }),
+    el('div', { class:'grid cols2' }, settingsInfoKeys.map((key)=> infoRow(key, settings[key] ?? '—')))
+  );
+  if (settingsNotes.length){
+    setChildren.push(
+      el('div', { class:'grid', style:'margin-top:10px' }, settingsNotes.map((note)=> (
+        el('div', { class:'badge', style:'white-space:pre-line', html: escapeHTML(String(note)) })
+      )))
+    );
+  }
+  const setCard = el('div', { class:'card' }, setChildren);
 
   // Measurements + summary
   const meas = el('div', { class:'card' }, [
@@ -543,19 +579,23 @@ function setQuestCheck(date, qkey, checked, exp, label){
 function renderSchedule(){
   const isoToday = todayISO();
   const month = isoToday.slice(0,7); // YYYY-MM
+  const uiState = getUIState();
+  const selectedMonth = uiState.scheduleMonth || month;
   const entries = (DATA.calendar_2026 || []).slice().sort((a,b)=> a.date<b.date?-1:1);
 
   const wrap = el('div', { class:'card' }, [
     el('h2', { html:'Beosztás – Naptár 2026' }),
   ]);
 
-  const sel = el('input', { type:'month', value: month, onChange:()=> render() });
+  const sel = el('input', { type:'month', value: selectedMonth, onChange:(e)=> {
+    setUIState({ scheduleMonth: e.target.value });
+    render();
+  } });
   wrap.append(el('div', { class:'row' }, [
     el('div', { class:'field' }, [el('label', { html:'Hónap' }), sel]),
   ]));
 
-  const selected = (document.querySelector('input[type="month"]')?.value) || month;
-  const list = entries.filter(e => e.date.startsWith(selected));
+  const list = entries.filter(e => e.date.startsWith(selectedMonth));
 
   const table = el('table', { class:'table' }, []);
   table.append(el('thead', {}, [el('tr', {}, [
@@ -584,6 +624,8 @@ function renderSchedule(){
 function renderFood(){
   const isoToday = todayISO();
   const month = isoToday.slice(0,7);
+  const uiState = getUIState();
+  const selectedMonth = uiState.foodMonth || month;
   const menu = DATA.menu_2026 || [];
   const byDate = new Map(menu.map(r => [r['Dátum'], r]));
   const today = byDate.get(isoToday);
@@ -610,14 +652,16 @@ function renderFood(){
     el('div', { class:'row' }, [
       el('div', { class:'field' }, [
         el('label', { html:'Hónap' }),
-        el('input', { type:'month', value: month, onChange:()=> render() }),
+        el('input', { type:'month', value: selectedMonth, onChange:(e)=> {
+          setUIState({ foodMonth: e.target.value });
+          render();
+        } }),
       ]),
     ]),
     el('div', { class:'hr' }),
   ]);
 
-  const selected = document.querySelectorAll('input[type="month"]')[1]?.value || month;
-  const list = menu.filter(r => (r['Dátum']||'').startsWith(selected));
+  const list = menu.filter(r => (r['Dátum']||'').startsWith(selectedMonth));
 
   const table = el('table', { class:'table' }, []);
   table.append(el('thead', {}, [el('tr', {}, [
@@ -656,12 +700,23 @@ window.addEventListener('hashchange', render);
   }
   // ensure profile exists
   saveLS(LS_KEYS.profile, getProfile());
-  // build tabs
-  const tabs = $('#tabs');
-  for (const t of TABS){
-    const b = el('button', { class:'tabbtn' }, [document.createTextNode(t.label)]);
-    b.addEventListener('click', ()=> location.hash = `#${t.id}`);
-    tabs.append(b);
-  }
   render();
 })();
+
+function renderTrainingExtras(levels){
+  const extras = (levels || []).filter((row)=> typeof row['Szint'] === 'string' && row['Szint'].trim());
+  if (!extras.length) return null;
+  const blocks = extras.map((row)=>{
+    const entries = Object.entries(row)
+      .filter(([key, value])=> key !== 'Szint' && value)
+      .map(([key, value])=> infoRow(key, value));
+    return el('div', { class:'card' }, [
+      el('h3', { html: escapeHTML(row['Szint']) }),
+      ...entries,
+    ]);
+  });
+  return el('div', { class:'grid' }, [
+    el('h3', { html:'Edzés blokkok' }),
+    el('div', { class:'grid cols2' }, blocks),
+  ]);
+}
