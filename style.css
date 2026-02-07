@@ -120,10 +120,6 @@ label{color:var(--muted); font-size:12px}
 .table{width:100%; border-collapse:collapse; font-size:13px}
 .table th,.table td{padding:10px; border-bottom:1px solid rgba(36,50,68,.65); text-align:left; vertical-align:top}
 .table th{color:var(--muted); font-weight:800}
-.shift-cell{border-radius:10px; font-weight:800}
-.shift-night{background:rgba(56,189,248,.18); color:#7dd3fc}
-.shift-day{background:rgba(251,191,36,.18); color:#fde68a}
-.shift-rest{background:rgba(255,255,255,.12); color:#f8fafc}
 
 .daygrid{display:grid; gap:10px}
 @media (min-width: 860px){ .daygrid{grid-template-columns: repeat(7, 1fr)} }
