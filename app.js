@@ -241,7 +241,7 @@ function renderProfile(){
     el('h3', { html:'Stat pontok' }),
     el('div', { class:'row' }, Object.keys(profile.stats).map(key=>{
       const wrap = el('div', { class:'kpi' }, [
-        el('div', { class:'label', html:key }),
+        el('div', { class:'label', html: statLabels[key] ?? key }),
         el('div', { class:'value', html:String(profile.stats[key]) }),
       ]);
       wrap.append(el('div', { class:'row' }, [
@@ -480,9 +480,9 @@ function renderQuests(){
 
     // editable inputs
     const inState = inputs[date] || {};
-    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
-    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
-    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
+    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
+    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
+    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
 
     card.append(el('div', { class:'row', style:'margin-top:10px' }, [
       el('div', { class:'field' }, [el('label', { html:'Lépés (db)' }), steps]),
@@ -582,6 +582,8 @@ function renderSchedule(){
   const uiState = getUIState();
   const selectedMonth = uiState.scheduleMonth || month;
   const entries = (DATA.calendar_2026 || []).slice().sort((a,b)=> a.date<b.date?-1:1);
+  const dailyPlan = DATA.daily_plan_2026 || [];
+  const planByDate = new Map(dailyPlan.map(r => [r['Dátum'], r]));
 
   const wrap = el('div', { class:'card' }, [
     el('h2', { html:'Beosztás – Naptár 2026' }),
@@ -602,15 +604,21 @@ function renderSchedule(){
     el('th', { html:'Dátum' }),
     el('th', { html:'Műszak' }),
     el('th', { html:'Edzés kód' }),
+    el('th', { html:'Edzés javaslat' }),
     el('th', { html:'Teendők' }),
     el('th', { html:'Nyers' }),
   ])]));
   const tb = el('tbody');
   for (const e of list){
+    const plan = planByDate.get(e.date);
+    const shiftLabel = formatShiftLabel(e.shift);
+    const shiftClass = shiftLabel.className;
+    const workoutSuggestion = plan?.['Edzés javaslat'] ?? '';
     tb.append(el('tr', {}, [
       el('td', { html: e.date }),
-      el('td', { html: escapeHTML(e.shift || '') }),
+      el('td', { class: `shift-cell ${shiftClass}`.trim(), html: escapeHTML(shiftLabel.label) }),
       el('td', { html: escapeHTML(e.workoutCode || '') }),
+      el('td', { html: escapeHTML(workoutSuggestion) }),
       el('td', { html: escapeHTML(e.extra || '') }),
       el('td', { html: escapeHTML(e.raw || '') }),
     ]));
@@ -621,6 +629,22 @@ function renderSchedule(){
   return wrap;
 }
 
+function formatShiftLabel(shift){
+  if (!shift) return { label: '—', className: '' };
+  const raw = String(shift).trim();
+  const lower = raw.toLowerCase();
+  if (lower === 'n' || lower.includes('éjj') || lower.includes('ejj')){
+    return { label: 'Éjjeles', className: 'shift-night' };
+  }
+  if (lower === 'p' || lower.includes('pihen')){
+    return { label: 'Pihenő', className: 'shift-rest' };
+  }
+  if (lower === 'd' || lower.includes('nappal')){
+    return { label: 'Nappal', className: 'shift-day' };
+  }
+  return { label: raw, className: '' };
+}
+
 function renderFood(){
   const isoToday = todayISO();
   const month = isoToday.slice(0,7);
@@ -628,23 +652,30 @@ function renderFood(){
   const selectedMonth = uiState.foodMonth || month;
   const menu = DATA.menu_2026 || [];
   const byDate = new Map(menu.map(r => [r['Dátum'], r]));
-  const today = byDate.get(isoToday);
+  const weekStart = startOfWeekISO(isoToday);
+  const weekDates = Array.from({length:7}, (_,i)=> addDaysISO(weekStart,i));
 
   const wrap = el('div', { class:'grid cols2' }, []);
 
-  const todayCard = el('div', { class:'card' }, [
-    el('h2', { html:'Étkezés – Mai menü' }),
-    today ? el('div', { class:'grid' }, [
-      infoRow('Dátum', today['Dátum']),
-      infoRow('Menü típus', today['Menü típus']),
-      infoRow('Leves', today['Leves (ha főzés/maradék)'] ?? '—'),
-      infoRow('Főétel', today['Főétel'] ?? '—'),
-      infoRow('Csomagolható', today['Csomagolható'] ?? '—'),
-      infoRow('Ebéd+vacsora kcal (becsült)', today['Ebéd+vacsora kcal (becsült)'] ?? '—'),
-      infoRow('Napi kcal cél', today['Napi kcal cél'] ?? '—'),
-      infoRow('Fehérje cél (g/nap)', today['Fehérje cél (g/nap)'] ?? '—'),
-      infoRow('Megjegyzés', today['Megjegyzés'] ?? '—'),
-    ]) : el('div', { class:'badge', html:'Nincs adat erre a napra.' }),
+  const weekCard = el('div', { class:'card' }, [
+    el('h2', { html:'Étkezés – Aktuális hét' }),
+    el('div', { class:'badge', html:`Heti nézet: <b>${weekStart}</b>–<b>${weekDates[6]}</b>` }),
+    el('div', { class:'hr' }),
+    el('div', { class:'grid' }, weekDates.map((date)=>{
+      const row = byDate.get(date);
+      if (!row){
+        return el('div', { class:'kpi' }, [
+          el('div', { class:'label', html: date }),
+          el('div', { class:'value', html: '—' }),
+        ]);
+      }
+      return el('div', { class:'kpi' }, [
+        el('div', { class:'label', html: row['Dátum'] }),
+        el('div', { class:'value', html: escapeHTML(String(row['Menü típus'] ?? '—')) }),
+        el('div', { class:'label', html: 'Főétel' }),
+        el('div', { class:'value', html: escapeHTML(String(row['Főétel'] ?? '—')) }),
+      ]);
+    })),
   ]);
 
   const listCard = el('div', { class:'card' }, [
@@ -684,7 +715,7 @@ function renderFood(){
   table.append(tb);
   listCard.append(table);
 
-  wrap.append(todayCard);
+  wrap.append(weekCard);
   wrap.append(listCard);
   return wrap;
 }
