@@ -1,417 +1,674 @@
-/* Solo Leveling Tracker – Vanilla, Pages-safe (no modules, no external fetch required) */
+// System Tracker 2026 – Vanilla HTML/CSS/JS (GitHub Pages kompatibilis)
+// Adatok: ./data/*.json (Excelből generálva)
+// Mentés: localStorage
 
-const LS_KEY = "slt_v1";
+const TABS = [
+  { id: 'profile', label: 'Profil' },
+  { id: 'quests', label: 'Küldetések' },
+  { id: 'schedule', label: 'Beosztás' },
+  { id: 'food', label: 'Étkezés' },
+];
 
-const EMBED = {
-  settings: {
-    startWeight: 98.55,
-    goalWeight: 75,
-    currentWeight: 98.55,
-    trainingLevel: 1
-  },
-  trainingLevels: {
-    1: { strength: "2x8", z2min: 10, mobmin: 6, note: "Kímélő nap" },
-    2: { strength: "3x8", z2min: 15, mobmin: 8, note: "Könnyű nap" },
-    3: { strength: "3x10", z2min: 20, mobmin: 10, note: "Alap nap" },
-    4: { strength: "4x10", z2min: 25, mobmin: 12, note: "Nehéz nap" },
-    5: { strength: "5x10", z2min: 30, mobmin: 15, note: "Push nap" }
-  },
-  // Minimal demo: 7 nap, ma lesz aktív. (Később beolvassuk a Napi terv 2026-ból.)
-  weekTemplate: [
-    { name: "H", quests: ["Mobilitás 10p", "Z2 séta 20p", "Rendrakás 5p"] },
-    { name: "K", quests: ["Erő edzés", "Lépés cél", "Nyújtás 8p"] },
-    { name: "Sze", quests: ["Mobilitás 12p", "Z2 séta 25p", "Mosogatás"] },
-    { name: "Cs", quests: ["Erő edzés", "Alvás cél", "Ruhamosás"] },
-    { name: "P", quests: ["Mobilitás 10p", "Z2 séta 20p", "Víz 2L"] },
-    { name: "Szo", quests: ["Erő edzés", "Lépés cél", "Nyújtás 10p"] },
-    { name: "V", quests: ["Aktív pihenő", "Séta 30p", "Heti összegzés"] }
-  ],
-  scheduleDemo: [
-    { date: "2026-02-07", shift: "P", note: "Minta beosztás" },
-    { date: "2026-02-08", shift: "Szabad", note: "" },
-    { date: "2026-02-09", shift: "É", note: "" }
-  ],
-  mealDemo: [
-    { date: "2026-02-07", meal: "Leves + főétel", kcal: 1900, protein: 120 },
-    { date: "2026-02-08", meal: "Könnyű nap", kcal: 1750, protein: 110 },
-    { date: "2026-02-09", meal: "Erős nap", kcal: 2050, protein: 130 }
-  ]
+const LS_KEYS = {
+  profile: 'system_profile_v1',
+  quest: 'system_questlog_v1',
+  inputs: 'system_inputs_v1',
+  settingsOverrides: 'system_settings_overrides_v1',
 };
 
-function loadState(){
+function $(sel){ return document.querySelector(sel); }
+function el(tag, attrs={}, children=[]){
+  const n = document.createElement(tag);
+  for (const [k,v] of Object.entries(attrs)){
+    if (k === 'class') n.className = v;
+    else if (k === 'html') n.innerHTML = v;
+    else if (k.startsWith('on') && typeof v === 'function') n.addEventListener(k.slice(2), v);
+    else n.setAttribute(k, v);
+  }
+  for (const ch of children) n.append(ch);
+  return n;
+}
+
+function loadLS(key, fallback){
   try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw) throw 0;
-    const s = JSON.parse(raw);
-    return s;
+    const raw = localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : fallback;
   }catch{
-    return {
-      profile: { level: 1, exp: 0, unspent: 0, stats: {STR:0, END:0, REC:0, DISC:0} },
-      settings: {...EMBED.settings},
-      quests: {}, // date => {checks:{}, steps, sleep, weight, cleared}
-      measurements: []
-    };
+    return fallback;
   }
 }
-
-function saveState(){
-  localStorage.setItem(LS_KEY, JSON.stringify(state));
-  setStatus("MENTVE");
-  setTimeout(()=>setStatus(""), 900);
+function saveLS(key, value){
+  localStorage.setItem(key, JSON.stringify(value));
 }
 
-function setStatus(msg){
-  const el = document.getElementById("statusMsg");
-  if(el) el.textContent = msg;
-}
-
-function expToNext(level){
-  return 100 + (level-1)*25;
-}
-
-function computeRank(level){
-  if(level>=51) return "S";
-  if(level>=41) return "A";
-  if(level>=31) return "B";
-  if(level>=21) return "C";
-  if(level>=11) return "D";
-  return "E";
-}
-
-function grantExp(amount){
-  let {level, exp} = state.profile;
-  exp += amount;
-
-  let leveled = false;
-  while(exp >= expToNext(level)){
-    exp -= expToNext(level);
-    level += 1;
-    state.profile.unspent += 1; // 1 stat pont / szint
-    leveled = true;
-  }
-  state.profile.level = level;
-  state.profile.exp = exp;
-  if(leveled) setStatus("LEVEL UP");
-  saveState();
-  renderProfile();
-}
-
-function fmtDate(d){
+function todayISO(){
+  const d = new Date();
   const y = d.getFullYear();
-  const m = String(d.getMonth()+1).padStart(2,"0");
-  const day = String(d.getDate()).padStart(2,"0");
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const day = String(d.getDate()).padStart(2,'0');
   return `${y}-${m}-${day}`;
 }
-
-function startOfWeek(date){
-  const d = new Date(date);
-  const day = (d.getDay()+6)%7; // Mon=0
-  d.setDate(d.getDate()-day);
-  d.setHours(0,0,0,0);
-  return d;
+function parseISO(s){
+  // s = YYYY-MM-DD
+  const [y,m,d] = s.split('-').map(Number);
+  return new Date(y, m-1, d);
 }
-
-function addDays(date, n){
-  const d = new Date(date);
+function startOfWeekISO(iso){
+  // Monday-based
+  const d = parseISO(iso);
+  const day = d.getDay(); // 0 Sun ... 6 Sat
+  const diff = (day === 0 ? -6 : 1 - day);
+  d.setDate(d.getDate() + diff);
+  const y = d.getFullYear();
+  const m = String(d.getMonth()+1).padStart(2,'0');
+  const dd = String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
+}
+function addDaysISO(iso, n){
+  const d = parseISO(iso);
   d.setDate(d.getDate()+n);
-  return d;
+  const y=d.getFullYear();
+  const m=String(d.getMonth()+1).padStart(2,'0');
+  const dd=String(d.getDate()).padStart(2,'0');
+  return `${y}-${m}-${dd}`;
 }
 
-/* Tabs */
-function setTab(tab){
-  document.querySelectorAll(".tab").forEach(b=>{
-    b.classList.toggle("active", b.dataset.tab===tab);
-  });
-  document.querySelectorAll(".view").forEach(v=>v.classList.remove("active"));
-  document.getElementById(`view-${tab}`).classList.add("active");
+function rankFromLevel(level){
+  if (level >= 51) return 'S';
+  if (level >= 41) return 'A';
+  if (level >= 31) return 'B';
+  if (level >= 21) return 'C';
+  if (level >= 11) return 'D';
+  return 'E';
+}
+function neededExp(level){
+  return 100 + (level-1)*25;
+}
+function awardExp(profile, amount, reason=''){
+  profile.exp += amount;
+  let leveled = false;
+  while (profile.exp >= neededExp(profile.level)){
+    profile.exp -= neededExp(profile.level);
+    profile.level += 1;
+    profile.unspent += 1;
+    leveled = true;
+  }
+  profile.rank = rankFromLevel(profile.level);
+  saveLS(LS_KEYS.profile, profile);
+  if (leveled){
+    toast('SYSTEM: Level Up', `Elérted a(z) ${profile.level}. szintet. +1 stat pont. ${reason}`.trim());
+  } else {
+    toast('SYSTEM', `+${amount} EXP. ${reason}`.trim());
+  }
 }
 
-document.querySelectorAll(".tab").forEach(btn=>{
-  btn.addEventListener("click", ()=>setTab(btn.dataset.tab));
-});
+let DATA = null;
 
-/* Profile render */
+async function loadData(){
+  const files = [
+    'settings.json',
+    'training_levels.json',
+    'daily_plan_2026.json',
+    'menu_2026.json',
+    'measurements.json',
+    'summary_cells.json',
+    'calendar_2026.json',
+  ];
+  const out = {};
+  for (const f of files){
+    try{
+      const r = await fetch(`./data/${f}`, { cache: 'no-store' });
+      if (!r.ok) throw new Error(`HTTP ${r.status}`);
+      out[f.replace('.json','')] = await r.json();
+    }catch(err){
+      console.warn('Data load failed:', f, err);
+      out[f.replace('.json','')] = [];
+    }
+  }
+  return out;
+}
+
+
+function toast(title, msg){
+  let t = document.querySelector('.toast');
+  if (!t){
+    t = el('div', { class:'toast' }, [
+      el('div', { class:'t' }),
+      el('div', { class:'m' }),
+    ]);
+    document.body.append(t);
+  }
+  t.querySelector('.t').textContent = title;
+  t.querySelector('.m').textContent = msg || '';
+  t.classList.add('show');
+  clearTimeout(toast._tm);
+  toast._tm = setTimeout(()=> t.classList.remove('show'), 2400);
+}
+
+function getProfile(){
+  const fallback = { level: 1, exp: 0, rank: 'E', unspent: 0, stats: { STR:0, END:0, REC:0, DISC:0 } };
+  const p = loadLS(LS_KEYS.profile, fallback);
+  p.rank = rankFromLevel(p.level);
+  return p;
+}
+
+function getMergedSettings(){
+  const base = DATA.settings || {};
+  const ovr = loadLS(LS_KEYS.settingsOverrides, {});
+  return { ...base, ...ovr };
+}
+
+function renderTabs(active){
+  const tabs = $('#tabs');
+  tabs.innerHTML = '';
+  for (const t of TABS){
+    const b = el('button', { class:`tabbtn ${active===t.id?'active':''}` }, []);
+    b.textContent = t.label;
+    b.addEventListener('click', ()=> {
+      location.hash = `#${t.id}`;
+    });
+    tabs.append(b);
+  }
+}
+
+function render(){
+  const hash = (location.hash || '#profile').slice(1);
+  const active = TABS.some(t=>t.id===hash) ? hash : 'profile';
+  renderTabs(active);
+  const view = $('#view');
+  view.innerHTML = '';
+  if (active === 'profile') view.append(renderProfile());
+  if (active === 'quests') view.append(renderQuests());
+  if (active === 'schedule') view.append(renderSchedule());
+  if (active === 'food') view.append(renderFood());
+}
+
 function renderProfile(){
-  const p = state.profile;
-  const rank = computeRank(p.level);
+  const profile = getProfile();
+  const settings = getMergedSettings();
+  const levels = DATA.training_levels || [];
+  const currentLevel = Number(settings['Edzés-szint (1–5)'] || 1);
+  const lvlRow = levels.find(x => Number(x['Szint']) === currentLevel);
 
-  document.getElementById("rankPill").textContent = `Rank: ${rank}`;
-  document.getElementById("levelPill").textContent = `Lv ${p.level}`;
-  document.getElementById("pointsPill").textContent = `Pont: ${p.unspent}`;
+  const expNeed = neededExp(profile.level);
+  const expPct = Math.max(0, Math.min(100, Math.round((profile.exp/expNeed)*100)));
 
-  document.getElementById("statSTR").textContent = p.stats.STR;
-  document.getElementById("statEND").textContent = p.stats.END;
-  document.getElementById("statREC").textContent = p.stats.REC;
-  document.getElementById("statDISC").textContent = p.stats.DISC;
+  const root = el('div', { class:'grid cols2' }, []);
 
-  const need = expToNext(p.level);
-  document.getElementById("expLabel").textContent = `${p.exp} / ${need}`;
-  document.getElementById("expFill").style.width = `${Math.min(100, (p.exp/need)*100)}%`;
+  // RPG card
+  const rpg = el('div', { class:'card' }, [
+    el('h2', { html: 'Profil / RPG' }),
+    el('div', { class:'row' }, [
+      el('span', { class:'badge', html: `Rang: <b style="color:var(--accent)">${profile.rank}</b>` }),
+      el('span', { class:'badge', html: `Szint: <b>${profile.level}</b>` }),
+      el('span', { class:'badge', html: `Elkölthető pont: <b>${profile.unspent}</b>` }),
+    ]),
+    el('div', { class:'hr' }),
+    el('div', { class:'kpi' }, [
+      el('div', { class:'label', html:'EXP' }),
+      el('div', { class:'value', html:`${profile.exp} / ${expNeed}` }),
+      el('div', { class:'progress' }, [ el('div', { style:`width:${expPct}%` }) ]),
+    ]),
+    el('div', { class:'hr' }),
+    el('h3', { html:'Stat pontok' }),
+    el('div', { class:'row' }, Object.keys(profile.stats).map(key=>{
+      const wrap = el('div', { class:'kpi' }, [
+        el('div', { class:'label', html:key }),
+        el('div', { class:'value', html:String(profile.stats[key]) }),
+      ]);
+      const btnRow = el('div', { class:'row' }, [
+        el('button', { class:'btn secondary', onClick: ()=> {
+          if (profile.stats[key] <= 0) return;
+          profile.stats[key] -= 1; profile.unspent += 1;
+          saveLS(LS_KEYS.profile, profile);
+          render();
+        } }, []).appendChild(document.createTextNode('−')),
+        el('button', { class:'btn', onClick: ()=> {
+          if (profile.unspent <= 0) return;
+          profile.stats[key] += 1; profile.unspent -= 1;
+          saveLS(LS_KEYS.profile, profile);
+          render();
+        } }, []).appendChild(document.createTextNode('+')),
+      ]);
+      // quick fix: create real nodes
+      wrap.append(el('div', { class:'row' }, [
+        el('button', { class:'btn secondary', onClick: ()=> {
+          const p = getProfile();
+          if (p.stats[key] <= 0) return;
+          p.stats[key] -= 1; p.unspent += 1;
+          saveLS(LS_KEYS.profile, p);
+          render();
+        } }, [document.createTextNode('−')]),
+        el('button', { class:'btn', onClick: ()=> {
+          const p = getProfile();
+          if (p.unspent <= 0) return;
+          p.stats[key] += 1; p.unspent -= 1;
+          saveLS(LS_KEYS.profile, p);
+          render();
+        } }, [document.createTextNode('+')]),
+      ]));
+      return wrap;
+    }))
+  ]);
 
-  // settings form
-  document.getElementById("setStartWeight").value = state.settings.startWeight ?? "";
-  document.getElementById("setGoalWeight").value = state.settings.goalWeight ?? "";
-  document.getElementById("setCurrentWeight").value = state.settings.currentWeight ?? "";
-  document.getElementById("trainingLevel").value = String(state.settings.trainingLevel ?? 1);
+  // Settings + training level card
+  const setCard = el('div', { class:'card' }, [
+    el('h2', { html:'Beállítások + Edzés szint (1–5)' }),
+    el('div', { class:'row' }, [
+      fieldNumber('Kezdő súly (kg)', settings, (k,v)=> saveSetting(k,v)),
+      fieldNumber('Célsúly (kg)', settings, (k,v)=> saveSetting(k,v)),
+      fieldNumber('Aktuális súly (kg)', settings, (k,v)=> saveSetting(k,v)),
+    ]),
+    el('div', { class:'hr' }),
+    el('div', { class:'row' }, [
+      el('div', { class:'field' }, [
+        el('label', { html:'Edzés-szint (1–5)' }),
+        levelPicker(currentLevel, (n)=>{ saveSetting('Edzés-szint (1–5)', n); render(); }),
+      ]),
+      el('div', { class:'field', style:'min-width:240px' }, [
+        el('label', { html:'Anchor dátum (mintakezdés)' }),
+        el('input', { value: settings['Anchor dátum (mintakezdés)'] || '', onChange:(e)=> saveSetting('Anchor dátum (mintakezdés)', e.target.value) }),
+      ]),
+      el('div', { class:'field', style:'min-width:220px' }, [
+        el('label', { html:'Mintakezdés műszak' }),
+        el('input', { value: settings['Mintakezdés műszak'] || '', onChange:(e)=> saveSetting('Mintakezdés műszak', e.target.value) }),
+      ]),
+    ]),
+    el('div', { class:'hr' }),
+    el('h3', { html:'Edzés terv (aktuális szint)' }),
+    lvlRow ? el('div', { class:'grid' }, [
+      infoRow('Erő', lvlRow['Erő (A/B) – sorozat x ismétlés']),
+      infoRow('Kardió Z2', `${lvlRow['Kardió Z2 (perc)']} perc`),
+      infoRow('Mobilitás', `${lvlRow['Mobilitás (perc)']} perc`),
+      infoRow('Opció munkanapon', lvlRow['Opció: rövid erősítés munkanapon']),
+      infoRow('Lépés cél (átlag)', lvlRow['Lépés cél (átlag)']),
+      infoRow('Megjegyzés', lvlRow['Megjegyzés']),
+    ]) : el('div', { class:'badge', html:'Nincs edzés terv sor ehhez a szinthez.' }),
+  ]);
 
-  // training cards
-  const lvl = Number(state.settings.trainingLevel || 1);
-  const t = EMBED.trainingLevels[lvl];
-  const box = document.getElementById("trainingCards");
-  box.innerHTML = "";
-  const card = document.createElement("div");
-  card.className = "item";
-  card.innerHTML = `
-    <div class="itemTitle">Edzés szint ${lvl}</div>
-    <div class="itemMeta">Erő: <b>${t.strength}</b> · Z2: <b>${t.z2min} perc</b> · Mobilitás: <b>${t.mobmin} perc</b></div>
-    <div class="itemMeta">${t.note}</div>
-  `;
-  box.appendChild(card);
+  // Measurements + summary
+  const meas = el('div', { class:'card' }, [
+    el('h2', { html:'Mérés (lista)' }),
+    renderMeasurementsTable(),
+    el('div', { class:'hr' }),
+    el('h3', { html:'Új mérés rögzítése (local)' }),
+    renderNewMeasurementForm(),
+  ]);
 
-  renderSummary();
-  renderMeasurements();
+  const summary = el('div', { class:'card' }, [
+    el('h2', { html:'Összegzés (sheet snapshot)' }),
+    renderSummaryMini(),
+  ]);
+
+  root.append(rpg);
+  root.append(setCard);
+  root.append(meas);
+  root.append(summary);
+  return root;
 }
 
-document.getElementById("saveSettings").addEventListener("click", ()=>{
-  state.settings.startWeight = Number(document.getElementById("setStartWeight").value || 0);
-  state.settings.goalWeight = Number(document.getElementById("setGoalWeight").value || 0);
-  state.settings.currentWeight = Number(document.getElementById("setCurrentWeight").value || 0);
-  state.settings.trainingLevel = Number(document.getElementById("trainingLevel").value || 1);
-  saveState();
-  renderProfile();
-});
+function saveSetting(key, val){
+  const ovr = loadLS(LS_KEYS.settingsOverrides, {});
+  // numbers
+  const num = Number(val);
+  ovr[key] = (val === '' || val === null) ? null : (isNaN(num) ? val : num);
+  saveLS(LS_KEYS.settingsOverrides, ovr);
+}
 
-document.getElementById("resetLocal").addEventListener("click", ()=>{
-  localStorage.removeItem(LS_KEY);
-  location.reload();
-});
+function infoRow(label, value){
+  return el('div', { class:'kpi' }, [
+    el('div', { class:'label', html: label }),
+    el('div', { class:'value', html: escapeHTML(String(value ?? '—')) }),
+  ]);
+}
+function escapeHTML(s){
+  return s.replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
 
-document.querySelectorAll("[data-stat]").forEach(btn=>{
-  btn.addEventListener("click", ()=>{
-    if(state.profile.unspent<=0) return setStatus("NINCS PONT");
-    const k = btn.dataset.stat;
-    state.profile.stats[k] += 1;
-    state.profile.unspent -= 1;
-    saveState();
-    renderProfile();
-  });
-});
-
-/* Measurements */
-function renderMeasurements(){
-  const list = document.getElementById("measureList");
-  list.innerHTML = "";
-  const items = [...state.measurements].sort((a,b)=> (a.date<b.date?1:-1));
-  if(items.length===0){
-    const empty = document.createElement("div");
-    empty.className="item";
-    empty.textContent = "Nincs mérés rögzítve.";
-    list.appendChild(empty);
-    return;
+function fieldNumber(label, settings, onSave){
+  const v = settings[label] ?? '';
+  const input = el('input', { type:'number', step:'0.01', value: v, onChange:(e)=> onSave(label, e.target.value) });
+  return el('div', { class:'field' }, [
+    el('label', { html: label }),
+    input
+  ]);
+}
+function levelPicker(current, onPick){
+  const wrap = el('div', { class:'row' }, []);
+  for (let i=1;i<=5;i++){
+    const b = el('button', { class:`btn ${i===current?'':'secondary'}`, onClick:()=>onPick(i) }, [document.createTextNode(String(i))]);
+    wrap.append(b);
   }
-  items.forEach(m=>{
-    const el = document.createElement("div");
-    el.className="item";
-    el.innerHTML = `
-      <div class="itemTitle">${m.date}</div>
-      <div class="itemMeta">Súly: <b>${m.weight ?? "-"}</b> kg · Derék: <b>${m.waist ?? "-"}</b> cm</div>
-      <div class="itemMeta">${m.note ? m.note : ""}</div>
-    `;
-    list.appendChild(el);
-  });
+  return wrap;
 }
 
-document.getElementById("addMeasurement").addEventListener("click", ()=>{
-  const date = document.getElementById("mDate").value || fmtDate(new Date());
-  const weight = Number(document.getElementById("mWeight").value || 0) || null;
-  const waist = Number(document.getElementById("mWaist").value || 0) || null;
-  const note = document.getElementById("mNote").value || "";
-  state.measurements.push({date, weight, waist, note});
-  saveState();
-  renderMeasurements();
-});
-
-/* Summary */
-function renderSummary(){
-  const s = state.settings;
-  const p = state.profile;
-  const rank = computeRank(p.level);
-  const box = document.getElementById("summaryBox");
-  const start = s.startWeight || 0;
-  const curr = s.currentWeight || 0;
-  const goal = s.goalWeight || 0;
-  const delta = start && curr ? (curr - start) : 0;
-  const toGoal = goal && curr ? (curr - goal) : 0;
-
-  box.innerHTML = `
-    <div class="box"><span>Rank</span><strong>${rank}</strong></div>
-    <div class="box"><span>Edzés szint</span><strong>${s.trainingLevel || 1}</strong></div>
-    <div class="box"><span>Kezdő → Aktuális</span><strong>${start} → ${curr}</strong></div>
-    <div class="box"><span>Eltérés (kg)</span><strong>${delta.toFixed(1)}</strong></div>
-    <div class="box"><span>Célig hátra (kg)</span><strong>${toGoal.toFixed(1)}</strong></div>
-    <div class="box"><span>Össz mérés</span><strong>${state.measurements.length}</strong></div>
-  `;
+function renderMeasurementsTable(){
+  const local = loadLS('system_measurements_local_v1', []);
+  const all = [...(DATA.measurements || []), ...local].filter(x=>x && x['Dátum']).sort((a,b)=> a['Dátum']<b['Dátum']?-1:1);
+  const table = el('table', { class:'table' }, []);
+  table.append(el('thead', {}, [el('tr', {}, [
+    el('th', { html:'Dátum' }),
+    el('th', { html:'Súly (kg)' }),
+    el('th', { html:'Derék (cm)' }),
+    el('th', { html:'Megjegyzés' }),
+  ])]));
+  const tb = el('tbody');
+  for (const r of all){
+    tb.append(el('tr', {}, [
+      el('td', { html: r['Dátum'] }),
+      el('td', { html: r['Súly (kg)'] ?? '' }),
+      el('td', { html: r['Derék (cm)'] ?? '' }),
+      el('td', { html: escapeHTML(String(r['Megjegyzés'] ?? '')) }),
+    ]));
+  }
+  table.append(tb);
+  return table;
 }
 
-/* Quests */
+function renderNewMeasurementForm(){
+  const wrap = el('div', { class:'row' }, []);
+  const d = el('input', { type:'date', value: todayISO() });
+  const w = el('input', { type:'number', step:'0.01', placeholder:'Súly' });
+  const waist = el('input', { type:'number', step:'0.1', placeholder:'Derék' });
+  const note = el('input', { placeholder:'Megjegyzés' });
+  const btn = el('button', { class:'btn', onClick: ()=>{
+    const rec = { 'Dátum': d.value, 'Súly (kg)': w.value ? Number(w.value) : null, 'Derék (cm)': waist.value ? Number(waist.value) : null, 'Megjegyzés': note.value || null };
+    const local = loadLS('system_measurements_local_v1', []);
+    local.push(rec);
+    saveLS('system_measurements_local_v1', local);
+    toast('SYSTEM', 'Mérés elmentve (local).');
+    render();
+  }}, [document.createTextNode('Mentés')]);
+  wrap.append(el('div', { class:'field' }, [el('label', { html:'Dátum' }), d]));
+  wrap.append(el('div', { class:'field' }, [el('label', { html:'Súly (kg)' }), w]));
+  wrap.append(el('div', { class:'field' }, [el('label', { html:'Derék (cm)' }), waist]));
+  wrap.append(el('div', { class:'field', style:'min-width:240px' }, [el('label', { html:'Megjegyzés' }), note]));
+  wrap.append(btn);
+  return wrap;
+}
+
+function renderSummaryMini(){
+  const cells = DATA.summary_cells || [];
+  // show key KPIs if present:
+  const pick = (label)=>{
+    const a = cells.find(x=>x.v===label);
+    if (!a) return null;
+    const b = cells.find(x=>x.r===a.r && x.c===a.c+1);
+    return b ? b.v : null;
+  };
+  const startW = pick('Kezdő súly (kg)');
+  const targetW = pick('Célsúly (kg)');
+  const currentW = pick('Aktuális súly (kg)');
+  const deltaW = pick('Változás (kg)');
+  const level = pick('Edzés-szint');
+
+  const g = el('div', { class:'grid cols2' }, [
+    infoRow('Kezdő súly', startW ?? '—'),
+    infoRow('Célsúly', targetW ?? '—'),
+    infoRow('Aktuális súly', currentW ?? '—'),
+    infoRow('Változás', deltaW ?? '—'),
+    infoRow('Edzés-szint', level ?? '—'),
+  ]);
+
+  const note = cells.find(x=>typeof x.v==='string' && x.v.includes('A Mérés lapon'));
+  const n = note ? el('div', { class:'badge', style:'margin-top:10px' }, [document.createTextNode(note.v)]) : el('div');
+  const wrap = el('div', {}, [g, n]);
+  return wrap;
+}
+
 function renderQuests(){
-  const today = new Date();
-  const todayKey = fmtDate(today);
-  document.getElementById("todayPill").textContent = `Ma: ${todayKey}`;
+  const isoToday = todayISO();
+  const weekStart = startOfWeekISO(isoToday);
+  const days = Array.from({length:7}, (_,i)=> addDaysISO(weekStart,i));
 
-  const weekStart = startOfWeek(today);
-  const strip = document.getElementById("weekStrip");
-  strip.innerHTML = "";
+  const daily = DATA.daily_plan_2026 || [];
+  const byDate = new Map(daily.map(r => [r['Dátum'], r]));
 
-  for(let i=0;i<7;i++){
-    const d = addDays(weekStart,i);
-    const key = fmtDate(d);
-    const isToday = key===todayKey;
+  const questLog = loadLS(LS_KEYS.quest, {}); // {date:{checks:{k:true}}}
+  const inputs = loadLS(LS_KEYS.inputs, {}); // {date:{steps,sleep,weight}}
 
-    if(!state.quests[key]){
-      state.quests[key] = { checks:{}, steps:"", sleep:"", weight:"", cleared:false };
+  const wrapper = el('div', { class:'card' }, [
+    el('h2', { html:'Küldetések – Napi terv 2026 (heti nézet)' }),
+    el('div', { class:'badge', html:`Aktuális hét kezdete: <b>${weekStart}</b> • Ma: <b>${isoToday}</b>` }),
+    el('div', { class:'hr' }),
+  ]);
+
+  const grid = el('div', { class:'daygrid' }, []);
+  for (const date of days){
+    const row = byDate.get(date);
+    const isToday = date === isoToday;
+    const locked = !isToday;
+    const dayName = row?.['Nap'] ?? '';
+    const shift = row?.['Műszak'] ?? '';
+    const workout = row?.['Edzés javaslat'] ?? '';
+    const workoutCode = row?.['Edzés kód'] ?? '';
+
+    const card = el('div', { class:`daycard ${isToday?'today':''} ${locked?'locked':''}` }, [
+      el('div', { class:'daytitle', html: `${date}` }),
+      el('div', { class:'daymeta', html: `${escapeHTML(dayName)} • ${escapeHTML(shift)} ${workoutCode?('• '+escapeHTML(workoutCode)):''}` }),
+      el('div', { class:'daymeta', html: workout ? escapeHTML(workout) : '—' }),
+    ]);
+
+    // editable inputs
+    const inState = inputs[date] || {};
+    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
+    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
+    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
+
+    card.append(el('div', { class:'row', style:'margin-top:10px' }, [
+      el('div', { class:'field' }, [el('label', { html:'Lépés (db)' }), steps]),
+      el('div', { class:'field' }, [el('label', { html:'Alvás (óra)' }), sleep]),
+      el('div', { class:'field' }, [el('label', { html:'Súly (kg)' }), weight]),
+    ]));
+
+    // quests: derive from columns
+    const qKeys = deriveQuestKeys(row);
+    const st = questLog[date] || { checks:{} };
+    for (const q of qKeys){
+      const checked = !!st.checks[q.key];
+      const cb = el('input', { type:'checkbox', checked, disabled: locked, onChange:(e)=>{
+        setQuestCheck(date, q.key, e.target.checked, q.exp, q.label);
+      }});
+      const label = el('div', { html: `<b>${escapeHTML(q.label)}</b> <span style="color:var(--muted)">+${q.exp} EXP</span>` });
+      card.append(el('div', { class:'quest' }, [cb, label]));
     }
-    const q = state.quests[key];
 
-    const dayCard = document.createElement("div");
-    dayCard.className = "dayCard" + (isToday ? "" : " lock");
-    const name = EMBED.weekTemplate[i].name;
-
-    // Build checks
-    const checks = EMBED.weekTemplate[i].quests.map((txt, idx)=>{
-      const id = `q_${key}_${idx}`;
-      const checked = !!q.checks[id];
-      return { id, txt, checked };
-    });
-
-    const expPer = 15; // fix, később a sheet alapján differenciáljuk
-    const allDone = checks.every(c=>c.checked) && q.cleared;
-
-    dayCard.innerHTML = `
-      <div class="dayHead">
-        <div class="dayName">${name}</div>
-        <div class="dayDate">${key}</div>
-      </div>
-
-      <div class="itemMeta">Küldetések (+${expPer} EXP / pipa)</div>
-
-      <div class="stack" id="checks_${key}"></div>
-
-      <div class="kpi">
-        <div class="k"><span>Lépés (db)</span><strong><input ${isToday ? "" : "disabled"} inputmode="numeric" id="steps_${key}" value="${q.steps ?? ""}" placeholder="0"></strong></div>
-        <div class="k"><span>Alvás (óra)</span><strong><input ${isToday ? "" : "disabled"} inputmode="decimal" id="sleep_${key}" value="${q.sleep ?? ""}" placeholder="0"></strong></div>
-        <div class="k"><span>Súly (kg)</span><strong><input ${isToday ? "" : "disabled"} inputmode="decimal" id="weight_${key}" value="${q.weight ?? ""}" placeholder="0"></strong></div>
-      </div>
-
-      <div class="row" style="margin-top:10px">
-        <button class="btn ${isToday ? "" : "ghost"}" id="clear_${key}" ${isToday ? "" : "disabled"}>${allDone ? "Daily Clear ✓" : "Napi lezárás"}</button>
-        <div class="pill">Státusz: <span id="st_${key}">${allDone ? "KÉSZ" : (isToday ? "AKTÍV" : "ZÁRT")}</span></div>
-      </div>
-    `;
-
-    strip.appendChild(dayCard);
-
-    const checksBox = dayCard.querySelector(`#checks_${key}`);
-    checks.forEach(c=>{
-      const line = document.createElement("div");
-      line.className = "check";
-      line.innerHTML = `
-        <label>${c.txt}</label>
-        <input type="checkbox" id="${c.id}" ${c.checked ? "checked":""} ${isToday ? "" : "disabled"} />
-      `;
-      checksBox.appendChild(line);
-
-      const cb = line.querySelector("input");
-      cb.addEventListener("change", ()=>{
-        if(!isToday) return;
-        q.checks[c.id] = cb.checked;
-        if(cb.checked) grantExp(expPer);
-        saveState();
-      });
-    });
-
-    // Inputs
-    const stepsEl = dayCard.querySelector(`#steps_${key}`);
-    const sleepEl = dayCard.querySelector(`#sleep_${key}`);
-    const weightEl = dayCard.querySelector(`#weight_${key}`);
-
-    function bindInput(el, prop){
-      if(!el) return;
-      el.addEventListener("input", ()=>{
-        if(!isToday) return;
-        q[prop] = el.value;
-        saveState();
-      });
+    // daily clear
+    if (isToday){
+      const allChecked = qKeys.length>0 && qKeys.every(q=> !!(questLog[date]?.checks?.[q.key]));
+      const btn = el('button', { class:`btn ${allChecked?'':'secondary'}`, disabled: !allChecked, onClick: ()=>{
+        const p = getProfile();
+        awardExp(p, 50, 'Daily Clear');
+      }}, [document.createTextNode('Daily Clear (+50 EXP)')]);
+      card.append(el('div', { class:'hr' }));
+      card.append(btn);
     }
-    bindInput(stepsEl,"steps");
-    bindInput(sleepEl,"sleep");
-    bindInput(weightEl,"weight");
 
-    // Daily clear button
-    const clearBtn = dayCard.querySelector(`#clear_${key}`);
-    clearBtn.addEventListener("click", ()=>{
-      if(!isToday) return;
-      // only allow clear if all checks true
-      const ok = checks.every(c=> !!q.checks[c.id]);
-      if(!ok) return setStatus("NINCS MIND KÉSZ");
-      if(q.cleared) return;
-      q.cleared = true;
-      // daily clear bonus
-      grantExp(50);
-      saveState();
-      renderQuests();
-    });
+    grid.append(card);
   }
 
-  saveState();
+  wrapper.append(grid);
+  return wrapper;
 }
 
-/* Schedule */
+function deriveQuestKeys(row){
+  if (!row) return [];
+  // fix keys
+  const fixed = [];
+  if (row['Edzés javaslat']){
+    fixed.push({ key:'workout_done', label:'Edzés / mozgás (jelöld, ha megvolt)', exp:30 });
+  }
+  // tasks columns (Mosogatás, Ruhamosás, Takarítás, Főzés, Barátok) – ha van jelölés a sheetben, akkor is legyen quest
+  const candidates = ['Mosogatás','Ruhamosás','Takarítás','Főzés','Barátok'];
+  for (const c of candidates){
+    if (c in row){
+      fixed.push({ key:`task_${c}`, label:c, exp:10 });
+    }
+  }
+  // steps/sleep as quests if goals exist
+  const settings = getMergedSettings();
+  const stepGoal = parseGoal(settings['Munkanap lépésszám (átlag)'] || settings['Pihenőnap lépésszám cél']);
+  const sleepGoal = 7.0;
+  if (stepGoal){
+    fixed.push({ key:'steps_goal', label:`Lépés cél elérése (>= ${stepGoal})`, exp:20 });
+  }
+  fixed.push({ key:'sleep_goal', label:`Alvás (>= ${sleepGoal} óra)`, exp:20 });
+  return fixed;
+}
+function parseGoal(v){
+  if (!v) return null;
+  if (typeof v === 'number') return v;
+  // string like "6 000–7 000" -> take lower bound
+  const s = String(v).replaceAll(' ','');
+  const m = s.match(/(\d{3,5})/);
+  return m ? Number(m[1]) : null;
+}
+
+function setInput(date, key, value){
+  const st = loadLS(LS_KEYS.inputs, {});
+  if (!st[date]) st[date] = {};
+  st[date][key] = value === '' ? null : Number(value);
+  saveLS(LS_KEYS.inputs, st);
+}
+
+function setQuestCheck(date, qkey, checked, exp, label){
+  const questLog = loadLS(LS_KEYS.quest, {});
+  if (!questLog[date]) questLog[date] = { checks:{} };
+  questLog[date].checks[qkey] = checked;
+  saveLS(LS_KEYS.quest, questLog);
+
+  // Auto-award on check, and remove on uncheck? (ne legyen exploit)
+  // Egyszerű: csak BEpipáláskor jár, kivétel: ha visszaveszed, nem vonjuk le, de a Daily Clear csak akkor aktív ha mind be van pipálva.
+  if (checked){
+    const p = getProfile();
+    const bonus = exp + Math.min(p.stats.DISC || 0, 10); // DISC ad 0..10 extra
+    awardExp(p, bonus, label);
+  }
+  render();
+}
+
 function renderSchedule(){
-  const list = document.getElementById("scheduleList");
-  list.innerHTML = "";
-  EMBED.scheduleDemo.forEach(e=>{
-    const el = document.createElement("div");
-    el.className="item";
-    el.innerHTML = `<div class="itemTitle">${e.date}</div><div class="itemMeta">Műszak: <b>${e.shift}</b> ${e.note ? "· "+e.note : ""}</div>`;
-    list.appendChild(el);
-  });
+  const isoToday = todayISO();
+  const month = isoToday.slice(0,7); // YYYY-MM
+  const entries = (DATA.calendar_2026 || []).slice().sort((a,b)=> a.date<b.date?-1:1);
+
+  const wrap = el('div', { class:'card' }, [
+    el('h2', { html:'Beosztás – Naptár 2026' }),
+  ]);
+
+  const sel = el('input', { type:'month', value: month, onChange:()=> render() });
+  wrap.append(el('div', { class:'row' }, [
+    el('div', { class:'field' }, [el('label', { html:'Hónap' }), sel]),
+  ]));
+
+  const selected = (document.querySelector('input[type="month"]')?.value) || month;
+  const list = entries.filter(e => e.date.startsWith(selected));
+
+  const table = el('table', { class:'table' }, []);
+  table.append(el('thead', {}, [el('tr', {}, [
+    el('th', { html:'Dátum' }),
+    el('th', { html:'Műszak' }),
+    el('th', { html:'Edzés kód' }),
+    el('th', { html:'Teendők' }),
+    el('th', { html:'Nyers' }),
+  ])]));
+  const tb = el('tbody');
+  for (const e of list){
+    tb.append(el('tr', {}, [
+      el('td', { html: e.date }),
+      el('td', { html: escapeHTML(e.shift || '') }),
+      el('td', { html: escapeHTML(e.workoutCode || '') }),
+      el('td', { html: escapeHTML(e.extra || '') }),
+      el('td', { html: escapeHTML(e.raw || '') }),
+    ]));
+  }
+  table.append(tb);
+  wrap.append(el('div', { class:'hr' }));
+  wrap.append(table);
+  return wrap;
 }
 
-/* Meal */
-function renderMeal(){
-  const todayKey = fmtDate(new Date());
-  document.getElementById("mealPill").textContent = `Ma: ${todayKey}`;
+function renderFood(){
+  const isoToday = todayISO();
+  const month = isoToday.slice(0,7);
+  const menu = DATA.menu_2026 || [];
+  const byDate = new Map(menu.map(r => [r['Dátum'], r]));
+  const today = byDate.get(isoToday);
 
-  const today = EMBED.mealDemo.find(m=>m.date===todayKey) || EMBED.mealDemo[0];
-  const box = document.getElementById("mealToday");
-  box.innerHTML = "";
-  const card = document.createElement("div");
-  card.className="item";
-  card.innerHTML = `
-    <div class="itemTitle">Mai menü</div>
-    <div class="itemMeta">${today.date} · <b>${today.meal}</b></div>
-    <div class="itemMeta">kcal: <b>${today.kcal}</b> · fehérje: <b>${today.protein}g</b></div>
-  `;
-  box.appendChild(card);
+  const wrap = el('div', { class:'grid cols2' }, []);
 
-  const list = document.getElementById("mealList");
-  list.innerHTML = "";
-  EMBED.mealDemo.forEach(m=>{
-    const el = document.createElement("div");
-    el.className="item";
-    el.innerHTML = `<div class="itemTitle">${m.date}</div><div class="itemMeta">${m.meal}</div><div class="itemMeta">kcal: <b>${m.kcal}</b> · fehérje: <b>${m.protein}g</b></div>`;
-    list.appendChild(el);
-  });
+  const todayCard = el('div', { class:'card' }, [
+    el('h2', { html:'Étkezés – Mai menü' }),
+    today ? el('div', { class:'grid' }, [
+      infoRow('Dátum', today['Dátum']),
+      infoRow('Menü típus', today['Menü típus']),
+      infoRow('Leves', today['Leves (ha főzés/maradék)'] ?? '—'),
+      infoRow('Főétel', today['Főétel'] ?? '—'),
+      infoRow('Csomagolható', today['Csomagolható'] ?? '—'),
+      infoRow('Ebéd+vacsora kcal (becsült)', today['Ebéd+vacsora kcal (becsült)'] ?? '—'),
+      infoRow('Napi kcal cél', today['Napi kcal cél'] ?? '—'),
+      infoRow('Fehérje cél (g/nap)', today['Fehérje cél (g/nap)'] ?? '—'),
+      infoRow('Megjegyzés', today['Megjegyzés'] ?? '—'),
+    ]) : el('div', { class:'badge', html:'Nincs adat erre a napra.' }),
+  ]);
+
+  const listCard = el('div', { class:'card' }, [
+    el('h2', { html:'Étkezés – Havi lista' }),
+    el('div', { class:'row' }, [
+      el('div', { class:'field' }, [
+        el('label', { html:'Hónap' }),
+        el('input', { type:'month', value: month, onChange:()=> render() }),
+      ]),
+    ]),
+    el('div', { class:'hr' }),
+  ]);
+
+  const selected = document.querySelectorAll('input[type="month"]')[1]?.value || month;
+  const list = menu.filter(r => (r['Dátum']||'').startsWith(selected));
+
+  const table = el('table', { class:'table' }, []);
+  table.append(el('thead', {}, [el('tr', {}, [
+    el('th', { html:'Dátum' }),
+    el('th', { html:'Menü' }),
+    el('th', { html:'Leves' }),
+    el('th', { html:'Főétel' }),
+    el('th', { html:'kcal (becsült)' }),
+  ])]));
+  const tb = el('tbody');
+  for (const r of list){
+    tb.append(el('tr', {}, [
+      el('td', { html: r['Dátum'] }),
+      el('td', { html: escapeHTML(String(r['Menü típus'] ?? '')) }),
+      el('td', { html: escapeHTML(String(r['Leves (ha főzés/maradék)'] ?? '')) }),
+      el('td', { html: escapeHTML(String(r['Főétel'] ?? '')) }),
+      el('td', { html: r['Ebéd+vacsora kcal (becsült)'] ?? '' }),
+    ]));
+  }
+  table.append(tb);
+  listCard.append(table);
+
+  wrap.append(todayCard);
+  wrap.append(listCard);
+  return wrap;
 }
 
-/* Init */
-const state = loadState();
+window.addEventListener('hashchange', render);
 
-// Default date in measurement
-document.getElementById("mDate").value = fmtDate(new Date());
-
-renderProfile();
-renderQuests();
-renderSchedule();
-renderMeal();
+(async function init(){
+  DATA = await loadData();
+  // initialize training level from settings
+  const settings = getMergedSettings();
+  if (!settings['Edzés-szint (1–5)']){
+    saveSetting('Edzés-szint (1–5)', 1);
+  }
+  // ensure profile exists
+  saveLS(LS_KEYS.profile, getProfile());
+  // build tabs
+  const tabs = $('#tabs');
+  for (const t of TABS){
+    const b = el('button', { class:'tabbtn' }, [document.createTextNode(t.label)]);
+    b.addEventListener('click', ()=> location.hash = `#${t.id}`);
+    tabs.append(b);
+  }
+  render();
+})();
