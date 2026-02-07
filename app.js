@@ -116,13 +116,14 @@ async function loadData(){
   ];
   const out = {};
   for (const f of files){
+    const key = f.replace('.json','');
     try{
       const r = await fetch(`./data/${f}`, { cache: 'no-store' });
-      if (!r.ok) throw new Error(`HTTP ${r.status}`);
-      out[f.replace('.json','')] = await r.json();
+      if(!r.ok) throw new Error(`HTTP ${r.status}`);
+      out[key] = await r.json();
     }catch(err){
       console.warn('Data load failed:', f, err);
-      out[f.replace('.json','')] = [];
+      out[key] = null;
     }
   }
   return out;
@@ -416,80 +417,175 @@ function renderSummaryMini(){
   return wrap;
 }
 
+function ensureQuestDay(key){
+  if(!state.quests[key]){
+    state.quests[key] = { checks:{}, steps:"", sleep:"", weight:"", closed:false, cleared:false };
+  }else{
+    state.quests[key].checks = state.quests[key].checks || {};
+    if(state.quests[key].closed === undefined) state.quests[key].closed = false;
+    if(state.quests[key].cleared === undefined) state.quests[key].cleared = false;
+  }
+  return state.quests[key];
+}
+
+function getActiveMonth(){
+  const v = document.getElementById("activeMonth")?.value;
+  return (v && /^\d{4}-\d{2}$/.test(v)) ? v : fmtDate(new Date()).slice(0,7);
+}
+
+function getActiveDate(){
+  const v = document.getElementById("activeDate")?.value;
+  return (v && /^\d{4}-\d{2}-\d{2}$/.test(v)) ? v : fmtDate(new Date());
+}
+
+function setActiveDate(v){
+  const el = document.getElementById("activeDate");
+  if(el) el.value = v;
+}
+
 function renderQuests(){
-  const isoToday = todayISO();
-  const weekStart = startOfWeekISO(isoToday);
-  const days = Array.from({length:7}, (_,i)=> addDaysISO(weekStart,i));
+  const todayKey = fmtDate(new Date());
+  const todayPill = document.getElementById("todayPill");
+  if(todayPill) todayPill.textContent = `Ma: ${todayKey}`;
 
-  const daily = DATA.daily_plan_2026 || [];
-  const byDate = new Map(daily.map(r => [r['Dátum'], r]));
-
-  const questLog = loadLS(LS_KEYS.quest, {}); // {date:{checks:{k:true}}}
-  const inputs = loadLS(LS_KEYS.inputs, {}); // {date:{steps,sleep,weight}}
-
-  const wrapper = el('div', { class:'card' }, [
-    el('h2', { html:'Küldetések – Napi terv 2026 (heti nézet)' }),
-    el('div', { class:'badge', html:`Aktuális hét kezdete: <b>${weekStart}</b> • Ma: <b>${isoToday}</b>` }),
-    el('div', { class:'hr' }),
-  ]);
-
-  const grid = el('div', { class:'daygrid' }, []);
-  for (const date of days){
-    const row = byDate.get(date);
-    const isToday = date === isoToday;
-    const locked = !isToday;
-    const dayName = row?.['Nap'] ?? '';
-    const shift = row?.['Műszak'] ?? '';
-    const workout = row?.['Edzés javaslat'] ?? '';
-    const workoutCode = row?.['Edzés kód'] ?? '';
-
-    const card = el('div', { class:`daycard ${isToday?'today':''} ${locked?'locked':''}` }, [
-      el('div', { class:'daytitle', html: `${date}` }),
-      el('div', { class:'daymeta', html: `${escapeHTML(dayName)} • ${escapeHTML(shift)} ${workoutCode?('• '+escapeHTML(workoutCode)):''}` }),
-      el('div', { class:'daymeta', html: workout ? escapeHTML(workout) : '—' }),
-    ]);
-
-    // editable inputs
-    const inState = inputs[date] || {};
-    const steps = el('input', { type:'number', placeholder:'Lépés (db)', value: inState.steps ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'steps',e.target.value); } });
-    const sleep = el('input', { type:'number', step:'0.5', placeholder:'Alvás (óra)', value: inState.sleep ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'sleep',e.target.value); } });
-    const weight = el('input', { type:'number', step:'0.1', placeholder:'Súly (kg)', value: inState.weight ?? '', disabled: locked, onChange:(e)=>{ setInput(date,'weight',e.target.value); } });
-
-    card.append(el('div', { class:'row', style:'margin-top:10px' }, [
-      el('div', { class:'field' }, [el('label', { html:'Lépés (db)' }), steps]),
-      el('div', { class:'field' }, [el('label', { html:'Alvás (óra)' }), sleep]),
-      el('div', { class:'field' }, [el('label', { html:'Súly (kg)' }), weight]),
-    ]));
-
-    // quests: derive from columns
-    const qKeys = deriveQuestKeys(row);
-    const st = questLog[date] || { checks:{} };
-    for (const q of qKeys){
-      const checked = !!st.checks[q.key];
-      const cb = el('input', { type:'checkbox', checked, disabled: locked, onChange:(e)=>{
-        setQuestCheck(date, q.key, e.target.checked, q.exp, q.label);
-      }});
-      const label = el('div', { html: `<b>${escapeHTML(q.label)}</b> <span style="color:var(--muted)">+${q.exp} EXP</span>` });
-      card.append(el('div', { class:'quest' }, [cb, label]));
-    }
-
-    // daily clear
-    if (isToday){
-      const allChecked = qKeys.length>0 && qKeys.every(q=> !!(questLog[date]?.checks?.[q.key]));
-      const btn = el('button', { class:`btn ${allChecked?'':'secondary'}`, disabled: !allChecked, onClick: ()=>{
-        const p = getProfile();
-        awardExp(p, 50, 'Daily Clear');
-      }}, [document.createTextNode('Daily Clear (+50 EXP)')]);
-      card.append(el('div', { class:'hr' }));
-      card.append(btn);
-    }
-
-    grid.append(card);
+  const activeMonth = getActiveMonth();   // YYYY-MM
+  let activeKey = getActiveDate();        // YYYY-MM-DD
+  if(activeKey.slice(0,7) !== activeMonth){
+    activeKey = `${activeMonth}-01`;
+    setActiveDate(activeKey);
   }
 
-  wrapper.append(grid);
-  return wrapper;
+  state.ui = state.ui || {};
+  state.ui.activeMonth = activeMonth;
+  state.ui.activeDate = activeKey;
+  saveState();
+
+  const weekStart = startOfWeek(new Date(activeKey));
+  const strip = document.getElementById("weekStrip");
+  strip.innerHTML = "";
+
+  const expPer = 15;
+
+  for(let i=0;i<7;i++){
+    const d = addDays(weekStart,i);
+    const key = fmtDate(d);
+    const isActive = key === activeKey;
+    const withinMonth = key.slice(0,7) === activeMonth;
+
+    const q = ensureQuestDay(key);
+    const locked = q.closed || !withinMonth || !isActive;
+
+    const dayCard = document.createElement("div");
+    dayCard.className = "dayCard" + (locked ? " lock" : "");
+    const name = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].name : ["H","K","Sze","Cs","P","Szo","V"][i];
+
+    // Prefer real plan if present
+    let questTexts = [];
+    if(window.data && data.daily_plan_2026){
+      // If your existing app already builds daily quests from daily_plan_2026, leave it.
+      // Fallback: keep template quests so the UI always works.
+      questTexts = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].quests : [];
+    }else{
+      questTexts = (window.EMBED && EMBED.weekTemplate && EMBED.weekTemplate[i]) ? EMBED.weekTemplate[i].quests : [];
+    }
+
+    const checks = questTexts.map((txt, idx)=>{
+      const id = `q_${key}_${idx}`;
+      return { id, txt, checked: !!q.checks[id] };
+    });
+
+    const allChecksDone = checks.length ? checks.every(c=>c.checked) : true;
+    const allDone = allChecksDone && q.cleared;
+
+    dayCard.innerHTML = `
+      <div class="dayHead">
+        <div class="dayName">${name}</div>
+        <div class="dayDate">${key}</div>
+      </div>
+
+      <div class="itemMeta">
+        ${withinMonth ? "Küldetések" : "Másik hónap"} (+${expPer} EXP / pipa)
+        ${q.closed ? " · <b>LEZÁRVA</b>" : ""}
+      </div>
+
+      <div class="stack" id="checks_${key}"></div>
+
+      <div class="kpi">
+        <div class="k"><span>Lépés (db)</span><strong><input ${locked ? "disabled" : ""} inputmode="numeric" id="steps_${key}" value="${q.steps ?? ""}" placeholder="0"></strong></div>
+        <div class="k"><span>Alvás (óra)</span><strong><input ${locked ? "disabled" : ""} inputmode="decimal" id="sleep_${key}" value="${q.sleep ?? ""}" placeholder="0"></strong></div>
+        <div class="k"><span>Súly (kg)</span><strong><input ${locked ? "disabled" : ""} inputmode="decimal" id="weight_${key}" value="${q.weight ?? ""}" placeholder="0"></strong></div>
+      </div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn ${locked ? "ghost" : ""}" id="clear_${key}" ${locked ? "disabled" : ""}>${allDone ? "Lezárva ✓" : "Napi mentés + lezárás"}</button>
+        <div class="pill">Státusz: <span id="st_${key}">${allDone ? "KÉSZ" : (q.closed ? "LEZÁRVA" : (isActive ? "AKTÍV" : "ZÁRT"))}</span></div>
+      </div>
+    `;
+    strip.appendChild(dayCard);
+
+    const checksBox = dayCard.querySelector(`#checks_${key}`);
+    checks.forEach(c=>{
+      const line = document.createElement("div");
+      line.className = "check";
+      line.innerHTML = `
+        <label>${c.txt}</label>
+        <input type="checkbox" ${c.checked ? "checked":""} ${locked ? "disabled" : ""} />
+      `;
+      checksBox.appendChild(line);
+      const cb = line.querySelector("input");
+      cb.addEventListener("change", ()=>{
+        if(locked) return;
+        const prev = !!q.checks[c.id];
+        q.checks[c.id] = cb.checked;
+        if(!prev && cb.checked) grantExp(expPer);
+        saveState();
+      });
+    });
+
+    // inputs
+    const stepsEl = dayCard.querySelector(`#steps_${key}`);
+    const sleepEl = dayCard.querySelector(`#sleep_${key}`);
+    const weightEl = dayCard.querySelector(`#weight_${key}`);
+    const bind = (el, prop)=> el && el.addEventListener("input", ()=>{ if(!locked){ q[prop]=el.value; saveState(); }});
+    bind(stepsEl,"steps"); bind(sleepEl,"sleep"); bind(weightEl,"weight");
+
+    // Save & lock day
+    const clearBtn = dayCard.querySelector(`#clear_${key}`);
+    clearBtn.addEventListener("click", ()=>{
+      if(locked) return;
+      q.cleared = true;
+      q.closed = true;
+      saveState();
+      setStatus("MENTVE/LEZÁRVA");
+      renderQuests();
+    });
+  }
+
+  const activeDay = ensureQuestDay(activeKey);
+  const lockBtn = document.getElementById("lockDayBtn");
+  const unlockBtn = document.getElementById("unlockDayBtn");
+  if(lockBtn){
+    lockBtn.disabled = activeDay.closed;
+    lockBtn.textContent = activeDay.closed ? "Nap lezárva" : "Nap lezárása (Mentés)";
+    lockBtn.onclick = ()=>{
+      activeDay.closed = true;
+      activeDay.cleared = true;
+      saveState();
+      renderQuests();
+      setStatus("LEZÁRVA");
+    };
+  }
+  if(unlockBtn){
+    unlockBtn.disabled = !activeDay.closed;
+    unlockBtn.onclick = ()=>{
+      activeDay.closed = false;
+      saveState();
+      renderQuests();
+      setStatus("FELOLDVA");
+    };
+  }
 }
+
 
 function deriveQuestKeys(row){
   if (!row) return [];
