@@ -202,12 +202,6 @@ function renderProfile(){
   const currentLevel = Number(settings['Edzés-szint (1–5)'] || 1);
   const lvlRow = levels.find(x => Number(x['Szint']) === currentLevel);
   const trainingExtras = renderTrainingExtras(levels);
-  const statLabels = {
-    STR: 'Erő',
-    END: 'Állóképesség',
-    REC: 'Regeneráció',
-    DISC: 'Fegyelem',
-  };
 
   const settingsInfoKeys = [
     'Napi kcal cél – alap (pihenőnap)',
