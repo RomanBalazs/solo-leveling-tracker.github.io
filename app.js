@@ -209,21 +209,6 @@ function renderProfile(){
         el('div', { class:'label', html:key }),
         el('div', { class:'value', html:String(profile.stats[key]) }),
       ]);
-      const btnRow = el('div', { class:'row' }, [
-        el('button', { class:'btn secondary', onClick: ()=> {
-          if (profile.stats[key] <= 0) return;
-          profile.stats[key] -= 1; profile.unspent += 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('−')),
-        el('button', { class:'btn', onClick: ()=> {
-          if (profile.unspent <= 0) return;
-          profile.stats[key] += 1; profile.unspent -= 1;
-          saveLS(LS_KEYS.profile, profile);
-          render();
-        } }, []).appendChild(document.createTextNode('+')),
-      ]);
-      // quick fix: create real nodes
       wrap.append(el('div', { class:'row' }, [
         el('button', { class:'btn secondary', onClick: ()=> {
           const p = getProfile();
