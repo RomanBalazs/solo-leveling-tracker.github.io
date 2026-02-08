@@ -36,6 +36,11 @@
             <div class="pill" id="levelPill">Lv –</div>
             <div class="pill" id="pointsPill">Pont: –</div>
           </div>
+            <div class="pill" id="streakPill">Streak: –</div>
+            <div class="pill" id="tokenPill">Token: –</div>
+            <div class="pill" id="cratePill">Crate: –</div>
+            <div class="pill" id="titlePill">Cím: –</div>
+          </div>
 
           <div class="progress">
             <div class="progressLabel">
@@ -108,6 +113,15 @@
             <button class="btn" id="saveSettings">Mentés</button>
             <button class="btn ghost" id="resetLocal">Helyi adatok törlése</button>
           </div>
+          <div class="row" style="margin-top:10px">
+            <button class="btn" id="exportDataBtn">Export (JSON)</button>
+            <label class="btn ghost" style="display:inline-flex; align-items:center; gap:8px; cursor:pointer">
+              Import (JSON)
+              <input type="file" id="importFile" accept="application/json" style="display:none">
+            </label>
+            <button class="btn ghost" id="exportHunterIdBtn">Hunter ID (PNG)</button>
+            <button class="btn" id="openCrateBtn">Crate nyitás</button>
+          </div>
 
           <div class="divider"></div>
           <div class="cardTitle">Edzés terv (skálázva)</div>
@@ -146,6 +160,10 @@
         <div class="card">
           <div class="cardTitle">Összegzés</div>
           <div id="summaryBox" class="summary"></div>
+          <div class="divider"></div>
+          <div class="cardTitle">Trend (30 nap)</div>
+          <canvas id="trendCanvas" width="900" height="260" style="width:100%; height:260px; border:1px solid var(--line); border-radius: var(--radius2); background: rgba(0,0,0,.15)"></canvas>
+          <div class="hint">Lépés / Alvás / Súly helyi adatokból.</div>
           <div class="hint">Helyi számítás (localStorage).</div>
         </div>
       </div>
@@ -178,6 +196,41 @@
         </div>
 
         <div class="divider"></div>
+        <div class="grid" style="grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px">
+          <div class="card" style="margin:0">
+            <div class="row space">
+              <div>
+                <div class="cardTitle">Heti Dungeon Run</div>
+                <div class="hint" id="weeklyHint">–</div>
+              </div>
+              <div class="pill" id="weeklyPill">–</div>
+            </div>
+            <div class="progress" style="margin-top:10px">
+              <div class="progressLabel"><span>Haladás</span><span id="weeklyProgLabel">–</span></div>
+              <div class="bar"><div class="fill" id="weeklyProgFill" style="width:0%"></div></div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn" id="claimWeeklyBtn">Jutalom felvétele</button>
+              <div class="pill" id="dailyModPill">Napi mod: –</div>
+            </div>
+          </div>
+
+          <div class="card" style="margin:0">
+            <div class="row space">
+              <div>
+                <div class="cardTitle">Quick Add</div>
+                <div class="hint">Az aktív naphoz gyors hozzáadás.</div>
+              </div>
+              <div class="pill" id="activeDayPill">Aktív: –</div>
+            </div>
+            <div class="row" style="margin-top:10px">
+              <button class="btn" id="addSteps2k">+2000 lépés</button>
+              <button class="btn" id="addSteps5k">+5000 lépés</button>
+              <button class="btn ghost" id="addSleep05">+0.5 óra</button>
+              <button class="btn ghost" id="addSleep1">+1 óra</button>
+            </div>
+          </div>
+        </div>
         <div id="weekStrip" class="week"></div>
       </div>
     </section>
