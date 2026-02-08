@@ -306,3 +306,23 @@ input, select{
 .summary .box strong{display:block;font-family:var(--mono);font-size:16px}
 
 .dayCard{width:100%; break-inside: avoid;}
+
+.badgeItem{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  gap:10px;
+  padding: 12px;
+  border:1px solid rgba(36,50,68,.7);
+  background: rgba(15,23,34,.55);
+  border-radius: 16px;
+}
+.badgeItem .meta{color: var(--muted); font-size: 12px; margin-top: 4px}
+.badgeChip{
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(124,92,255,.55);
+  background: rgba(124,92,255,.12);
+  font-weight: 800;
+  font-size: 12px;
+}

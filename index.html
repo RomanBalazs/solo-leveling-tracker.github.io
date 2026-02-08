@@ -40,6 +40,7 @@
             <div class="pill" id="tokenPill">Token: –</div>
             <div class="pill" id="cratePill">Crate: –</div>
             <div class="pill" id="titlePill">Cím: –</div>
+            <div class="pill" id="pinnedBadges">Kitűzve: –</div>
           </div>
 
           <div class="progress">
@@ -170,7 +171,20 @@
           <div class="hint">Helyi számítás (localStorage).</div>
         </div>
       </div>
-    </section>
+    
+      <div class="card" style="margin-top:14px">
+        <div class="row space">
+          <div class="cardTitle">Inventory</div>
+          <div class="hint">Badge-ek: 3-at tudsz kitűzni a profilra.</div>
+        </div>
+        <div class="divider"></div>
+        <div class="row" style="margin-bottom:10px">
+          <div class="pill" id="badgeSlots">Slotok: –</div>
+        </div>
+        <div id="inventoryList" class="list"></div>
+      </div>
+
+</section>
 
     <section id="view-quests" class="view">
       <div class="card">

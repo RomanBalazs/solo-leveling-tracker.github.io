@@ -1463,3 +1463,332 @@ document.addEventListener("DOMContentLoaded", ()=>{
   bindTrainingLevelLive();
 });
 
+
+
+/* =================== Enhancements v3 (Excel routines + Inventory) =================== */
+async function loadAllData(){
+  const out = {};
+  out.settings = await safeFetchJson("./data/settings.json");
+  out.training_levels = await safeFetchJson("./data/training_levels.json");
+  out.daily_plan_2026 = await safeFetchJson("./data/daily_plan_2026.json");
+  out.menu_2026 = await safeFetchJson("./data/menu_2026.json");
+  out.calendar_2026 = await safeFetchJson("./data/calendar_2026.json");
+  out.routine_templates = await safeFetchJson("./data/routine_templates.json");
+  return out;
+}
+
+// Ensure state fields for inventory
+function ensureInventoryState(){
+  state.cosmetics ??= {};
+  state.cosmetics.badges ??= ["Rookie"];
+  state.cosmetics.frames ??= ["Default"];
+  state.cosmetics.titles ??= ["Rookie Hunter","Gate Cleaner","Dungeon Runner","Shadow Candidate"];
+  state.cosmetics.equippedBadge ??= "Rookie";
+  state.cosmetics.equippedFrame ??= "Default";
+  state.cosmetics.pinnedBadges ??= ["Rookie", "", ""];
+  if(!Array.isArray(state.cosmetics.pinnedBadges) || state.cosmetics.pinnedBadges.length!==3){
+    state.cosmetics.pinnedBadges = [state.cosmetics.badges?.[0] || "Rookie", "", ""];
+  }
+}
+
+function renderInventory(){
+  ensureInventoryState();
+  const list = document.getElementById("inventoryList");
+  const slots = document.getElementById("badgeSlots");
+  const pinned = state.cosmetics.pinnedBadges || ["","",""];
+  if(slots) slots.textContent = `Slotok: ${pinned.map((b,i)=> b?`#${i+1}:${b}`:`#${i+1}:—`).join("  ")}`;
+  if(!list) return;
+  list.innerHTML = "";
+  const badges = state.cosmetics.badges || [];
+  if(badges.length===0){
+    const el=document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs badge.";
+    list.appendChild(el);
+    return;
+  }
+  badges.forEach(b=>{
+    const el=document.createElement("div");
+    el.className="badgeItem";
+    const isPinned = pinned.includes(b);
+    el.innerHTML = `
+      <div>
+        <div class="row" style="gap:8px">
+          <span class="badgeChip">${b}</span>
+          ${isPinned ? `<span class="pill">KITŰZVE</span>` : ``}
+        </div>
+        <div class="meta">Inventory badge</div>
+      </div>
+      <div class="row" style="gap:8px">
+        <button class="btn small" data-pin="${b}">Kitűzés</button>
+        <button class="btn small ghost" data-unpin="${b}">Levétel</button>
+      </div>
+    `;
+    list.appendChild(el);
+  });
+
+  list.querySelectorAll("[data-pin]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const b = btn.getAttribute("data-pin");
+      const p = state.cosmetics.pinnedBadges;
+      if(p.includes(b)) return;
+      const emptyIdx = p.findIndex(x=>!x);
+      if(emptyIdx===-1){
+        setStatus("TELT (3)");
+        return;
+      }
+      p[emptyIdx]=b;
+      saveState();
+      renderInventory();
+      renderProfile();
+    });
+  });
+  list.querySelectorAll("[data-unpin]").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      const b = btn.getAttribute("data-unpin");
+      const p = state.cosmetics.pinnedBadges;
+      const idx = p.indexOf(b);
+      if(idx>=0){
+        p[idx] = "";
+        saveState();
+        renderInventory();
+        renderProfile();
+      }
+    });
+  });
+}
+
+// Patch renderProfile to show pinned badges pill and inventory
+const __origRenderProfile2 = typeof renderProfile === "function" ? renderProfile : null;
+if(__origRenderProfile2){
+  renderProfile = function(){
+    __origRenderProfile2();
+    ensureInventoryState();
+    const pinned = state.cosmetics.pinnedBadges || ["","",""];
+    const txt = pinned.filter(Boolean).join(" · ") || "—";
+    const pill = document.getElementById("pinnedBadges");
+    if(pill) pill.textContent = `Kitűzve: ${txt}`;
+    renderInventory();
+    renderTrainingTable?.();
+  };
+}
+
+// Update training card render to show correct level + scaling
+const __origRenderTrainingCards = typeof renderTrainingCards === "function" ? renderTrainingCards : null;
+if(__origRenderTrainingCards){
+  renderTrainingCards = function(){
+    const box = document.getElementById("trainingCards");
+    if(!box) return;
+    box.innerHTML = "";
+    const lvl = Number(state.settings.trainingLevel || 1);
+
+    let row = null;
+    const tl = data.training_levels;
+    if(Array.isArray(tl)){
+      row = tl.find(x => Number(x.level) === lvl) || null;
+    }else if(tl && typeof tl === "object"){
+      row = tl[String(lvl)] || null;
+    }
+
+    const item = document.createElement("div");
+    item.className = "item";
+    if(row){
+      item.innerHTML = `
+        <div class="itemTitle">Edzés szint ${lvl}</div>
+        <div class="itemMeta">Erő: <b>${row.strength || "-"}</b></div>
+        <div class="itemMeta">Kardió Z2: <b>${row.z2min || "-"}</b> perc · Mobilitás: <b>${row.mobmin || "-"}</b> perc</div>
+        <div class="itemMeta">Munkanap opció: <b>${row.workday_option || "—"}</b></div>
+        <div class="itemMeta">Lépés cél: <b>${row.steps_target || "-"}</b></div>
+        ${row.note ? `<div class="itemMeta">${row.note}</div>` : ``}
+      `;
+    }else{
+      item.innerHTML = `<div class="itemTitle">Edzés szint ${lvl}</div><div class="itemMeta">Nincs adat ehhez a szinthez.</div>`;
+    }
+    box.appendChild(item);
+  };
+}
+
+// Routine templates from Excel JSON + show time ranges
+function getRoutineTemplates(){
+  return (data.routine_templates && typeof data.routine_templates==="object") ? data.routine_templates : null;
+}
+
+function renderRoutineTasks(container, items){
+  container.innerHTML = "";
+  if(!items || items.length===0){
+    const el=document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs rutin sablon.";
+    container.appendChild(el);
+    return;
+  }
+  items.forEach(it=>{
+    const line=document.createElement("div");
+    line.className="check";
+    const time = it.time ? `${it.time} - ` : "";
+    const note = it.note ? ` · ${it.note}` : "";
+    line.innerHTML = `<label><b>${time}${it.activity}</b><span style="color:var(--muted)">${note}</span></label><span class="pill">RUTIN</span>`;
+    container.appendChild(line);
+  });
+}
+
+function ensureRoutineState(dateKey){
+  state.routines ??= {};
+  if(!state.routines[dateKey]){
+    state.routines[dateKey] = { type:null, locked:false };
+  }else{
+    state.routines[dateKey].locked ??= false;
+  }
+  return state.routines[dateKey];
+}
+
+function normalizeShiftCode(v){
+  if(v==null) return "";
+  const s=String(v).trim().toUpperCase();
+  if(!s) return "";
+  if(s==="E" || s==="É" || s.includes("ÉJ") || s.includes("EJ")) return "É";
+  if(s==="N" || s.includes("NAP")) return "N";
+  if(s==="P" || s.includes("SZAB")) return "P";
+  return s;
+}
+
+function indexDailyPlanByDate(){
+  const byDate = {};
+  if(Array.isArray(data.daily_plan_2026)){
+    for(const r of data.daily_plan_2026){
+      const dk = extractDateKey(r);
+      if(dk) byDate[dk] = r;
+    }
+  }
+  return byDate;
+}
+function getWorkoutSuggestion(row){
+  if(!row) return "";
+  return String(row["Edzés javaslat"] ?? row["Edzes javaslat"] ?? row["Edzés"] ?? row["Edzes"] ?? "").trim();
+}
+
+/* Override renderSchedule: 14 days, show workout + routine with times */
+renderSchedule = function(){
+  const list = document.getElementById("scheduleList");
+  if(!list) return;
+  list.innerHTML = "";
+
+  const calRows = Array.isArray(data.calendar_2026) ? data.calendar_2026 : [];
+  const byDate = indexDailyPlanByDate();
+  const templates = getRoutineTemplates() || {};
+
+  if(calRows.length===0){
+    const el = document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs calendar_2026 adat (vagy nem töltődött be).";
+    list.appendChild(el);
+    return;
+  }
+
+  const today = fmtDate(new Date());
+  const upcoming = calRows
+    .map(r=>({ r, dk: extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r["date"]||"") }))
+    .filter(x=> x.dk && x.dk >= today)
+    .sort((a,b)=> a.dk.localeCompare(b.dk))
+    .slice(0, 14);
+
+  upcoming.forEach(x=>{
+    const r = x.r;
+    const dt = x.dk;
+
+    const shiftRaw = r["Műszak"] || r["Muszak"] || r["shift"] || "-";
+    const shift = normalizeShiftCode(shiftRaw);
+    const note = r["Megjegyzés"] || r["Megjegyzes"] || r["note"] || "";
+
+    const planRow = byDate[dt] || null;
+    const workout = getWorkoutSuggestion(planRow);
+
+    const routineState = ensureRoutineState(dt);
+
+    // Auto type selection
+    if(!routineState.type){
+      if(shift==="N") routineState.type = "N";
+      else if(shift==="É") routineState.type = "É";
+      else if(shift==="P") routineState.type = "P1";
+    }else{
+      // enforce P options if shift is P
+      if(shift!=="P" && (routineState.type||"").startsWith("P")) {
+        routineState.type = shift==="N" ? "N" : "É";
+      }
+      if(shift==="P" && !(routineState.type||"").startsWith("P")) routineState.type = "P1";
+    }
+
+    const isP = shift==="P";
+    const locked = !!routineState.locked;
+
+    const items = templates[routineState.type] || [];
+
+    const card = document.createElement("div");
+    card.className="item";
+    card.innerHTML = `
+      <div class="row space">
+        <div class="itemTitle">${dt}</div>
+        <div class="pill">Műszak: <b>${shift}</b>${locked ? " · LEZÁRVA" : ""}</div>
+      </div>
+      ${note ? `<div class="itemMeta">${note}</div>` : ``}
+      <div class="divider"></div>
+      <div class="itemMeta"><b>Edzés javaslat:</b> ${workout ? workout : "—"}</div>
+
+      <div class="divider"></div>
+      <div class="row space">
+        <div class="itemTitle" style="font-size:14px">Napi rutin</div>
+        ${isP ? `
+          <label class="field" style="min-width:220px; margin:0">
+            <span>Szabadnap típus</span>
+            <select id="routineSel_${dt}" ${locked?"disabled":""}>
+              <option value="P1" ${routineState.type==="P1"?"selected":""}>P1</option>
+              <option value="P2" ${routineState.type==="P2"?"selected":""}>P2</option>
+              <option value="P3" ${routineState.type==="P3"?"selected":""}>P3</option>
+              <option value="P4" ${routineState.type==="P4"?"selected":""}>P4</option>
+            </select>
+          </label>
+        ` : `
+          <div class="pill">Sablon: <b>${routineState.type || "—"}</b></div>
+        `}
+      </div>
+
+      <div class="stack" id="routineList_${dt}" style="margin-top:10px"></div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="routineSave_${dt}" ${locked?"disabled":""}>Mentés</button>
+        <button class="btn ghost" id="routineUnlock_${dt}" ${locked?"":"disabled"}>Feloldás</button>
+      </div>
+    `;
+    list.appendChild(card);
+
+    // Render tasks with times
+    renderRoutineTasks(card.querySelector(`#routineList_${dt}`), items);
+
+    const sel = card.querySelector(`#routineSel_${dt}`);
+    if(sel){
+      sel.addEventListener("change", ()=>{
+        routineState.type = sel.value;
+        routineState.locked = false;
+        saveState();
+        renderSchedule();
+      });
+    }
+
+    card.querySelector(`#routineSave_${dt}`)?.addEventListener("click", ()=>{
+      routineState.locked = true;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN MENTVE");
+    });
+    card.querySelector(`#routineUnlock_${dt}`)?.addEventListener("click", ()=>{
+      routineState.locked = false;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN FELOLDVA");
+    });
+  });
+
+  saveState();
+};
+
+
