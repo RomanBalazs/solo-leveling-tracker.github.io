@@ -1,0 +1,219 @@
+{
+  "N": [
+    {
+      "time": "04:00",
+      "activity": "Felkelés",
+      "note": "WC, víz, kávé/energiaital"
+    },
+    {
+      "time": "04:10–04:35",
+      "activity": "Tisztálkodás + készülődés",
+      "note": "fogmosás, mosakodás/zuhany, öltözés"
+    },
+    {
+      "time": "04:35–04:55",
+      "activity": "Gyors reggeli + csomagolás",
+      "note": "fehérje + könnyű szénhidrát"
+    },
+    {
+      "time": "05:00",
+      "activity": "Indulás",
+      "note": "05:18 buszhoz kiérni"
+    },
+    {
+      "time": "06:00–18:00",
+      "activity": "MŰSZAK (nappal)",
+      "note": "munka 06:00–18:00"
+    },
+    {
+      "time": "19:00–19:25",
+      "activity": "Vacsora",
+      "note": "könnyebb, nem túl zsíros"
+    },
+    {
+      "time": "19:25–19:45",
+      "activity": "Feladatok",
+      "note": "mosogatás / holnapi csomag / gyors rend"
+    },
+    {
+      "time": "19:45–20:05",
+      "activity": "Levezető mozgás",
+      "note": "10–15 perc mobilitás vagy séta"
+    },
+    {
+      "time": "20:05–20:20",
+      "activity": "Zuhany",
+      "note": "alváshoz készülés"
+    },
+    {
+      "time": "20:20–20:30",
+      "activity": "Lefekvés előtti rutin",
+      "note": "fények le, képernyő OFF"
+    },
+    {
+      "time": "20:30–04:00",
+      "activity": "Alvás",
+      "note": "cél: 7,5 óra (fix 04:00 kelés)"
+    }
+  ],
+  "É": [
+    {
+      "time": "07:00",
+      "activity": "Hazaérkezés",
+      "note": "könnyű reggeli + víz"
+    },
+    {
+      "time": "07:15–07:30",
+      "activity": "Gyors tisztálkodás",
+      "note": "fogmosás, arc, sötétítés előkészítése"
+    },
+    {
+      "time": "07:30–07:45",
+      "activity": "Levezetés",
+      "note": "szoba sötét, telefon néma, hűvös"
+    },
+    {
+      "time": "07:45–15:30",
+      "activity": "Alvás",
+      "note": "cél: 7,5–8 óra"
+    },
+    {
+      "time": "15:30",
+      "activity": "Felkelés",
+      "note": "WC, víz, kávé/energiaital"
+    },
+    {
+      "time": "15:45–16:15",
+      "activity": "Tisztálkodás + készülődés",
+      "note": "ugyanaz, mint nappalosnál"
+    },
+    {
+      "time": "16:15–16:45",
+      "activity": "Kaja + dobozolás",
+      "note": "hogy ne 90 perccel indulás előtt kellj"
+    },
+    {
+      "time": "17:00:00",
+      "activity": "Indulás (Busz: 17:18-kor indul)",
+      "note": "utazás (időhöz igazítod)"
+    },
+    {
+      "time": "18:00–06:00",
+      "activity": "MŰSZAK (éjjel)",
+      "note": "munka 18:00–06:00"
+    },
+    {
+      "time": "06:00–07:00",
+      "activity": "Hazaút + levezetés",
+      "note": "kék fény minimalizálás"
+    }
+  ],
+  "P1": [
+    {
+      "time": "08:00",
+      "activity": "Kelés",
+      "note": "nyugodt indulás, víz"
+    },
+    {
+      "time": "08:30–10:30",
+      "activity": "Vállalkozás (fókusz)",
+      "note": "AI marketing: ajánlatok, kampányok, rendszerezés"
+    },
+    {
+      "time": "11:00–12:00",
+      "activity": "Edzés (Erő A/B)",
+      "note": "ha edzésnap a naptárban"
+    },
+    {
+      "time": "13:00–14:30",
+      "activity": "Főzés / dobozolás",
+      "note": "F nap esetén 2 napra"
+    },
+    {
+      "time": "15:00–16:00",
+      "activity": "Háztartás",
+      "note": "M / RM / T ami esedékes"
+    },
+    {
+      "time": "23:00–08:00",
+      "activity": "Alvás",
+      "note": "cél: 8–9 óra"
+    }
+  ],
+  "P2": [
+    {
+      "time": "08:00",
+      "activity": "Kelés",
+      "note": ""
+    },
+    {
+      "time": "08:30–10:30",
+      "activity": "Vállalkozás (fókusz)",
+      "note": "kreatív munka, hirdetések, admin"
+    },
+    {
+      "time": "11:00–12:00",
+      "activity": "Kardió Z2",
+      "note": "gyors séta 45–60 perc"
+    },
+    {
+      "time": "13:00–14:00",
+      "activity": "Ruhamosás / Mosogatás",
+      "note": "RM / M ami esedékes"
+    },
+    {
+      "time": "23:00–08:00",
+      "activity": "Alvás",
+      "note": ""
+    }
+  ],
+  "P3": [
+    {
+      "time": "09:00",
+      "activity": "Kelés",
+      "note": "kicsit később is ok"
+    },
+    {
+      "time": "09:30–11:00",
+      "activity": "Vállalkozás (rövid fókusz)",
+      "note": "1–2 kiemelt feladat"
+    },
+    {
+      "time": "11:00–13:00",
+      "activity": "Takarítás + rendrakás",
+      "note": "T blokkban letudva"
+    },
+    {
+      "time": "14:00–15:00",
+      "activity": "Mobilitás / séta",
+      "note": "regeneráló"
+    },
+    {
+      "time": "23:00–08:00",
+      "activity": "Alvás",
+      "note": ""
+    }
+  ],
+  "P4": [
+    {
+      "time": "09:00",
+      "activity": "Kelés",
+      "note": ""
+    },
+    {
+      "time": "09:30–11:00",
+      "activity": "Vállalkozás (rövid fókusz)",
+      "note": "hétvégén elég 60–90 perc"
+    },
+    {
+      "time": "12:00–18:00",
+      "activity": "Barátok / program (B)",
+      "note": "pihenős hétvégén"
+    },
+    {
+      "time": "23:30–09:00",
+      "activity": "Alvás",
+      "note": ""
+    }
+  ]
+}

@@ -1,74 +1,47 @@
 [
   {
-    "Szint": 1,
-    "Erő (A/B) – sorozat x ismétlés": "2 x 8–10 (könnyű)",
-    "Kardió Z2 (perc)": "20–25",
-    "Mobilitás (perc)": "8–10",
-    "Opció: rövid erősítés munkanapon": "—",
-    "Lépés cél (átlag)": "6 000–7 000",
-    "Megjegyzés": "Fókusz: mozgás újraindítása"
+    "level": 1,
+    "strength": "2 x 8–10 (könnyű)",
+    "z2min": "20–25",
+    "mobmin": "8–10",
+    "workday_option": "—",
+    "steps_target": "6 000–7 000",
+    "note": "Fókusz: mozgás újraindítása"
   },
   {
-    "Szint": 2,
-    "Erő (A/B) – sorozat x ismétlés": "3 x 8–12",
-    "Kardió Z2 (perc)": "25–30",
-    "Mobilitás (perc)": "10",
-    "Opció: rövid erősítés munkanapon": "1 x 8–10 fekvőtámasz döntött + 1 x 10 guggolás",
-    "Lépés cél (átlag)": "7 000–8 000",
-    "Megjegyzés": "Fókusz: rendszeresség"
+    "level": 2,
+    "strength": "3 x 8–12",
+    "z2min": "25–30",
+    "mobmin": "10",
+    "workday_option": "1 x 8–10 fekvőtámasz döntött + 1 x 10 guggolás",
+    "steps_target": "7 000–8 000",
+    "note": "Fókusz: rendszeresség"
   },
   {
-    "Szint": 3,
-    "Erő (A/B) – sorozat x ismétlés": "3–4 x 10–12 (kicsi plusz terhelés)",
-    "Kardió Z2 (perc)": "30–35",
-    "Mobilitás (perc)": "10–12",
-    "Opció: rövid erősítés munkanapon": "2 kör mini-kör: guggolás + evezés (hátizsák)",
-    "Lépés cél (átlag)": "8 000–9 000",
-    "Megjegyzés": "Fókusz: terhelés finom emelése"
+    "level": 3,
+    "strength": "3–4 x 10–12 (kicsi plusz terhelés)",
+    "z2min": "30–35",
+    "mobmin": "10–12",
+    "workday_option": "2 kör mini-kör: guggolás + evezés (hátizsák)",
+    "steps_target": "8 000–9 000",
+    "note": "Fókusz: terhelés finom emelése"
   },
   {
-    "Szint": 4,
-    "Erő (A/B) – sorozat x ismétlés": "4 x 10–15",
-    "Kardió Z2 (perc)": "35–40",
-    "Mobilitás (perc)": "12",
-    "Opció: rövid erősítés munkanapon": "2–3 kör mini-kör",
-    "Lépés cél (átlag)": "9 000–10 000",
-    "Megjegyzés": "Fókusz: állóképesség + erő"
+    "level": 4,
+    "strength": "4 x 10–15",
+    "z2min": "35–40",
+    "mobmin": "12",
+    "workday_option": "2–3 kör mini-kör",
+    "steps_target": "9 000–10 000",
+    "note": "Fókusz: állóképesség + erő"
   },
   {
-    "Szint": 5,
-    "Erő (A/B) – sorozat x ismétlés": "4–5 x 10–15 (progresszió)",
-    "Kardió Z2 (perc)": "40–45",
-    "Mobilitás (perc)": "12–15",
-    "Opció: rövid erősítés munkanapon": "3 kör mini-kör",
-    "Lépés cél (átlag)": "10 000+",
-    "Megjegyzés": "Fókusz: teljesítmény & forma"
-  },
-  {
-    "Szint": null,
-    "Erő (A/B) – sorozat x ismétlés": null,
-    "Kardió Z2 (perc)": null,
-    "Mobilitás (perc)": null,
-    "Opció: rövid erősítés munkanapon": null,
-    "Lépés cél (átlag)": null,
-    "Megjegyzés": null
-  },
-  {
-    "Szint": "Erő A",
-    "Erő (A/B) – sorozat x ismétlés": null,
-    "Kardió Z2 (perc)": null,
-    "Mobilitás (perc)": "Erő B",
-    "Opció: rövid erősítés munkanapon": null,
-    "Lépés cél (átlag)": null,
-    "Megjegyzés": "Kardió Z2"
-  },
-  {
-    "Szint": "• Szék-guggolás vagy guggolás\n• Fekvőtámasz (döntött / térdes)\n• Evezés (gumiszalag / hátizsák)\n• Csípőemelés\n• Plank",
-    "Erő (A/B) – sorozat x ismétlés": null,
-    "Kardió Z2 (perc)": null,
-    "Mobilitás (perc)": "• Kitörés / osztott guggolás\n• Vállból nyomás (hátizsák / gumiszalag)\n• Döntött törzsű evezés\n• Merevlábas felhúzás mozdulat (csípőhajlítás)\n• Oldalsó plank + dead bug",
-    "Opció: rövid erősítés munkanapon": null,
-    "Lépés cél (átlag)": null,
-    "Megjegyzés": "Tempós séta / bicikli: beszélgetős tempó (nem fulladás)."
+    "level": 5,
+    "strength": "4–5 x 10–15 (progresszió)",
+    "z2min": "40–45",
+    "mobmin": "12–15",
+    "workday_option": "3 kör mini-kör",
+    "steps_target": "10 000+",
+    "note": "Fókusz: teljesítmény & forma"
   }
 ]
