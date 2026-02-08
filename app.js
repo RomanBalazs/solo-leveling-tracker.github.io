@@ -1221,3 +1221,245 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   renderSchedule();
   renderMeal();
 });
+
+
+/* =================== Enhancements v2 =================== */
+/* Routine templates (editable in code) */
+const ROUTINE_TEMPLATES = {
+  "N": ["Reggeli rutin", "Munka (nappal)", "Edzés / séta", "Vacsora + előkészület", "Alvás cél"],
+  "É": ["Délutáni felkészülés", "Munka (éjjel)", "Levezetés / nyújtás", "Fekvés (sötétítés)", "Alvás cél"],
+  "P1": ["Szabadnap: bevásárlás", "Főzés előre", "Séta 30–60 perc", "Rövid takarítás"],
+  "P2": ["Szabadnap: nagytakarítás", "Mosás", "Séta / könnyű cardio", "Nyújtás 10 perc"],
+  "P3": ["Szabadnap: barátok/család", "Séta 30 perc", "Könnyű mobilitás", "Korai fekvés"],
+  "P4": ["Szabadnap: regeneráció", "Fürdés/sauna", "Mobility 15 perc", "Meal prep"]
+};
+
+function ensureRoutineState(dateKey){
+  state.routines ??= {};
+  if(!state.routines[dateKey]){
+    state.routines[dateKey] = { type:null, locked:false };
+  }else{
+    state.routines[dateKey].locked ??= false;
+  }
+  return state.routines[dateKey];
+}
+
+function normalizeShiftCode(v){
+  if(v==null) return "";
+  const s=String(v).trim().toUpperCase();
+  if(!s) return "";
+  // map common forms
+  if(s==="E" || s==="É" || s.includes("ÉJ") || s.includes("EJ")) return "É";
+  if(s==="N" || s.includes("NAP")) return "N";
+  if(s==="P" || s.includes("SZAB")) return "P";
+  return s;
+}
+
+function indexDailyPlanByDate(){
+  const byDate = {};
+  if(Array.isArray(data.daily_plan_2026)){
+    for(const r of data.daily_plan_2026){
+      const dk = extractDateKey(r);
+      if(dk) byDate[dk] = r;
+    }
+  }
+  return byDate;
+}
+
+function getWorkoutSuggestion(row){
+  if(!row) return "";
+  return String(row["Edzés javaslat"] ?? row["Edzes javaslat"] ?? row["Edzés"] ?? row["Edzes"] ?? "").trim();
+}
+
+/* Replace renderSchedule: 14 days forward + workout suggestion + routine templates */
+function renderSchedule(){
+  const list = document.getElementById("scheduleList");
+  if(!list) return;
+  list.innerHTML = "";
+
+  const calRows = Array.isArray(data.calendar_2026) ? data.calendar_2026 : [];
+  const byDate = indexDailyPlanByDate();
+
+  if(calRows.length===0){
+    const el = document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs calendar_2026 adat (vagy nem töltődött be).";
+    list.appendChild(el);
+    return;
+  }
+
+  const today = fmtDate(new Date());
+  const upcoming = calRows
+    .map(r=>({ r, dk: extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r["date"]||"") }))
+    .filter(x=> x.dk && x.dk >= today)
+    .sort((a,b)=> a.dk.localeCompare(b.dk))
+    .slice(0, 14);
+
+  upcoming.forEach(x=>{
+    const r = x.r;
+    const dt = x.dk;
+
+    const shiftRaw = r["Műszak"] || r["Muszak"] || r["shift"] || "-";
+    const shift = normalizeShiftCode(shiftRaw);
+    const note = r["Megjegyzés"] || r["Megjegyzes"] || r["note"] || "";
+
+    const planRow = byDate[dt] || null;
+    const workout = getWorkoutSuggestion(planRow);
+
+    const routineState = ensureRoutineState(dt);
+
+    // Auto select routine type by shift if not chosen
+    if(!routineState.type){
+      if(shift==="N") routineState.type = "N";
+      else if(shift==="É") routineState.type = "É";
+      else if(shift==="P") routineState.type = "P1";
+    }
+
+    const isP = shift==="P";
+    const locked = !!routineState.locked;
+
+    const tasks = ROUTINE_TEMPLATES[routineState.type] || [];
+
+    const card = document.createElement("div");
+    card.className="item";
+    card.innerHTML = `
+      <div class="row space">
+        <div class="itemTitle">${dt}</div>
+        <div class="pill">Műszak: <b>${shift}</b>${locked ? " · LEZÁRVA" : ""}</div>
+      </div>
+      <div class="itemMeta">${note ? note : ""}</div>
+      <div class="divider"></div>
+      <div class="itemMeta"><b>Edzés javaslat:</b> ${workout ? workout : "—"}</div>
+
+      <div class="divider"></div>
+      <div class="row space">
+        <div class="itemTitle" style="font-size:14px">Napi rutin</div>
+        ${isP ? `
+          <label class="field" style="min-width:220px; margin:0">
+            <span>Szabadnap típus</span>
+            <select id="routineSel_${dt}" ${locked?"disabled":""}>
+              <option value="P1" ${routineState.type==="P1"?"selected":""}>P1</option>
+              <option value="P2" ${routineState.type==="P2"?"selected":""}>P2</option>
+              <option value="P3" ${routineState.type==="P3"?"selected":""}>P3</option>
+              <option value="P4" ${routineState.type==="P4"?"selected":""}>P4</option>
+            </select>
+          </label>
+        ` : `
+          <div class="pill">Sablon: <b>${routineState.type || "—"}</b></div>
+        `}
+      </div>
+
+      <div class="stack" id="routineList_${dt}" style="margin-top:10px"></div>
+
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="routineSave_${dt}" ${locked?"disabled":""}>Mentés</button>
+        <button class="btn ghost" id="routineUnlock_${dt}" ${locked?"":"disabled"}>Feloldás</button>
+      </div>
+    `;
+    list.appendChild(card);
+
+    // render tasks
+    const box = card.querySelector(`#routineList_${dt}`);
+    tasks.forEach(t=>{
+      const li = document.createElement("div");
+      li.className="check";
+      li.innerHTML = `<label>${t}</label><span class="pill">TASK</span>`;
+      box.appendChild(li);
+    });
+
+    // bind dropdown (P only)
+    const sel = card.querySelector(`#routineSel_${dt}`);
+    if(sel){
+      sel.addEventListener("change", ()=>{
+        routineState.type = sel.value;
+        routineState.locked = false;
+        saveState();
+        renderSchedule();
+      });
+    }
+
+    // save / unlock
+    card.querySelector(`#routineSave_${dt}`)?.addEventListener("click", ()=>{
+      routineState.locked = true;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN MENTVE");
+    });
+    card.querySelector(`#routineUnlock_${dt}`)?.addEventListener("click", ()=>{
+      routineState.locked = false;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN FELOLDVA");
+    });
+  });
+
+  saveState();
+}
+
+/* Training table under settings + fix scaling */
+function renderTrainingTable(){
+  const box = document.getElementById("trainingTable");
+  if(!box) return;
+  box.innerHTML = "";
+
+  const tl = data.training_levels;
+  let rows = [];
+  if(Array.isArray(tl)) rows = tl;
+  else if(tl && typeof tl === "object"){
+    rows = Object.keys(tl).map(k=> ({ level: Number(k), ...tl[k] }));
+    rows.sort((a,b)=> (a.level||0)-(b.level||0));
+  }
+
+  if(rows.length===0){
+    const el=document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs training_levels adat (vagy nem töltődött be).";
+    box.appendChild(el);
+    return;
+  }
+
+  rows.forEach(r=>{
+    const lvl = r.level ?? r.Level ?? r.lvl ?? "?";
+    const strength = r.strength ?? r.Strength ?? "-";
+    const z2 = r.z2min ?? r.Z2 ?? r.z2 ?? "-";
+    const mob = r.mobmin ?? r.Mobility ?? r.mob ?? "-";
+    const note = r.note ?? r.Note ?? "";
+    const el=document.createElement("div");
+    el.className="item";
+    el.innerHTML = `
+      <div class="row space">
+        <div class="itemTitle">Szint ${lvl}</div>
+        <div class="pill">Erő: <b>${strength}</b></div>
+      </div>
+      <div class="itemMeta">Z2: <b>${z2}</b> perc · Mobilitás: <b>${mob}</b> perc</div>
+      ${note ? `<div class="itemMeta">${note}</div>` : ``}
+    `;
+    box.appendChild(el);
+  });
+}
+
+/* Ensure training level selector actually triggers rerender + save */
+function bindTrainingLevelLive(){
+  const tlSel = document.getElementById("trainingLevel");
+  if(!tlSel) return;
+  tlSel.addEventListener("change", ()=>{
+    state.settings.trainingLevel = Number(tlSel.value || 1);
+    saveState();
+    if(typeof renderProfile === "function") renderProfile();
+  });
+}
+
+/* Patch renderProfile to also render training table (if function exists) */
+const _origRenderProfile = typeof renderProfile === "function" ? renderProfile : null;
+if(_origRenderProfile){
+  renderProfile = function(){
+    _origRenderProfile();
+    renderTrainingTable();
+  };
+}
+
+/* Patch DOMContentLoaded to ensure bindTrainingLevelLive */
+document.addEventListener("DOMContentLoaded", ()=>{
+  bindTrainingLevelLive();
+});
+
