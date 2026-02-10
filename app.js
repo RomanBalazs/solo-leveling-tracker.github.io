@@ -47,6 +47,19 @@ function truthyCell(v){
   return true;
 }
 
+function escapeHtml(s){
+  return String(s ?? "").replace(/[&<>"']/g, (ch)=>{
+    switch(ch){
+      case "&": return "&amp;";
+      case "<": return "&lt;";
+      case ">": return "&gt;";
+      case "\"": return "&quot;";
+      case "'": return "&#39;";
+      default: return ch;
+    }
+  });
+}
+
 function setStatus(msg){
   const el=document.getElementById("statusMsg");
   if(el) el.textContent = msg;
@@ -2215,6 +2228,48 @@ function renderWeekStrip(monthKey, activeDateKey){
   document.getElementById("claimWeeklyBtn") && (document.getElementById("claimWeeklyBtn").disabled = claimed || progress<5);
 }
 
+function shiftUiClass(shift){
+  if(shift==="É") return "shiftE";
+  if(shift==="N") return "shiftN";
+  if(shift==="P") return "shiftP";
+  return "";
+}
+
+function normalizeTimeRangeLabel(timeStr){
+  const s = String(timeStr||"").trim();
+  if(!s) return { label:"—", start:"", end:"" };
+  const m = s.match(/(\d{1,2}:\d{2})\s*[–—\-]\s*(\d{1,2}:\d{2})/);
+  if(m) return { label:`${m[1]}–${m[2]}`, start:m[1], end:m[2] };
+  const m2 = s.match(/(\d{1,2}:\d{2})/);
+  if(m2) return { label:m2[1], start:m2[1], end:"" };
+  return { label:s, start:"", end:"" };
+}
+
+function getRoutineTypeForSchedule(dateKey, shift){
+  const entry = (state.routines && state.routines[dateKey]) ? state.routines[dateKey] : null;
+  if(shift==="P"){
+    const t = String(entry?.type || "P1").toUpperCase();
+    return ["P1","P2","P3","P4"].includes(t) ? t : "P1";
+  }
+  if(shift==="É") return "É";
+  if(shift==="N") return "N";
+  // fallback
+  const t = String(entry?.type || "P1").toUpperCase();
+  return ["P1","P2","P3","P4","N","É"].includes(t) ? t : "P1";
+}
+
+function isRoutineLocked(dateKey){
+  const entry = (state.routines && state.routines[dateKey]) ? state.routines[dateKey] : null;
+  return !!entry?.locked;
+}
+
+function setRoutineState(dateKey, patch){
+  if(!state.routines || typeof state.routines !== 'object') state.routines = {};
+  const prev = state.routines[dateKey] && typeof state.routines[dateKey]==='object' ? state.routines[dateKey] : {};
+  state.routines[dateKey] = { ...prev, ...patch };
+  saveState();
+}
+
 function renderSchedule(){
   const list = document.getElementById("scheduleList");
   if(!list) return;
@@ -2262,33 +2317,200 @@ function renderSchedule(){
       <div>
         <div class="itemTitle">Beosztás: ${monthKey}</div>
         <div class="itemMeta">A lista a Küldetések fül „Aktív hónap” értékét követi.</div>
+        <div class="itemMeta" style="margin-top:6px">
+          <span class="pill shiftN" style="margin-right:6px">Nappali</span>
+          <span class="pill shiftE" style="margin-right:6px">Éjjeles</span>
+          <span class="pill shiftP">Pihenő</span>
+        </div>
       </div>
       <div class="pill">N: ${cnt["N"]||0} · É: ${cnt["É"]||0} · P: ${cnt["P"]||0}</div>
     </div>
   `;
   list.appendChild(sum);
 
-  // Items
+  const templates = (data.routine_templates && typeof data.routine_templates === 'object') ? data.routine_templates : null;
+
   rowsToShow.forEach(x=>{
     const { dk, shift, note } = x;
     const plan = data.byDateDaily?.[dk] || null;
     const dayName = plan?.["Nap"] ?? plan?.["Day"] ?? "";
     const timeTxt = plan?.["Idő"] ?? plan?.["Ido"] ?? plan?.["Time"] ?? "";
     const workout = getWorkoutSuggestion(plan);
+    const workoutCode = String(plan?.["Edzés kód"] ?? plan?.["Edzes kod"] ?? "").trim();
 
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerHTML = `
-      <div class="row space">
-        <div>
-          <div class="itemTitle">${dk}${dayName ? " · "+dayName : ""}</div>
-          <div class="itemMeta">Műszak: <b>${shift || "—"}</b>${timeTxt ? " · "+timeTxt : ""}${note ? " · "+note : ""}</div>
-        </div>
-        <div class="pill">${plan?.["Edzés kód"] || plan?.["Edzes kod"] || ""}</div>
-      </div>
-      ${truthyCell(workout) ? `<div class="itemMeta"><b>Edzés javaslat:</b> ${String(workout).trim()}</div>` : ``}
+    const shiftCls = shiftUiClass(shift);
+    const routineType = getRoutineTypeForSchedule(dk, shift);
+    const locked = isRoutineLocked(dk);
+    const routineRows = templates?.[routineType] || [];
+
+    const dayEl = document.createElement('div');
+    dayEl.className = `item scheduleDay ${shiftCls}`;
+
+    // Header
+    const head = document.createElement('div');
+    head.className = 'row space';
+
+    const left = document.createElement('div');
+    left.innerHTML = `
+      <div class="itemTitle">${dk}${dayName ? ' · '+dayName : ''}</div>
+      <div class="itemMeta">${timeTxt ? timeTxt : ''}${note ? (timeTxt ? ' · ' : '') + note : ''}</div>
     `;
-    list.appendChild(el);
+
+    const right = document.createElement('div');
+    right.className = 'row';
+
+    const shiftPill = document.createElement('div');
+    shiftPill.className = `pill shiftPill ${shiftCls}`;
+    shiftPill.textContent = `Műszak: ${shift || '—'}`;
+
+    right.appendChild(shiftPill);
+
+    if(workoutCode){
+      const wc = document.createElement('div');
+      wc.className = 'pill';
+      wc.textContent = workoutCode;
+      right.appendChild(wc);
+    }
+
+    head.appendChild(left);
+    head.appendChild(right);
+    dayEl.appendChild(head);
+
+    if(truthyCell(workout)){
+      const w = document.createElement('div');
+      w.className = 'itemMeta';
+      w.innerHTML = `<b>Edzés javaslat:</b> ${String(workout).trim()}`;
+      dayEl.appendChild(w);
+    }
+
+    // Routine block
+    const routineBlock = document.createElement('div');
+    routineBlock.className = 'routineBlock';
+
+    const routineTop = document.createElement('div');
+    routineTop.className = 'row space';
+
+    const rtLeft = document.createElement('div');
+    rtLeft.innerHTML = `<div class="routineTitle">Napi rutin</div>`;
+
+    const rtRight = document.createElement('div');
+    rtRight.className = 'row';
+
+    // Rest day selector
+    if(shift === 'P'){
+      const label = document.createElement('div');
+      label.className = 'itemMeta';
+      label.textContent = 'Szabadnap típus';
+
+      const sel = document.createElement('select');
+      sel.className = 'scheduleSelect';
+      ['P1','P2','P3','P4'].forEach(t=>{
+        const opt = document.createElement('option');
+        opt.value = t;
+        opt.textContent = t;
+        sel.appendChild(opt);
+      });
+      sel.value = routineType;
+      sel.disabled = locked;
+
+      const saveBtn = document.createElement('button');
+      saveBtn.className = 'btn small';
+      saveBtn.textContent = 'Mentés';
+      saveBtn.disabled = locked;
+
+      const unlockBtn = document.createElement('button');
+      unlockBtn.className = 'btn ghost small';
+      unlockBtn.textContent = 'Feloldás';
+      unlockBtn.disabled = !locked;
+
+      // Events
+      sel.addEventListener('change', ()=>{
+        if(isRoutineLocked(dk)) return;
+        setRoutineState(dk, { type: sel.value, locked: false });
+        renderSchedule();
+      });
+
+      saveBtn.addEventListener('click', ()=>{
+        if(isRoutineLocked(dk)) return;
+        setRoutineState(dk, { type: sel.value, locked: true });
+        setStatus('RUTIN MENTVE');
+        renderSchedule();
+      });
+
+      unlockBtn.addEventListener('click', ()=>{
+        if(!isRoutineLocked(dk)) return;
+        // anti-cheat: indok kérése, ha engedélyezve
+        if(state.settings.antiCheat){
+          const reason = prompt('Feloldás indoka (manual edit):');
+          if(!reason) return;
+          if(!Array.isArray(state.meta.manualEdits)) state.meta.manualEdits = [];
+          state.meta.manualEdits.push({ dateKey: dk, ts: Date.now(), reason: String(reason).slice(0,200) });
+        }
+        setRoutineState(dk, { locked: false });
+        setStatus('FELOLDVA');
+        renderSchedule();
+      });
+
+      rtRight.appendChild(label);
+      rtRight.appendChild(sel);
+      rtRight.appendChild(saveBtn);
+      rtRight.appendChild(unlockBtn);
+    }else{
+      const chip = document.createElement('div');
+      chip.className = 'pill';
+      chip.textContent = `Rutin: ${routineType}`;
+      rtRight.appendChild(chip);
+    }
+
+    routineTop.appendChild(rtLeft);
+    routineTop.appendChild(rtRight);
+    routineBlock.appendChild(routineTop);
+
+    const routineList = document.createElement('div');
+    routineList.className = 'routineList';
+
+    if(!templates){
+      const empty = document.createElement('div');
+      empty.className = 'itemMeta';
+      empty.textContent = 'Nincs betöltve a „Napi rutin” sablon (routine_templates).';
+      routineList.appendChild(empty);
+    }else if(!routineRows.length){
+      const empty = document.createElement('div');
+      empty.className = 'itemMeta';
+      empty.textContent = `Nincs rutin sablon ehhez: ${routineType}`;
+      routineList.appendChild(empty);
+    }else{
+      routineRows.forEach(rr=>{
+        const t = normalizeTimeRangeLabel(rr.time);
+
+        const row = document.createElement('div');
+        row.className = 'routineRow';
+
+        const time = document.createElement('div');
+        time.className = 'timeBadge';
+        time.textContent = t.label;
+
+        const txt = document.createElement('div');
+        txt.className = 'routineText';
+        txt.innerHTML = `
+          <div class="routineActivity"><b>${escapeHtml(String(rr.activity||''))}</b>${rr.note ? `<span class="routineNote"> · ${escapeHtml(String(rr.note))}</span>` : ''}</div>
+        `;
+
+        const tag = document.createElement('div');
+        tag.className = 'pill small';
+        tag.textContent = 'RUTIN';
+
+        row.appendChild(time);
+        row.appendChild(txt);
+        row.appendChild(tag);
+        routineList.appendChild(row);
+      });
+    }
+
+    routineBlock.appendChild(routineList);
+    dayEl.appendChild(routineBlock);
+
+    list.appendChild(dayEl);
   });
 }
 

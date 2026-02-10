@@ -469,3 +469,61 @@ body.focusMode #view-quests .dayCard{
   .avatarBox{width:86px; height:86px;}
   .topWidgets{justify-content:flex-start;}
 }
+
+/* ---------- Beosztás (napi rutin) finomhangolás ---------- */
+.scheduleDay{ padding: 12px; }
+.scheduleDay.shiftN{ border-left: 4px solid rgba(255,204,102,.85); }
+.scheduleDay.shiftE{ border-left: 4px solid rgba(59,220,255,.85); }
+.scheduleDay.shiftP{ border-left: 4px solid rgba(57,255,20,.85); }
+
+.pill.shiftN{ border-color: rgba(255,204,102,.60); background: rgba(255,204,102,.14); color: #fff; }
+.pill.shiftE{ border-color: rgba(59,220,255,.60); background: rgba(59,220,255,.14); color: #e8feff; }
+.pill.shiftP{ border-color: rgba(57,255,20,.60); background: rgba(57,255,20,.14); color: #eaffef; }
+
+.pill.small{ padding: 6px 10px; font-size: 11px; }
+
+.scheduleSelect{
+  width: 120px;
+  padding: 8px 10px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(11,15,23,.55);
+  color: var(--text);
+  font-size: 12px;
+}
+
+.routineBlock{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
+.routineTitle{ font-weight: 900; letter-spacing: .02em; }
+
+.routineList{ display:flex; flex-direction:column; gap: 0; margin-top: 10px; }
+.routineRow{
+  display:grid;
+  grid-template-columns: 130px 1fr auto;
+  gap: 10px;
+  align-items:center;
+  padding: 10px 0;
+  border-top: 1px dashed rgba(27,41,66,.80);
+}
+.routineRow:first-child{ border-top: none; }
+
+.timeBadge{
+  font-family: var(--mono);
+  font-size: 12px;
+  color: #d8d1ff;
+  border: 1px solid rgba(124,92,255,.45);
+  background: rgba(124,92,255,.10);
+  padding: 7px 10px;
+  border-radius: 999px;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.routineText{ min-width: 0; }
+.routineActivity{ font-size: 13px; line-height: 1.25; }
+.routineNote{ color: var(--muted); font-weight: 600; }
+
+@media (max-width: 520px){
+  .routineRow{ grid-template-columns: 110px 1fr; }
+  .routineRow .pill{ display:none; }
+  .scheduleSelect{ width: 110px; }
+}
