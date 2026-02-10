@@ -1,5 +1,5 @@
 /* Simple PWA-lite cache */
-const CACHE_NAME = "sl-tracker-cache-v2";
+const CACHE_NAME = "sl-tracker-cache-v3";
 const ASSETS = [
   "./",
   "./index.html",

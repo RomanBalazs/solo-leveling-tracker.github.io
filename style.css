@@ -9,6 +9,10 @@
   --good:#3ce6a5;
   --warn:#ffcc66;
   --bad:#ff5c7a;
+  --shiftNight:#00e5ff;
+  --shiftDay:#ffea61;
+  --shiftRest:#39ff14;
+  --workRed:#ff3b5c;
   --shadow: 0 10px 30px rgba(0,0,0,.35);
   --radius: 18px;
   --radius2: 14px;
@@ -277,6 +281,83 @@ input, select{
 }
 .kpi .k span{display:block;color:var(--muted);font-size:11px}
 .kpi .k strong{font-family:var(--mono)}
+/* --- Week strip chips (Schedule + Meal) --- */
+.weekStrip{
+  display:flex;
+  gap:8px;
+  overflow-x:auto;
+  padding: 2px 2px 6px;
+  scrollbar-width: thin;
+}
+.weekChip{
+  min-width: 92px;
+  border:1px solid var(--line);
+  background: rgba(11,15,23,.35);
+  border-radius: 14px;
+  padding: 8px 10px;
+  cursor:pointer;
+  user-select:none;
+}
+.weekChip .wTop{
+  display:flex;
+  justify-content: space-between;
+  align-items:center;
+  gap:8px;
+  font-weight: 900;
+}
+.weekChip .wDate{
+  margin-top: 4px;
+  font-family: var(--mono);
+  color: var(--muted);
+  font-size: 11px;
+}
+.weekChip.active{
+  outline: 2px solid rgba(124,92,255,.55);
+}
+.weekChip.shiftE{ border-color: rgba(0,229,255,.55); background: rgba(0,229,255,.08); }
+.weekChip.shiftN{ border-color: rgba(255,234,97,.55); background: rgba(255,234,97,.08); }
+.weekChip.shiftP{ border-color: rgba(57,255,20,.55); background: rgba(57,255,20,.08); }
+.weekChip.work{ border-color: rgba(255,59,92,.55); background: rgba(255,59,92,.08); }
+.weekChip.rest{ border-color: rgba(57,255,20,.55); background: rgba(57,255,20,.08); }
+
+/* --- Schedule shift highlight --- */
+.scheduleCard{ position: relative; }
+.scheduleCard.shiftE{ border-left: 6px solid var(--shiftNight); }
+.scheduleCard.shiftN{ border-left: 6px solid var(--shiftDay); }
+.scheduleCard.shiftP{ border-left: 6px solid var(--shiftRest); }
+.scheduleCard.activeDay{ outline: 2px solid rgba(124,92,255,.55); }
+.mealDayCard.activeDay{ outline: 2px solid rgba(124,92,255,.55); }
+
+/* --- Routine list with timestamps --- */
+.rLine{
+  display:flex;
+  gap:10px;
+  align-items:flex-start;
+  padding: 10px 0;
+  border-top: 1px dashed rgba(27,41,66,.8);
+}
+.rLine:first-child{ border-top:none; }
+.rTime{
+  font-family: var(--mono);
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--line);
+  background: rgba(15,22,36,.55);
+  border-radius: 999px;
+  padding: 6px 10px;
+  white-space: nowrap;
+}
+.rBody b{ display:block; font-size: 13px; }
+.rBody .muted{ color: var(--muted); font-size: 12px; margin-top:2px; }
+
+/* --- Meal dish nutrition line --- */
+.nutLine{
+  margin-top:6px;
+  color: var(--muted);
+  font-size: 12px;
+  font-family: var(--mono);
+}
+
 .footer{
   position: fixed;
   left:0; right:0; bottom:0;
@@ -531,3 +612,8 @@ body.focusMode #view-quests .dayCard{
 }
 .recipeUl, .recipeOl{ margin: 0; padding-left: 18px; }
 .recipeUl li, .recipeOl li{ margin: 6px 0; }
+
+
+/* Meal day highlight */
+.mealDayCard.workDay{ border-left:6px solid var(--workRed); }
+.mealDayCard.restDay{ border-left:6px solid var(--shiftRest); }
