@@ -1087,6 +1087,43 @@ function bindQuests(){
   document.getElementById("claimWeeklyBtn")?.addEventListener("click", claimWeeklyReward);
 }
 
+function bindSchedule(){
+  const m = document.getElementById("scheduleMonth");
+  const d = document.getElementById("scheduleDate");
+  const todayBtn = document.getElementById("scheduleTodayBtn");
+
+  m?.addEventListener("change", (e)=>{
+    state.ui.activeMonth = e.target.value || fmtMonth(new Date());
+    const first = startOfMonthDate(state.ui.activeMonth);
+    state.ui.activeDate = fmtDate(first);
+    saveState();
+    renderQuests();
+    renderSchedule();
+    renderMeal();
+  });
+
+  d?.addEventListener("change", (e)=>{
+    const dk = parseDateKey(e.target.value) || fmtDate(new Date());
+    state.ui.activeDate = dk;
+    state.ui.activeMonth = String(dk).slice(0,7);
+    saveState();
+    renderQuests();
+    renderSchedule();
+    renderMeal();
+  });
+
+  todayBtn?.addEventListener("click", ()=>{
+    const dk = fmtDate(new Date());
+    state.ui.activeDate = dk;
+    state.ui.activeMonth = String(dk).slice(0,7);
+    saveState();
+    renderQuests();
+    renderSchedule();
+    renderMeal();
+  });
+}
+
+
 function quickAdd(field, amount){
   const key = state.ui.activeDate;
   const d = ensureQuestDay(key);
@@ -2275,48 +2312,55 @@ function renderSchedule(){
   if(!list) return;
   list.innerHTML = "";
 
+  // Sync Schedule selectors with global UI state
+  const monthInput = document.getElementById("scheduleMonth");
+  const dateInput = document.getElementById("scheduleDate");
+  const weekPill = document.getElementById("scheduleWeekPill");
+
+  const activeDateKey = parseDateKey(state.ui.activeDate) || fmtDate(new Date());
+  const activeMonthKey = state.ui.activeMonth || String(activeDateKey).slice(0,7);
+
+  // normalize + persist
+  state.ui.activeDate = activeDateKey;
+  state.ui.activeMonth = activeMonthKey;
+
+  if(monthInput) monthInput.value = activeMonthKey;
+  if(dateInput) dateInput.value = activeDateKey;
+  if(weekPill) weekPill.textContent = `Hét: ${getISOWeekKey(activeDateKey)}`;
+
   const cal = Array.isArray(data.calendar_2026) ? data.calendar_2026 : [];
-  if(!cal.length){
-    const el = document.createElement("div");
-    el.className = "item";
-    el.textContent = "Nincs calendar_2026 adat (vagy nem töltődött be).";
-    list.appendChild(el);
-    return;
+  const calIndex = data.byDateCalendar || indexByDate(cal);
+
+  // Heti nézet (Hétfő → Vasárnap) az aktív nap körül
+  const center = new Date(activeDateKey+"T12:00:00");
+  const dayNr = (center.getDay()+6)%7; // Mon=0..Sun=6
+  const mon = new Date(center); mon.setDate(center.getDate()-dayNr);
+
+  const weekKeys = [];
+  for(let i=0;i<7;i++){
+    const d = new Date(mon); d.setDate(mon.getDate()+i);
+    weekKeys.push(fmtDate(d));
   }
 
-  const monthKey = state.ui.activeMonth || fmtMonth(new Date());
+  // Aktív nap legyen fent
+  const orderedKeys = [activeDateKey, ...weekKeys.filter(k=>k!==activeDateKey)];
 
-  const monthRows = cal
-    .map(r=>{
-      const dk = extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r.date||r.Date||"");
-      const shiftRaw = r["Műszak"] ?? r["Muszak"] ?? r.shift ?? r.Shift ?? "";
-      const note = r["Megjegyzés"] ?? r["Megjegyzes"] ?? r.note ?? "";
-      return { r, dk, shift: normalizeShiftCode(shiftRaw), note: String(note||"") };
-    })
-    .filter(x=> x.dk && String(x.dk).slice(0,7)===monthKey)
-    .sort((a,b)=> a.dk.localeCompare(b.dk));
-
-  const rowsToShow = monthRows.length ? monthRows : cal
-    .map(r=>{
-      const dk = extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r.date||r.Date||"");
-      const shiftRaw = r["Műszak"] ?? r["Muszak"] ?? r.shift ?? r.Shift ?? "";
-      const note = r["Megjegyzés"] ?? r["Megjegyzes"] ?? r.note ?? "";
-      return { r, dk, shift: normalizeShiftCode(shiftRaw), note: String(note||"") };
-    })
-    .filter(x=> x.dk)
-    .sort((a,b)=> a.dk.localeCompare(b.dk))
-    .slice(0, 40);
-
-  // Summary
+  // Summary (heti bontás)
   const cnt = {"N":0, "É":0, "P":0, "":0};
-  rowsToShow.forEach(x=>{ cnt[x.shift] = (cnt[x.shift]||0) + 1; });
+  for(const dk of weekKeys){
+    const r = calIndex[dk];
+    const shiftRaw = r ? (r["Műszak"] ?? r["Muszak"] ?? r.shift ?? r.Shift ?? "") : "";
+    const shift = normalizeShiftCode(shiftRaw);
+    cnt[shift] = (cnt[shift]||0) + 1;
+  }
+
   const sum = document.createElement("div");
   sum.className = "item";
   sum.innerHTML = `
     <div class="row space">
       <div>
-        <div class="itemTitle">Beosztás: ${monthKey}</div>
-        <div class="itemMeta">A lista a Küldetések fül „Aktív hónap” értékét követi.</div>
+        <div class="itemTitle">Beosztás · Heti nézet</div>
+        <div class="itemMeta">Aktív nap: <b>${activeDateKey}</b> · Hét: <b>${getISOWeekKey(activeDateKey)}</b></div>
         <div class="itemMeta" style="margin-top:6px">
           <span class="pill shiftN" style="margin-right:6px">Nappali</span>
           <span class="pill shiftE" style="margin-right:6px">Éjjeles</span>
@@ -2329,9 +2373,16 @@ function renderSchedule(){
   list.appendChild(sum);
 
   const templates = (data.routine_templates && typeof data.routine_templates === 'object') ? data.routine_templates : null;
+  const dayLabels = ["H","K","Sze","Cs","P","Szo","V"]; // Hétfő..Vasárnap
+  const labelByKey = {};
+  weekKeys.forEach((k,i)=> labelByKey[k]=dayLabels[i]||"");
 
-  rowsToShow.forEach(x=>{
-    const { dk, shift, note } = x;
+  orderedKeys.forEach(dk=>{
+    const calRow = calIndex[dk] || null;
+    const shiftRaw = calRow ? (calRow["Műszak"] ?? calRow["Muszak"] ?? calRow.shift ?? calRow.Shift ?? "") : "";
+    const note = calRow ? String(calRow["Megjegyzés"] ?? calRow["Megjegyzes"] ?? calRow.note ?? "") : "";
+    const shift = normalizeShiftCode(shiftRaw);
+
     const plan = data.byDateDaily?.[dk] || null;
     const dayName = plan?.["Nap"] ?? plan?.["Day"] ?? "";
     const timeTxt = plan?.["Idő"] ?? plan?.["Ido"] ?? plan?.["Time"] ?? "";
@@ -2344,7 +2395,7 @@ function renderSchedule(){
     const routineRows = templates?.[routineType] || [];
 
     const dayEl = document.createElement('div');
-    dayEl.className = `item scheduleDay ${shiftCls}`;
+    dayEl.className = `item scheduleDay ${shiftCls}${dk===activeDateKey ? ' activeDay' : ''}`;
 
     // Header
     const head = document.createElement('div');
@@ -2352,8 +2403,8 @@ function renderSchedule(){
 
     const left = document.createElement('div');
     left.innerHTML = `
-      <div class="itemTitle">${dk}${dayName ? ' · '+dayName : ''}</div>
-      <div class="itemMeta">${timeTxt ? timeTxt : ''}${note ? (timeTxt ? ' · ' : '') + note : ''}</div>
+      <div class="itemTitle">${labelByKey[dk] ? (labelByKey[dk] + ' · ') : ''}${dk}${dayName ? ' · '+dayName : ''}</div>
+      <div class="itemMeta">${timeTxt ? timeTxt : ''}${note ? (timeTxt ? ' · ' : '') + escapeHtml(note) : ''}</div>
     `;
 
     const right = document.createElement('div');
@@ -2362,7 +2413,6 @@ function renderSchedule(){
     const shiftPill = document.createElement('div');
     shiftPill.className = `pill shiftPill ${shiftCls}`;
     shiftPill.textContent = `Műszak: ${shift || '—'}`;
-
     right.appendChild(shiftPill);
 
     if(workoutCode){
@@ -2372,14 +2422,32 @@ function renderSchedule(){
       right.appendChild(wc);
     }
 
+    if(dk===activeDateKey){
+      const tag = document.createElement('div');
+      tag.className = 'pill activeTag';
+      tag.textContent = 'AKTÍV';
+      right.appendChild(tag);
+    }
+
     head.appendChild(left);
     head.appendChild(right);
     dayEl.appendChild(head);
 
+    // Click header -> set active day
+    head.addEventListener('click', ()=>{
+      if(state.ui.activeDate === dk) return;
+      state.ui.activeDate = dk;
+      state.ui.activeMonth = String(dk).slice(0,7);
+      saveState();
+      renderQuests();
+      renderSchedule();
+      renderMeal();
+    });
+
     if(truthyCell(workout)){
       const w = document.createElement('div');
       w.className = 'itemMeta';
-      w.innerHTML = `<b>Edzés javaslat:</b> ${String(workout).trim()}`;
+      w.innerHTML = `<b>Edzés javaslat:</b> ${escapeHtml(String(workout).trim())}`;
       dayEl.appendChild(w);
     }
 
@@ -2396,7 +2464,7 @@ function renderSchedule(){
     const rtRight = document.createElement('div');
     rtRight.className = 'row';
 
-    // Rest day selector
+    // Rest day selector (P)
     if(shift === 'P'){
       const label = document.createElement('div');
       label.className = 'itemMeta';
@@ -2423,7 +2491,6 @@ function renderSchedule(){
       unlockBtn.textContent = 'Feloldás';
       unlockBtn.disabled = !locked;
 
-      // Events
       sel.addEventListener('change', ()=>{
         if(isRoutineLocked(dk)) return;
         setRoutineState(dk, { type: sel.value, locked: false });
@@ -2439,7 +2506,6 @@ function renderSchedule(){
 
       unlockBtn.addEventListener('click', ()=>{
         if(!isRoutineLocked(dk)) return;
-        // anti-cheat: indok kérése, ha engedélyezve
         if(state.settings.antiCheat){
           const reason = prompt('Feloldás indoka (manual edit):');
           if(!reason) return;
@@ -2509,10 +2575,10 @@ function renderSchedule(){
 
     routineBlock.appendChild(routineList);
     dayEl.appendChild(routineBlock);
-
     list.appendChild(dayEl);
   });
 }
+
 
 function renderMeal(){
   const todayBox = document.getElementById("mealToday");
@@ -2615,7 +2681,8 @@ let data = {
   menu_2026:null,
   calendar_2026:null,
   routine_templates:null,
-  byDateDaily: {}
+  byDateDaily: {},
+  byDateCalendar: {}
 };
 
 document.addEventListener("DOMContentLoaded", async ()=>{
@@ -2624,6 +2691,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   bindProfile();
   bindMeasurements();
   bindQuests();
+  bindSchedule();
 
   // immediate
   renderProfile();
@@ -2635,6 +2703,7 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   const loaded = await loadAllData();
   data = { ...data, ...loaded };
   data.byDateDaily = indexByDate(data.daily_plan_2026);
+  data.byDateCalendar = indexByDate(data.calendar_2026);
 
   // merge defaults from settings json (only if empty)
   if(data.settings && typeof data.settings === "object"){

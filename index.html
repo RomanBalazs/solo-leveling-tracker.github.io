@@ -382,10 +382,28 @@
         <div id="weekStrip" class="week"></div>
       </div>
     </section>
-
     <section id="view-schedule" class="view">
       <div class="card">
-        <div class="cardTitle">Beosztás</div>
+        <div class="row space">
+          <div>
+            <div class="cardTitle">Beosztás</div>
+            <div class="hint">Heti nézet. A kiválasztott (aktív) nap felül kiemelve jelenik meg.</div>
+          </div>
+          <div class="pill" id="scheduleWeekPill">Hét: –</div>
+        </div>
+
+        <div class="row" style="margin-top:10px">
+          <label class="field" style="min-width:220px">
+            <span>Aktív hónap</span>
+            <input type="month" id="scheduleMonth">
+          </label>
+          <label class="field" style="min-width:220px">
+            <span>Aktív nap</span>
+            <input type="date" id="scheduleDate">
+          </label>
+          <button class="btn ghost" id="scheduleTodayBtn" title="Ugrás a mai napra">Ma</button>
+        </div>
+
         <div class="divider"></div>
         <div id="scheduleList" class="list"></div>
       </div>

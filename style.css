@@ -476,6 +476,21 @@ body.focusMode #view-quests .dayCard{
 .scheduleDay.shiftE{ border-left: 4px solid rgba(59,220,255,.85); }
 .scheduleDay.shiftP{ border-left: 4px solid rgba(57,255,20,.85); }
 
+/* Aktív nap kiemelés (Beosztás heti nézet) */
+.scheduleDay.activeDay{
+  outline: 2px solid rgba(124,92,255,.55);
+  box-shadow: 0 0 0 3px rgba(124,92,255,.10), 0 18px 40px rgba(0,0,0,.35);
+}
+.scheduleDay.activeDay .itemTitle{
+  text-shadow: 0 0 12px rgba(124,92,255,.30);
+}
+.scheduleDay .activeTag{
+  border-color: rgba(124,92,255,.55);
+  background: rgba(124,92,255,.18);
+  color: #efeaff;
+}
+
+
 .pill.shiftN{ border-color: rgba(255,204,102,.60); background: rgba(255,204,102,.14); color: #fff; }
 .pill.shiftE{ border-color: rgba(59,220,255,.60); background: rgba(59,220,255,.14); color: #e8feff; }
 .pill.shiftP{ border-color: rgba(57,255,20,.60); background: rgba(57,255,20,.14); color: #eaffef; }
