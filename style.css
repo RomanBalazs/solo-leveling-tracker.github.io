@@ -52,6 +52,24 @@ a{color:inherit}
   color: #d8d1ff;
   background: rgba(124,92,255,.10);
 }
+
+.systemLogo{
+  width:44px;
+  height:44px;
+  padding:0;
+  border-radius:50%;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.systemLogoImg{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  display:block;
+}
+
 .title .h1{font-weight:800; font-size:16px}
 .title .h2{color:var(--muted); font-size:12px}
 .tabs{
@@ -325,4 +343,129 @@ input, select{
   background: rgba(124,92,255,.12);
   font-weight: 800;
   font-size: 12px;
+}
+
+
+/* ====== v2026.02 UI extensions ====== */
+.topbarRow{
+  display:flex;
+  justify-content: space-between;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.topWidgets{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+.cityWidget{
+  display:flex;
+  gap: 8px;
+  align-items:center;
+}
+.cityWidget select{
+  width:auto;
+  min-width: 140px;
+}
+
+.avatarRow{
+  display:flex;
+  gap: 12px;
+  align-items:center;
+  margin-bottom: 10px;
+}
+.avatarBox{
+  width:72px;
+  height:72px;
+  border-radius: 18px;
+  border: 1px solid var(--line);
+  background: rgba(11,15,23,.35);
+  overflow:hidden;
+  flex: 0 0 auto;
+}
+.avatarBox img{
+  width:100%;
+  height:100%;
+  object-fit: cover;
+  display:block;
+}
+.avatarActions{flex: 1 1 auto}
+
+textarea{
+  width:100%;
+  padding: 10px 12px;
+  border-radius: 12px;
+  border: 1px solid var(--line);
+  background: rgba(11,15,23,.55);
+  color: var(--text);
+  outline:none;
+  resize: vertical;
+}
+
+/* Nested cards for alerts */
+.card.danger{
+  border-color: rgba(255,92,122,.55);
+  background: linear-gradient(180deg, rgba(255,92,122,.10), rgba(13,20,33,.85));
+}
+.card.danger .pill{
+  border-color: rgba(255,92,122,.35);
+}
+
+/* Heatmap */
+.heatmap{
+  display:grid;
+  grid-template-columns: repeat(7, minmax(0,1fr));
+  gap: 6px;
+}
+.hDay{
+  border-radius: 10px;
+  border:1px solid var(--line);
+  background: rgba(15,22,36,.55);
+  padding: 10px 6px;
+  text-align:center;
+  font-family: var(--mono);
+  font-size: 11px;
+  cursor: pointer;
+  user-select:none;
+}
+.hDay small{
+  display:block;
+  color: var(--muted);
+  font-family: var(--sans);
+  font-size: 10px;
+  margin-top: 3px;
+}
+.hGreen{ background: rgba(60,230,165,.14); border-color: rgba(60,230,165,.35) }
+.hYellow{ background: rgba(255,204,102,.14); border-color: rgba(255,204,102,.35) }
+.hRed{ background: rgba(255,92,122,.12); border-color: rgba(255,92,122,.30) }
+.hEmpty{ opacity: .55; cursor: default }
+
+.singleCol{ grid-template-columns: 1fr; gap: 12px }
+
+/* Focus Mode (quests) */
+body.focusMode .topbar,
+body.focusMode .footer{ display:none; }
+body.focusMode .container{ max-width: 900px; padding-top: 10px; }
+body.focusMode #view-quests .hint{ display:none; }
+body.focusMode #view-quests #heatmapGrid,
+body.focusMode #view-quests #penaltyCard,
+body.focusMode #view-quests #bossActions,
+body.focusMode #view-quests #weeklyHint{ display:none; }
+body.focusMode #view-quests .grid.singleCol{ display:none; }
+body.focusMode #view-quests #weekStrip{
+  display:grid;
+  grid-template-columns: 1fr;
+}
+body.focusMode #view-quests .dayCard{
+  transform: scale(1.02);
+}
+
+@media(max-width: 560px){
+  .avatarRow{flex-direction: column; align-items:flex-start;}
+  .avatarBox{width:86px; height:86px;}
+  .topWidgets{justify-content:flex-start;}
 }
