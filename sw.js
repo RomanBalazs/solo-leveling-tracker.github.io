@@ -1,11 +1,13 @@
 /* Simple PWA-lite cache */
-const CACHE_NAME = "sl-tracker-cache-v1";
+const CACHE_NAME = "sl-tracker-cache-v2026-02-10-4";
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./manifest.webmanifest",
+  "./favicon.png",
+  "./smilestatue.png",
   "./icon-192.png",
   "./icon-512.png",
   "./data/settings.json",
