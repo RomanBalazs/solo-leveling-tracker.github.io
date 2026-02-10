@@ -1,0 +1,772 @@
+{
+  "version": 1,
+  "generatedAt": "2026-02-10T06:19:39.918903Z",
+  "recipes": [
+    {
+      "name": "Húsleves (csirke/csont) – leszűrhető zöldséggel",
+      "type": "Leves",
+      "kcal_per_serving": 280,
+      "protein_g_per_serving": 25,
+      "notes": "2 napra is jó",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/husleves-karajcsontbol"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csont (csirke- vagy sertéscsont / karajcsont)",
+        "Sárgarépa, fehérrépa, zeller",
+        "Vöröshagyma, fokhagyma",
+        "Paradicsom, paprika (opcionális)",
+        "Egész bors, só",
+        "Cérnametélt vagy egyéb levesbetét"
+      ],
+      "steps": [
+        "A csontot/húst hideg vízben feltesszük főni, felforraljuk, majd habját leszedjük.",
+        "Hozzáadjuk a hagymát és a zöldségeket (egészben), sózzuk, borsozzuk.",
+        "Kis lángon, gyöngyözve főzzük 2–3 órát, hogy tiszta leve legyen.",
+        "Leszűrjük; a zöldségek mehetnek vissza a levesbe.",
+        "A levesbetétet külön kifőzzük, tálaláskor a leveshez adjuk."
+      ]
+    },
+    {
+      "name": "Paradicsomleves (tésztával)",
+      "type": "Leves",
+      "kcal_per_serving": 320,
+      "protein_g_per_serving": 10,
+      "notes": "gyors, paradicsom OK",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/egyszeru-paradicsomleves-betutesztaval"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Paradicsomlé / passzírozott paradicsom",
+        "Vöröshagyma",
+        "Olaj vagy vaj",
+        "Liszt (rántáshoz)",
+        "Cukor (ízlés szerint)",
+        "Só, bors",
+        "Betűtészta vagy apró tészta"
+      ],
+      "steps": [
+        "Apróra vágott hagymát kevés zsiradékon megdinsztelünk, majd liszttel világos rántást készítünk.",
+        "Felöntjük paradicsomlével/passatával és vízzel/alaplével, csomómentesre keverjük.",
+        "Sózzuk, borsozzuk, kevés cukorral kerekítjük az ízt.",
+        "Gyöngyözve főzzük 10–15 percet, hogy a rántás átfőjön.",
+        "A tésztát külön kifőzzük, tálaláskor a leveshez adjuk."
+      ]
+    },
+    {
+      "name": "Hagymaleves (sajttal)",
+      "type": "Leves",
+      "kcal_per_serving": 380,
+      "protein_g_per_serving": 15,
+      "notes": "hagymás, laktató",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/sajtos-hagymaleves-b-ors-konyhajabol"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Vöröshagyma",
+        "Vaj/olaj",
+        "Alaplé (zöldség vagy csirke) / víz + leveskocka",
+        "Só, bors, kakukkfű (opcionális)",
+        "Pirítós vagy levesgyöngy",
+        "Reszelt sajt"
+      ],
+      "steps": [
+        "A hagymát vékonyra szeleteljük és vajon lassan karamellizáljuk 10–15 percig.",
+        "Felöntjük alaplével, fűszerezzük, majd 10 percig főzzük.",
+        "Tálaláskor pirítóssal vagy levesgyönggyel kínáljuk.",
+        "A tetejére reszelt sajtot szórunk (akár rá is olvasztható)."
+      ]
+    },
+    {
+      "name": "Lecsóleves (paprika-paradicsom-hagyma)",
+      "type": "Leves",
+      "kcal_per_serving": 260,
+      "protein_g_per_serving": 12,
+      "notes": "zöldség OK",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/lecsoleves"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Vöröshagyma",
+        "Zöldpaprika / kaliforniai paprika",
+        "Paradicsom (vagy paradicsompüré)",
+        "Olaj/zsír",
+        "Fűszerpaprika",
+        "Só, bors",
+        "Víz/alaplé",
+        "Opcionális: kolbász, rizs vagy nokedli betét"
+      ],
+      "steps": [
+        "A hagymát zsiradékon megdinszteljük, majd lehúzzuk a tűzről és megszórjuk pirospaprikával.",
+        "Hozzáadjuk a felkarikázott paprikát, pár percig pároljuk.",
+        "Beletesszük a felkockázott paradicsomot, felöntjük vízzel/alaplével, fűszerezzük.",
+        "10–15 percig főzzük, hogy az ízek összeérjenek.",
+        "Kérésre kolbásszal dúsítjuk, illetve rizst/nokedlit adunk hozzá."
+      ]
+    },
+    {
+      "name": "Marhahúsleves csipetkével – leszűrhető",
+      "type": "Leves",
+      "kcal_per_serving": 330,
+      "protein_g_per_serving": 22,
+      "notes": "klasszikus",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/klasszikus-marhahusleves"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Marhahús (pl. lábszár) és/vagy csont",
+        "Sárgarépa, fehérrépa, zeller",
+        "Vöröshagyma, fokhagyma",
+        "Egész bors, só",
+        "Csipetke: liszt + tojás + só"
+      ],
+      "steps": [
+        "A marhát hideg vízben feltesszük főni, felforraljuk, habját leszedjük.",
+        "Hozzáadjuk a zöldségeket és a fűszereket, majd kis lángon 2–3 órát főzzük.",
+        "Csipetketésztát gyúrunk (liszt+tojás+só), apró darabokra csipkedjük.",
+        "A csipetkét a leszűrt, forró levesben 3–5 perc alatt kifőzzük.",
+        "A levest leszűrve/zöldségekkel tálaljuk."
+      ]
+    },
+    {
+      "name": "Gulyásleves – leszűrhető zöldséggel",
+      "type": "Leves",
+      "kcal_per_serving": 360,
+      "protein_g_per_serving": 20,
+      "notes": "tartalmas",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/gulyasleves-klasszikus"
+      },
+      "ratingValue": 4.8,
+      "ratingCount": 27,
+      "ingredients": [
+        "Marhahús (pl. lábszár)",
+        "Vöröshagyma, fokhagyma",
+        "Zsír/olaj",
+        "Őrölt pirospaprika, kömény",
+        "Sárgarépa, fehérrépa, zeller",
+        "Burgonya",
+        "Só, bors",
+        "Csipetke (opcionális)"
+      ],
+      "steps": [
+        "A hagymát zsiradékon megpirítjuk, lehúzzuk a tűzről, pirospaprikát szórunk rá.",
+        "Rátesszük a kockázott marhát, fehéredésig pirítjuk, fűszerezzük, felöntjük vízzel.",
+        "Puhára főzzük (kb. 60–90 perc), majd hozzáadjuk a zöldségeket és a krumplit.",
+        "Készre főzzük, végén csipetkével/galuskával is sűríthető.",
+        "Ha „leszűrhető” verzió kell: a zöldségek nagyobb darabban maradjanak, tálalás előtt szűrhető."
+      ]
+    },
+    {
+      "name": "Csípős csontleves (chilis)",
+      "type": "Leves",
+      "kcal_per_serving": 240,
+      "protein_g_per_serving": 22,
+      "notes": "nagyon egyszerű",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/husos-csontleves-cernametelttel"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csont (sertés/csirke)",
+        "Sárgarépa, fehérrépa, zeller",
+        "Vöröshagyma, fokhagyma",
+        "Egész bors, só",
+        "Hegyes erős paprika / chili",
+        "Cérnametélt"
+      ],
+      "steps": [
+        "A csontot hideg vízben felforraljuk, majd habját leszedjük.",
+        "Beletesszük a zöldségeket, hagymát, fokhagymát és a fűszereket.",
+        "Chilivel/hegyes erőssel csípőssé tesszük (fokozatosan).",
+        "Kis lángon 2–3 órát főzzük, majd leszűrjük.",
+        "A tésztát külön kifőzzük, tálaláskor hozzáadjuk."
+      ]
+    },
+    {
+      "name": "Tyúkhúsleves cérnametélttel – leszűrhető",
+      "type": "Leves",
+      "kcal_per_serving": 340,
+      "protein_g_per_serving": 24,
+      "notes": "munka-barát",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/csirkehusleves-cernametelttel"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Tyúk/csirke (comb, szárny vagy egész)",
+        "Sárgarépa, fehérrépa, zeller",
+        "Vöröshagyma, fokhagyma",
+        "Egész bors, só",
+        "Cérnametélt"
+      ],
+      "steps": [
+        "A húst hideg vízben feltesszük főni, felforraljuk és leszedjük a habját.",
+        "Hozzáadjuk a zöldségeket és fűszereket, majd gyöngyözve 2–3 órát főzzük.",
+        "Leszűrjük; a zöldségek visszamehetnek a levesbe.",
+        "A cérnametéltet külön kifőzzük, tálaláskor a leveshez adjuk."
+      ]
+    },
+    {
+      "name": "Paprikás csirke + rizs/nokedli",
+      "type": "Főétel",
+      "kcal_per_serving": 780,
+      "protein_g_per_serving": 45,
+      "notes": "paprika-hagyma alap",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/paprikas-csirke-nokedlivel"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirke (comb vagy mell)",
+        "Vöröshagyma, fokhagyma",
+        "Zsír/olaj",
+        "Pirospaprika",
+        "Só, bors",
+        "Tejföl",
+        "Köret: nokedli vagy rizs"
+      ],
+      "steps": [
+        "Hagymát dinsztelünk, lehúzzuk a tűzről, pirospaprikát szórunk rá.",
+        "Hozzáadjuk a csirkét, körbepirítjuk, fűszerezzük és kevés vízzel/paprikával puhára főzzük.",
+        "A végén tejföllel sűrítjük (habarás opcionális).",
+        "Nokedlivel vagy rizzsel tálaljuk."
+      ]
+    },
+    {
+      "name": "Sertéspörkölt + tészta/rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 820,
+      "protein_g_per_serving": 42,
+      "notes": "hagyma-paradicsom",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/tejfolos-sertesporkolt-tesztaval"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Sertéshús (lapocka/comb)",
+        "Vöröshagyma, fokhagyma",
+        "Zsír/olaj",
+        "Pirospaprika",
+        "Só, bors",
+        "Opcionális: tejföl",
+        "Köret: tészta vagy rizs"
+      ],
+      "steps": [
+        "Hagymát dinsztelünk, pirospaprikát adunk hozzá, majd rátesszük a húst.",
+        "Fehéredésig pirítjuk, fűszerezzük, és kevés vízzel puhára főzzük.",
+        "Ha tejfölös verzió: a végén tejföllel krémesítjük.",
+        "Tésztával vagy rizzsel tálaljuk."
+      ]
+    },
+    {
+      "name": "Bolognai spagetti (darált marha/pulyka)",
+      "type": "Főétel",
+      "kcal_per_serving": 760,
+      "protein_g_per_serving": 38,
+      "notes": "paradicsomos",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/bolognai-spagetti-egyszeruen-gyorsan"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Darált marha vagy pulyka",
+        "Vöröshagyma, fokhagyma",
+        "Sárgarépa (opcionális)",
+        "Sűrített paradicsom + konzerv paradicsom",
+        "Olívaolaj",
+        "Só, bors, bazsalikom/oregánó",
+        "Spagetti",
+        "Reszelt sajt (opcionális)"
+      ],
+      "steps": [
+        "Hagymát és fokhagymát olajon megdinsztelünk, majd rádobjuk a darált húst és barnára pirítjuk.",
+        "Hozzáadjuk a paradicsomot (passata/püré), fűszerezzük, majd 20–30 percig rotyogtatjuk.",
+        "Közben a spagettit sós vízben kifőzzük al dentére.",
+        "A tésztát összeforgatjuk a szósszal, sajttal tálaljuk."
+      ]
+    },
+    {
+      "name": "Fasírt (húsgolyó) paradicsommártás + tészta",
+      "type": "Főétel",
+      "kcal_per_serving": 790,
+      "protein_g_per_serving": 40,
+      "notes": "jól csomagolható",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/olasz-fasirt-sutoben-sult-paradicsomszosszal"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Darált hús",
+        "Tojás",
+        "Zsemlemorzsa / áztatott zsemle",
+        "Fokhagyma, hagyma",
+        "Só, bors, fűszerek",
+        "Paradicsomszósz (passata + fűszerek)",
+        "Tészta köret"
+      ],
+      "steps": [
+        "A fasírthoz a hozzávalókat összedolgozzuk, golyókat formázunk.",
+        "Sütőben vagy serpenyőben elősütjük/átpirítjuk a húsgolyókat.",
+        "Paradicsomszószt készítünk (hagymás alap + passata), majd a húsgolyókat a szószban készre rotyogtatjuk.",
+        "Kifőtt tésztával tálaljuk."
+      ]
+    },
+    {
+      "name": "Csirkés rizs (egytál) hagymával",
+      "type": "Főétel",
+      "kcal_per_serving": 720,
+      "protein_g_per_serving": 45,
+      "notes": "gyors",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/rizses-csirke"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirke (comb vagy mell)",
+        "Rizs",
+        "Vöröshagyma",
+        "Olaj/zsír",
+        "Só, bors, pirospaprika",
+        "Opcionális: borsó, répa"
+      ],
+      "steps": [
+        "A hagymát zsiradékon megdinszteljük, majd a csirkét hozzáadva körbepirítjuk.",
+        "Hozzáadjuk a rizst, átforgatjuk, fűszerezzük.",
+        "Felöntjük vízzel/alaplével, lefedve készre pároljuk (20–25 perc).",
+        "Pihentetés után átkeverjük és tálaljuk."
+      ]
+    },
+    {
+      "name": "Sült csirkecomb + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 770,
+      "protein_g_per_serving": 48,
+      "notes": "nagyon egyszerű",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/sult-csirkecomb-rizzsel-fuszeres-salataval-tejszines-gombas-szosszal"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirkecomb",
+        "Rizs",
+        "Olaj",
+        "Só, bors, csirke fűszersó",
+        "Opcionális: gomba + tejszín (szószhoz)"
+      ],
+      "steps": [
+        "A csirkecombokat befűszerezzük és sütőben/serpenyőben aranybarnára sütjük.",
+        "A rizst sós vízben megfőzzük, pihentetjük.",
+        "Ha szószos verzió: gombát pirítunk, tejszínnel összeforraljuk.",
+        "A csirkét rizzsel (és opcionális szósszal) tálaljuk."
+      ]
+    },
+    {
+      "name": "Tonhalas-tejszínes tészta",
+      "type": "Főétel",
+      "kcal_per_serving": 700,
+      "protein_g_per_serving": 35,
+      "notes": "15–20 perc",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/tonhalas-tejszines-teszta"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Tészta",
+        "Tonhalkonzerv (olajban vagy sós lében)",
+        "Vöröshagyma (opcionális)",
+        "Fokhagyma",
+        "Főzőtejszín",
+        "Só, bors",
+        "Reszelt sajt (opcionális)"
+      ],
+      "steps": [
+        "A tésztát sós vízben kifőzzük.",
+        "Serpenyőben hagymát dinsztelünk, hozzáadjuk a tonhalat és a fokhagymát.",
+        "Felöntjük tejszínnel, egyszer felforraljuk és fűszerezzük.",
+        "Összeforgatjuk a tésztával, sajttal tálaljuk."
+      ]
+    },
+    {
+      "name": "Chilis bab (darált marha, bab, paradicsom)",
+      "type": "Főétel",
+      "kcal_per_serving": 780,
+      "protein_g_per_serving": 45,
+      "notes": "zöldség nélkül is ok",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/gyors-chilis-bab"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Darált marha",
+        "Vöröshagyma, fokhagyma",
+        "Vörösbab (konzerv)",
+        "Paradicsom (passata / konzerv)",
+        "Chili, római kömény, füstölt paprika (opcionális)",
+        "Só, bors",
+        "Opcionális: kukorica, rizs köret"
+      ],
+      "steps": [
+        "Hagymát dinsztelünk, hozzáadjuk a fokhagymát és a darált húst, majd lepirítjuk.",
+        "Belekeverjük a fűszereket, felöntjük paradicsommal, és 15–20 percig főzzük.",
+        "A végén hozzáadjuk a leöblített babot (és kukoricát), még pár percig rotyogtatjuk.",
+        "Rizzsel vagy önmagában, friss zölddel tálaljuk."
+      ]
+    },
+    {
+      "name": "Sertés steak (karaj) + krumpli/püré",
+      "type": "Főétel",
+      "kcal_per_serving": 800,
+      "protein_g_per_serving": 50,
+      "notes": "krumpli köret",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/serpenyoben-sult-karaj-es-tokeletes-burgonyapure"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Sertéskaraj szeletek",
+        "Só, bors",
+        "Olaj/vaj",
+        "Fokhagyma (opcionális)",
+        "Köret: burgonya/püré"
+      ],
+      "steps": [
+        "A karajt sózzuk, borsozzuk, serpenyőben forró zsiradékon oldalanként lepirítjuk.",
+        "Visszavesszük a lángot és készre sütjük, közben pihentetjük, hogy szaftos maradjon.",
+        "Burgonyapürével vagy sült krumplival tálaljuk."
+      ]
+    },
+    {
+      "name": "Csirkés fajita tál + rizs/tortilla (paprika, hagyma)",
+      "type": "Főétel",
+      "kcal_per_serving": 740,
+      "protein_g_per_serving": 45,
+      "notes": "megengedett zöldség",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/csirkes-fajitas"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirkemellfilé",
+        "Lime/citrom",
+        "Fajita/tex-mex fűszer (chili, kömény, paprika)",
+        "Kaliforniai paprika (több szín)",
+        "Lilahagyma/vöröshagyma",
+        "Olaj",
+        "Só, bors",
+        "Köret: rizs (wrap nélkül)"
+      ],
+      "steps": [
+        "A csirkét csíkokra vágjuk, lime-lével és fűszerekkel bepácoljuk (legalább 30–60 perc).",
+        "Forró serpenyőben lepirítjuk a csirkét, majd félretesszük.",
+        "Ugyanabban a serpenyőben roppanósra sütjük a hagymát és a paprikát.",
+        "Visszaforgatjuk a csirkét, átmelegítjük, és rizzsel tálaljuk (tortilla nélkül)."
+      ]
+    },
+    {
+      "name": "Rántott csirkemell + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 820,
+      "protein_g_per_serving": 50,
+      "notes": "klasszikus, csomagolható",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/rantott-csirkemell-brokkolival-rizzsel"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirkemell szeletek",
+        "Liszt",
+        "Tojás",
+        "Zsemlemorzsa",
+        "Só, bors",
+        "Sütőolaj",
+        "Köret: rizs (vagy zöld köret)"
+      ],
+      "steps": [
+        "A csirkét klopfoljuk, sózzuk, borsozzuk.",
+        "Bepanírozzuk: liszt → tojás → zsemlemorzsa.",
+        "Forró olajban vagy sütőben aranybarnára sütjük.",
+        "Rizzsel tálaljuk."
+      ]
+    },
+    {
+      "name": "Tejszínes-sonkás tészta",
+      "type": "Főétel",
+      "kcal_per_serving": 760,
+      "protein_g_per_serving": 35,
+      "notes": "nagyon gyors",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/tejszines-sonkas-penne"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Tészta (penne/spagetti)",
+        "Sonka",
+        "Főzőtejszín",
+        "Fokhagyma (opcionális)",
+        "Só, bors",
+        "Reszelt sajt"
+      ],
+      "steps": [
+        "A tésztát sós vízben kifőzzük.",
+        "Serpenyőben átforrósítjuk a sonkát, hozzáadjuk a tejszínt és fűszerezzük.",
+        "Összeforgatjuk a tésztával, sajttal tálaljuk."
+      ]
+    },
+    {
+      "name": "Tojásos nokedli (saláta nélkül)",
+      "type": "Főétel",
+      "kcal_per_serving": 680,
+      "protein_g_per_serving": 28,
+      "notes": "otthonra, munka is ok",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/klasszikus-tojasos-nokedli"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Nokedli (liszt + tojás + víz + só) vagy kész nokedli",
+        "Tojás",
+        "Só, bors",
+        "Zsiradék"
+      ],
+      "steps": [
+        "A nokedlit kifőzzük és lecsepegtetjük.",
+        "Serpenyőben kevés zsiradékon átforgatjuk, majd ráütjük a tojásokat.",
+        "Lágyra vagy teljesen átsütve elkészítjük, ízesítjük."
+      ]
+    },
+    {
+      "name": "Túrós csusza (szalonnával opcionális)",
+      "type": "Főétel",
+      "kcal_per_serving": 820,
+      "protein_g_per_serving": 32,
+      "notes": "laktató",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/turos-csusza"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Széles metélt / csuszatészta",
+        "Túró",
+        "Tejföl",
+        "Só",
+        "Opcionális: szalonna pörc"
+      ],
+      "steps": [
+        "A tésztát sós vízben kifőzzük és lecsepegtetjük.",
+        "Összeforgatjuk túróval és tejföllel, ízlés szerint sózzuk.",
+        "Ha kérsz: szalonnát pörcösre sütünk és a tetejére szórjuk."
+      ]
+    },
+    {
+      "name": "Sült hal (hekk/lazac) + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 760,
+      "protein_g_per_serving": 45,
+      "notes": "könnyebb napokra",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/sult-hekk-rizzsel"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Hekk- vagy lazacfilé",
+        "Liszt/panír (heknél opcionális)",
+        "Citrom",
+        "Só, bors",
+        "Olaj",
+        "Köret: rizs"
+      ],
+      "steps": [
+        "A halat sózzuk, borsozzuk, citrommal ízesítjük.",
+        "Serpenyőben kevés olajon mindkét oldalát készre sütjük (heknél lisztezés/panír opcionális).",
+        "Rizzsel és friss citrommal tálaljuk."
+      ]
+    },
+    {
+      "name": "Csirke curry (hagyma, kókusztej) + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 760,
+      "protein_g_per_serving": 45,
+      "notes": "zöldség nélkül",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/thai-kokusztejes-csirke-curry"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirkemell/comb",
+        "Vöröshagyma, fokhagyma, gyömbér (opcionális)",
+        "Curry fűszer / curry paszta",
+        "Kókusztej",
+        "Só, bors",
+        "Köret: rizs"
+      ],
+      "steps": [
+        "Hagymát dinsztelünk, hozzáadjuk a curry fűszert/pasztát és röviden lepirítjuk.",
+        "Rádobjuk a csirkét, fehéredésig pirítjuk.",
+        "Felöntjük kókusztejjel, kis lángon 15–20 percig főzzük, míg besűrűsödik.",
+        "Rizzsel tálaljuk."
+      ]
+    },
+    {
+      "name": "Marhapörkölt + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 860,
+      "protein_g_per_serving": 48,
+      "notes": "erőnapra",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/marhalabszarporkolt-2"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Marhalábszár (kockázva)",
+        "Vöröshagyma",
+        "Zsír/olaj",
+        "Pirospaprika",
+        "Só, bors, kömény (opcionális)",
+        "Víz/alaplé",
+        "Köret: rizs"
+      ],
+      "steps": [
+        "A hagymát zsiradékon megpirítjuk, lehúzzuk a tűzről, pirospaprikát szórunk rá.",
+        "Hozzáadjuk a marhát, fehéredésig pirítjuk, fűszerezzük.",
+        "Kis adagokban vizet/alaplevet adunk hozzá, és puhára pároljuk (1,5–2 óra).",
+        "Rizzsel tálaljuk."
+      ]
+    },
+    {
+      "name": "Hamburger hús pogácsa + rizs",
+      "type": "Főétel",
+      "kcal_per_serving": 780,
+      "protein_g_per_serving": 45,
+      "notes": "zöldség nélkül",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/hamburger-huspogacsa-puffanccsal"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Darált marha (vagy marha+sertés)",
+        "Só, bors",
+        "Vöröshagyma (opcionális)",
+        "Opcionális: tojás + zsemlemorzsa (kötéshez)",
+        "Köret: rizs vagy saláta"
+      ],
+      "steps": [
+        "A darált húst sózzuk, borsozzuk (és igény szerint hagymával/tojással összedolgozzuk).",
+        "Pogácsákat formázunk és forró serpenyőben oldalanként 3–5 percig sütjük.",
+        "Pihentetés után rizzsel vagy salátával tálaljuk."
+      ]
+    },
+    {
+      "name": "Csirkemell tejszínes-paradicsomos szósszal + tészta",
+      "type": "Főétel",
+      "kcal_per_serving": 740,
+      "protein_g_per_serving": 50,
+      "notes": "paradicsom OK",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/tejszines-paradicsomos-csirkes-spagetti"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Csirkemell",
+        "Vöröshagyma, fokhagyma",
+        "Paradicsom (passata / konzerv)",
+        "Főzőtejszín",
+        "Olaj",
+        "Só, bors, bazsalikom",
+        "Tészta (spagetti/penne)"
+      ],
+      "steps": [
+        "A csirkét csíkokra/kockákra vágjuk, serpenyőben lepirítjuk és félretesszük.",
+        "Hagymát dinsztelünk, hozzáadjuk a paradicsomot és fűszereket, pár percig rotyogtatjuk.",
+        "Beleöntjük a tejszínt, visszatesszük a csirkét, készre főzzük.",
+        "A kifőtt tésztával összeforgatva tálaljuk."
+      ]
+    },
+    {
+      "name": "Sertésragú (hagyma-paprika) + tészta",
+      "type": "Főétel",
+      "kcal_per_serving": 820,
+      "protein_g_per_serving": 45,
+      "notes": "főzelékmentes",
+      "source": {
+        "provider": "nosalty.hu",
+        "url": "https://www.nosalty.hu/recept/bakonyi-sertesragu-galuskaval"
+      },
+      "ratingValue": null,
+      "ratingCount": null,
+      "ingredients": [
+        "Sertéshús (kockázva)",
+        "Vöröshagyma",
+        "Paprika (opcionális)",
+        "Gomba (bakonyi jellegűen – opcionális)",
+        "Tejföl (opcionális)",
+        "Só, bors, pirospaprika",
+        "Köret: tészta"
+      ],
+      "steps": [
+        "A húst felkockázzuk, serpenyőben fehéredésig pirítjuk, sózzuk, borsozzuk.",
+        "Hagymát dinsztelünk, pirospaprikát adunk hozzá, majd visszatesszük a húst.",
+        "Kevés vízzel/alaplével puhára pároljuk; igény szerint gombával és tejföllel krémesítjük.",
+        "Tésztával tálaljuk."
+      ]
+    }
+  ]
+}
