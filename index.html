@@ -6,7 +6,6 @@
   <meta name="theme-color" content="#0b0f17" />
   <base href="./">
   <title>System Tracker 2026</title>
-  <link rel="icon" type="image/png" href="./favicon.png" />
   <link rel="stylesheet" href="./style.css" />
   <link rel="manifest" href="./manifest.webmanifest" />
 </head>
@@ -14,9 +13,7 @@
   <header class="topbar">
     <div class="topbarRow">
       <div class="brand">
-        <div class="badge systemLogo" title="SYSTEM">
-          <img class="systemLogoImg" src="./smilestatue.png" alt="System" />
-        </div>
+        <div class="badge">SYSTEM</div>
         <div class="title">
           <div class="h1">System Tracker 2026</div>
           <div class="h2">Profil • Küldetések • Beosztás • Étkezés</div>
@@ -279,7 +276,7 @@
           <div>
             <div class="cardTitle">Küldetések</div>
             <div class="hint">
-              Heti bontás. Az aktív napot tudod pipálni és lezárni. A Havi Boss és a Büntető küldetés extra motivációként jelenik meg.
+              Heti bontás. Az aktív napot tudod pipálni és lezárni. A “Boss Fight” és a Büntető küldetés extra motivációként jelenik meg.
             </div>
           </div>
           <div class="row">
@@ -319,8 +316,8 @@
           <div class="card" style="margin:0">
             <div class="row space">
               <div>
-                <div class="cardTitle">Havi Boss (1/hó)</div>
-                <div class="hint" id="bossHint">Nehéz hetekre: válassz 1 extra kihívást a hónapban.</div>
+                <div class="cardTitle">Boss Fight (napi 1)</div>
+                <div class="hint" id="bossHint">Nehéz napokra: válassz 1 extra küldetést.</div>
               </div>
               <div class="pill" id="bossPill">–</div>
             </div>
@@ -382,28 +379,10 @@
         <div id="weekStrip" class="week"></div>
       </div>
     </section>
+
     <section id="view-schedule" class="view">
       <div class="card">
-        <div class="row space">
-          <div>
-            <div class="cardTitle">Beosztás</div>
-            <div class="hint">Heti nézet. A kiválasztott (aktív) nap felül kiemelve jelenik meg.</div>
-          </div>
-          <div class="pill" id="scheduleWeekPill">Hét: –</div>
-        </div>
-
-        <div class="row" style="margin-top:10px">
-          <label class="field" style="min-width:220px">
-            <span>Aktív hónap</span>
-            <input type="month" id="scheduleMonth">
-          </label>
-          <label class="field" style="min-width:220px">
-            <span>Aktív nap</span>
-            <input type="date" id="scheduleDate">
-          </label>
-          <button class="btn ghost" id="scheduleTodayBtn" title="Ugrás a mai napra">Ma</button>
-        </div>
-
+        <div class="cardTitle">Beosztás</div>
         <div class="divider"></div>
         <div id="scheduleList" class="list"></div>
       </div>
