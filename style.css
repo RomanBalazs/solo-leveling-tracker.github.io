@@ -52,24 +52,6 @@ a{color:inherit}
   color: #d8d1ff;
   background: rgba(124,92,255,.10);
 }
-
-.systemLogo{
-  width:44px;
-  height:44px;
-  padding:0;
-  border-radius:50%;
-  overflow:hidden;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-.systemLogoImg{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  display:block;
-}
-
 .title .h1{font-weight:800; font-size:16px}
 .title .h2{color:var(--muted); font-size:12px}
 .tabs{
@@ -470,75 +452,82 @@ body.focusMode #view-quests .dayCard{
   .topWidgets{justify-content:flex-start;}
 }
 
-/* ---------- Beosztás (napi rutin) finomhangolás ---------- */
-.scheduleDay{ padding: 12px; }
-.scheduleDay.shiftN{ border-left: 4px solid rgba(255,204,102,.85); }
-.scheduleDay.shiftE{ border-left: 4px solid rgba(59,220,255,.85); }
-.scheduleDay.shiftP{ border-left: 4px solid rgba(57,255,20,.85); }
 
-/* Aktív nap kiemelés (Beosztás heti nézet) */
-.scheduleDay.activeDay{
-  outline: 2px solid rgba(124,92,255,.55);
-  box-shadow: 0 0 0 3px rgba(124,92,255,.10), 0 18px 40px rgba(0,0,0,.35);
-}
-.scheduleDay.activeDay .itemTitle{
-  text-shadow: 0 0 12px rgba(124,92,255,.30);
-}
-.scheduleDay .activeTag{
-  border-color: rgba(124,92,255,.55);
-  background: rgba(124,92,255,.18);
-  color: #efeaff;
-}
-
-
-.pill.shiftN{ border-color: rgba(255,204,102,.60); background: rgba(255,204,102,.14); color: #fff; }
-.pill.shiftE{ border-color: rgba(59,220,255,.60); background: rgba(59,220,255,.14); color: #e8feff; }
-.pill.shiftP{ border-color: rgba(57,255,20,.60); background: rgba(57,255,20,.14); color: #eaffef; }
-
-.pill.small{ padding: 6px 10px; font-size: 11px; }
-
-.scheduleSelect{
-  width: 120px;
-  padding: 8px 10px;
-  border-radius: 12px;
-  border: 1px solid var(--line);
-  background: rgba(11,15,23,.55);
-  color: var(--text);
-  font-size: 12px;
-}
-
-.routineBlock{ margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--line); }
-.routineTitle{ font-weight: 900; letter-spacing: .02em; }
-
-.routineList{ display:flex; flex-direction:column; gap: 0; margin-top: 10px; }
-.routineRow{
-  display:grid;
-  grid-template-columns: 130px 1fr auto;
-  gap: 10px;
-  align-items:center;
-  padding: 10px 0;
-  border-top: 1px dashed rgba(27,41,66,.80);
-}
-.routineRow:first-child{ border-top: none; }
-
-.timeBadge{
-  font-family: var(--mono);
-  font-size: 12px;
-  color: #d8d1ff;
+/* --- Header System Icon --- */
+.systemIcon{
+  width:44px;
+  height:44px;
+  border-radius:999px;
+  object-fit: cover;
   border: 1px solid rgba(124,92,255,.45);
   background: rgba(124,92,255,.10);
-  padding: 7px 10px;
-  border-radius: 999px;
-  text-align: center;
-  white-space: nowrap;
+  box-shadow: 0 0 0 3px rgba(124,92,255,.10);
 }
 
-.routineText{ min-width: 0; }
-.routineActivity{ font-size: 13px; line-height: 1.25; }
-.routineNote{ color: var(--muted); font-weight: 600; }
-
-@media (max-width: 520px){
-  .routineRow{ grid-template-columns: 110px 1fr; }
-  .routineRow .pill{ display:none; }
-  .scheduleSelect{ width: 110px; }
+/* --- Recipes (Meals) --- */
+.mealDish{
+  margin-top: 10px;
 }
+.mealDishHead{
+  display:flex;
+  align-items:center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.mealDishLabel{
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+.recipeDetails{
+  margin-top: 8px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: rgba(15,22,36,.55);
+  overflow: hidden;
+}
+.recipeDetails summary{
+  list-style: none;
+  cursor: pointer;
+  padding: 10px 12px;
+  font-weight: 800;
+}
+.recipeDetails summary::-webkit-details-marker{ display:none; }
+.recipeDetails summary::after{
+  content: "▾";
+  float: right;
+  opacity: .8;
+}
+.recipeDetails[open] summary::after{ content: "▴"; }
+.recipeDetails[open] summary{
+  border-bottom: 1px solid var(--line);
+}
+.recipeBody{
+  padding: 10px 12px;
+  display: grid;
+  gap: 10px;
+}
+.recipeMeta{
+  color: var(--muted);
+  font-size: 12px;
+  display:flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+.recipeCols{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 880px){
+  .recipeCols{ grid-template-columns: 1fr 1fr; }
+}
+.recipeTitle{
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+.recipeUl, .recipeOl{ margin: 0; padding-left: 18px; }
+.recipeUl li, .recipeOl li{ margin: 6px 0; }

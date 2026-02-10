@@ -37,29 +37,6 @@ function safeNumber(v, fallback=0){
   const n = Number(String(v).replace(",",".").trim());
   return Number.isFinite(n) ? n : fallback;
 }
-function truthyCell(v){
-  if(v==null) return false;
-  if(typeof v === "number") return v !== 0 && !Number.isNaN(v);
-  const s = String(v).trim();
-  if(!s) return false;
-  const low = s.toLowerCase();
-  if(low==="0" || low==="nem" || low==="no" || low==="false") return false;
-  return true;
-}
-
-function escapeHtml(s){
-  return String(s ?? "").replace(/[&<>"']/g, (ch)=>{
-    switch(ch){
-      case "&": return "&amp;";
-      case "<": return "&lt;";
-      case ">": return "&gt;";
-      case "\"": return "&quot;";
-      case "'": return "&#39;";
-      default: return ch;
-    }
-  });
-}
-
 function setStatus(msg){
   const el=document.getElementById("statusMsg");
   if(el) el.textContent = msg;
@@ -79,42 +56,13 @@ const PERKS = [
   { id:"perk_weekly_crate", name:"+1 crate hetente", desc:"Heti jutalom felvételekor +1 crate extra." },
   { id:"perk_daily_clear_bonus", name:"Daily clear EXP +10%", desc:"Daily clear jutalom EXP +10%." },
   { id:"perk_streak_token_plus", name:"Streak token +1/ hét", desc:"Hetente +1 extra token." },
-  { id:"perk_boss_reward_plus", name:"Boss reward +20%", desc:"Havi Boss EXP +20% + jobb drop esély." }
+  { id:"perk_boss_reward_plus", name:"Boss reward +20%", desc:"Boss Fight EXP +20% + jobb drop esély." }
 ];
 
 const COLLECTIONS = [
   { id:"night_shift_set", name:"Night Shift Set", badges:["Night Shift","Shadow Coffee","Iron Will"], bonus:"+5% EXP (minden jutalom)" },
   { id:"discipline_set", name:"Discipline Set", badges:["Daily Clear","Streak Keeper","No Excuses"], bonus:"+1 token / hét" }
 ];
-
-/* ---------- Monthly Boss (Solo Leveling) ---------- */
-const MONTHLY_BOSS_ROSTER = [
-  { id:"kasaka", name:"Blue Venom-Fanged Kasaka" },
-  { id:"igris", name:"Blood-Red Commander Igris" },
-  { id:"baruka", name:"Baruka" },
-  { id:"kargalgan", name:"Kargalgan" },
-  { id:"vulcan", name:"Vulcan" },
-  { id:"metus", name:"Metus" },
-  { id:"ant_king", name:"Ant King" },
-  { id:"baran", name:"Baran" },
-  { id:"kandiaru", name:"Kandiaru" },
-  { id:"kamish", name:"Kamish" },
-  { id:"legia", name:"Legia" },
-  { id:"cerberus", name:"Cerberus" }
-];
-function bossIndexForMonth(monthKey){
-  const mm = String(monthKey||"").match(/(\d{4})-(\d{2})/);
-  const y = mm ? parseInt(mm[1],10) : new Date().getFullYear();
-  const mo = mm ? parseInt(mm[2],10) : (new Date().getMonth()+1);
-  const seed = y*12 + (mo-1);
-  const len = MONTHLY_BOSS_ROSTER.length;
-  return ((seed % len) + len) % len;
-}
-function monthKeyFromDateKey(dateKey){
-  const dk = parseDateKey(dateKey) || fmtDate(new Date());
-  return String(dk).slice(0,7);
-}
-
 
 /* ---------- State ---------- */
 function defaultState(){
@@ -170,7 +118,7 @@ function defaultState(){
       completedAt: 0
     },
     boss: {
-      byMonth: {} // monthKey -> {bossId, bossName, type, completed, completedAt}
+      byMonth: {} // monthKey -> {name, type, completed, selectedAt, completedAt}
     },
     quests: {}, // dateKey -> { closed, checks: {}, steps:"", sleep:"", weight:"", note:"", manualEdited:false }
     measurements: [],
@@ -213,26 +161,7 @@ function migrateState(s){
   out.meta = { ...d.meta, ...(s.meta||{}) };
   out.penalty = { ...d.penalty, ...(s.penalty||{}) };
   out.boss = { ...d.boss, ...(s.boss||{}) };
-  out.boss.byMonth = (out.boss.byMonth && typeof out.boss.byMonth === "object") ? out.boss.byMonth : {};
-  // legacy migration (daily boss -> monthly boss)
-  if(out.boss.byDate && typeof out.boss.byDate === "object"){
-    for(const [dk, b] of Object.entries(out.boss.byDate)){
-      if(!b || !b.type) continue;
-      const mk = String(dk).slice(0,7);
-      const roster = MONTHLY_BOSS_ROSTER[bossIndexForMonth(mk)];
-      const cur = out.boss.byMonth[mk];
-      if(!cur){
-        out.boss.byMonth[mk] = { bossId: roster.id, bossName: roster.name, type: b.type, completed: !!b.completed, completedAt: 0 };
-      }else{
-        cur.bossId = cur.bossId || roster.id;
-        cur.bossName = cur.bossName || roster.name;
-        if(!cur.type) cur.type = b.type;
-        cur.completed = !!cur.completed || !!b.completed;
-        cur.completedAt = Number(cur.completedAt||0);
-      }
-    }
-    delete out.boss.byDate;
-  }
+  out.boss.byMonth ??= {};
   out.quests = (s.quests && typeof s.quests==="object") ? s.quests : {};
   out.measurements = Array.isArray(s.measurements) ? s.measurements : [];
   out.routines = (s.routines && typeof s.routines==="object") ? s.routines : {};
@@ -322,7 +251,8 @@ async function loadAllData(){
       daily_plan_2026: ov.daily_plan_2026 ?? null,
       menu_2026: ov.menu_2026 ?? null,
       calendar_2026: ov.calendar_2026 ?? null,
-      routine_templates: ov.routine_templates ?? null
+      routine_templates: ov.routine_templates ?? null,
+      recipes: ov.recipes ?? null
     };
   }
   const out = {};
@@ -332,6 +262,7 @@ async function loadAllData(){
   out.menu_2026 = await safeFetchJson("./data/menu_2026.json");
   out.calendar_2026 = await safeFetchJson("./data/calendar_2026.json");
   out.routine_templates = await safeFetchJson("./data/routine_templates.json");
+  out.recipes = await safeFetchJson("./data/recipes.json");
   return out;
 }
 
@@ -366,6 +297,137 @@ function indexByDate(arr){
 function getWorkoutSuggestion(row){
   if(!row) return "";
   return String(row["Edzés javaslat"] ?? row["Edzes javaslat"] ?? row["Edzés"] ?? row["Edzes"] ?? "").trim();
+}
+
+/* ---------- Recipes (Meals) ---------- */
+function normalizeDishName(d){
+  if(d==null) return "";
+  return String(d).replace(/\u00A0/g," ").trim().replace(/\s+/g," ");
+}
+function findRecipeForDish(dish){
+  const name = normalizeDishName(dish);
+  if(!name) return null;
+
+  const pack = data.recipes;
+  const list = Array.isArray(pack?.recipes) ? pack.recipes : Array.isArray(pack) ? pack : [];
+  if(!list.length) return null;
+
+  const low = name.toLowerCase();
+
+  // 1) exact
+  let hit = list.find(r => normalizeDishName(r.name).toLowerCase() === low);
+  if(hit) return hit;
+
+  // 2) base name (before + or dash notes)
+  const base = name.split(" + ")[0].split(" – ")[0].split(" - ")[0].trim();
+  if(base && base !== name){
+    const bl = base.toLowerCase();
+    hit = list.find(r => normalizeDishName(r.name).toLowerCase() === bl);
+    if(hit) return hit;
+    hit = list.find(r => normalizeDishName(r.name).toLowerCase().startsWith(bl));
+    if(hit) return hit;
+  }
+
+  // 3) contains fallback
+  hit = list.find(r => normalizeDishName(r.name).toLowerCase().includes(low) || low.includes(normalizeDishName(r.name).toLowerCase()));
+  return hit || null;
+}
+
+function buildRecipeDetails(recipe, titleOverride){
+  const det = document.createElement("details");
+  det.className = "recipeDetails";
+
+  const sum = document.createElement("summary");
+  sum.textContent = "Recept";
+  det.appendChild(sum);
+
+  const body = document.createElement("div");
+  body.className = "recipeBody";
+
+  const meta = document.createElement("div");
+  meta.className = "recipeMeta";
+
+  const title = document.createElement("span");
+  title.className = "recipeTitle";
+  title.textContent = titleOverride || recipe.name || "Recept";
+  meta.appendChild(title);
+
+  const bits = [];
+  if(recipe.kcal_per_serving!=null) bits.push(`${recipe.kcal_per_serving} kcal/adag`);
+  if(recipe.protein_g_per_serving!=null) bits.push(`${recipe.protein_g_per_serving}g feh./adag`);
+  if(recipe.notes) bits.push(String(recipe.notes));
+  if(bits.length){
+    const span = document.createElement("span");
+    span.textContent = bits.join(" • ");
+    meta.appendChild(span);
+  }
+
+  const srcUrl = recipe.source?.url;
+  if(srcUrl){
+    const a = document.createElement("a");
+    a.href = srcUrl;
+    a.target = "_blank";
+    a.rel = "noopener noreferrer";
+    a.textContent = "Forrás (Nosalty)";
+    meta.appendChild(a);
+  }
+
+  body.appendChild(meta);
+
+  const cols = document.createElement("div");
+  cols.className = "recipeCols";
+
+  const left = document.createElement("div");
+  const right = document.createElement("div");
+
+  const ingTitle = document.createElement("div");
+  ingTitle.className = "itemTitle";
+  ingTitle.textContent = "Hozzávalók";
+  left.appendChild(ingTitle);
+
+  const ul = document.createElement("ul");
+  ul.className = "recipeUl";
+  const ings = Array.isArray(recipe.ingredients) ? recipe.ingredients : [];
+  if(ings.length){
+    ings.forEach(i=>{
+      const li = document.createElement("li");
+      li.textContent = String(i);
+      ul.appendChild(li);
+    });
+  }else{
+    const li = document.createElement("li");
+    li.textContent = "(nincs megadva)";
+    ul.appendChild(li);
+  }
+  left.appendChild(ul);
+
+  const stTitle = document.createElement("div");
+  stTitle.className = "itemTitle";
+  stTitle.textContent = "Elkészítés (rövid)";
+  right.appendChild(stTitle);
+
+  const ol = document.createElement("ol");
+  ol.className = "recipeOl";
+  const steps = Array.isArray(recipe.steps) ? recipe.steps : [];
+  if(steps.length){
+    steps.forEach(s=>{
+      const li = document.createElement("li");
+      li.textContent = String(s);
+      ol.appendChild(li);
+    });
+  }else{
+    const li = document.createElement("li");
+    li.textContent = "(nincs megadva)";
+    ol.appendChild(li);
+  }
+  right.appendChild(ol);
+
+  cols.appendChild(left);
+  cols.appendChild(right);
+  body.appendChild(cols);
+
+  det.appendChild(body);
+  return det;
 }
 
 /* ---------- Core progression ---------- */
@@ -503,69 +565,37 @@ function dayHasAnyActivity(d){
 /* ---------- Daily plan -> quest list ---------- */
 function buildQuestListForDate(dateKey){
   const row = data.byDateDaily?.[dateKey] || null;
+  if(!row) return [];
+
+  const ignoreCols = new Set([
+    "Dátum","Nap","Műszak","Idő","Blokk","Blokk-nap","Edzés javaslat","Edzés kód","Megjegyzés","Teendők kód","Rutinsablon","Rutin link",
+    "Elvégezve","Lépés (db)","Alvás (óra)","Súly (kg)"
+  ]);
 
   const quests = [];
+  for(const k of Object.keys(row)){
+    if(ignoreCols.has(k)) continue;
+    const val = row[k];
+    // If the Excel used code letters, treat non-empty cells as quest items
+    if(val==null || String(val).trim()==="") continue;
+    // keep short label
+    quests.push({ id:k, label:k, required: true });
+  }
+
+  // Always include core metrics as pseudo quests (input fields)
+  quests.unshift({ id:"METRICS", label:"Lépés / Alvás / Súly", required:false });
+
+  // Boss quest injection (monthly boss shows until completed)
+  const mb = getBossForDate(dateKey);
+  if(mb && mb.type && !mb.completed){
+    const label = mb.type==="WALK20" ? `Havi Boss: ${mb.name} · +20 perc séta` : `Havi Boss: ${mb.name} · +1 extra blokk edzés`;
+    quests.unshift({ id:"BOSS", label, required:false });
+  }
 
   // Penalty quest injection (if active and not resolved)
   if(state.penalty.active && !state.penalty.resolved){
-    quests.push({ id:"PENALTY", label:"Büntetés: extra feladat", required:false });
+    quests.unshift({ id:"PENALTY", label:"Büntetés: extra feladat", required:false });
   }
-
-  // Monthly Boss quest injection
-  const mk = monthKeyFromDateKey(dateKey);
-  const boss = ensureMonthlyBoss(mk);
-  if(boss.type && !boss.completed){
-    const labelBase = boss.type==="WALK20" ? "+20 perc séta" : "+1 extra blokk edzés";
-    const label = `Boss (${boss.bossName}): ${labelBase}`;
-    quests.push({ id:"BOSS", label, required:false });
-  }
-
-  // Core quests from daily plan
-  let hasCore = false;
-
-  if(row){
-    // Edzés javaslat -> core
-    const workout = getWorkoutSuggestion(row);
-    if(truthyCell(workout)){
-      quests.push({ id:"WORKOUT", label:`Edzés: ${String(workout).trim()}`, required:true });
-      hasCore = true;
-    }
-
-    // Háztartási / napi teendők -> core (ha a cella nem üres)
-    const chores = [
-      { id:"Mosogatás", keys:["Mosogatás","Mosogatas"], label:"Mosogatás" },
-      { id:"Ruhamosás", keys:["Ruhamosás","Ruhamosas"], label:"Ruhamosás" },
-      { id:"Takarítás", keys:["Takarítás","Takaritas"], label:"Takarítás" },
-      { id:"Főzés", keys:["Főzés","Fozes"], label:"Főzés" },
-      { id:"Barátok", keys:["Barátok","Baratok"], label:"Barátok" }
-    ];
-
-    for(const c of chores){
-      let v = null;
-      for(const k of c.keys){
-        if(row[k] !== undefined){ v = row[k]; break; }
-      }
-      if(truthyCell(v)){
-        quests.push({ id:c.id, label:c.label, required:true });
-        hasCore = true;
-      }
-    }
-
-    // Éjszakás műszak -> extra regen
-    const shiftRaw = row["Műszak"] ?? row["Muszak"] ?? row["shift"] ?? row["Shift"] ?? "";
-    const shift = normalizeShiftCode(shiftRaw);
-    if(shift === "É"){
-      quests.push({ id:"REGEN", label:"Regeneráció: 10 perc nyújtás / lazítás", required:false });
-    }
-  }
-
-  // Fallback: ha nincs core, legyen minimum
-  if(!hasCore){
-    quests.push({ id:"MINIMUM", label:"Napi minimum: 10 perc séta", required:true });
-  }
-
-  // Metrics input fields (mindig a lista végén)
-  quests.push({ id:"METRICS", label:"Lépés / Alvás / Súly", required:false });
 
   return quests;
 }
@@ -686,57 +716,94 @@ function completePenalty(){
   if(addBadge(name, r)) setStatus(`DROP: ${name} (${r})`);
 }
 
-/* ---------- Monthly Boss ---------- */
-function ensureMonthlyBoss(monthKey){
-  state.boss ??= {};
-  state.boss.byMonth ??= {};
-  if(!state.boss.byMonth[monthKey]){
-    const roster = MONTHLY_BOSS_ROSTER[bossIndexForMonth(monthKey)];
-    state.boss.byMonth[monthKey] = { bossId: roster.id, bossName: roster.name, type:"", completed:false, completedAt:0 };
-  }else{
-    const b = state.boss.byMonth[monthKey];
-    const roster = MONTHLY_BOSS_ROSTER[bossIndexForMonth(monthKey)];
-    b.bossId = roster.id;
-    b.bossName = roster.name;
-    b.type = b.type || "";
-    b.completed = !!b.completed;
-    b.completedAt = Number(b.completedAt||0);
+/* ---------- Boss Fight (Monthly) ---------- */
+const SOLO_LEVELING_BOSSES = [
+  "Blood-Red Commander Igris",
+  "Cerberus",
+  "Baran (Demon King)",
+  "Kargalgan",
+  "Tusk",
+  "Vulcan",
+  "Metus",
+  "Ant King",
+  "Frost Monarch",
+  "Beast Monarch",
+  "Plague Monarch",
+  "Antares (Dragon Monarch)"
+];
+
+function bossNameForMonth(monthKey){
+  const s = String(monthKey||"");
+  let h = 0;
+  for(let i=0;i<s.length;i++){
+    h = (h*31 + s.charCodeAt(i)) >>> 0;
   }
-  return state.boss.byMonth[monthKey];
+  return SOLO_LEVELING_BOSSES[h % SOLO_LEVELING_BOSSES.length];
 }
 
-function selectMonthlyBoss(monthKey, type){
-  const b = ensureMonthlyBoss(monthKey);
-  if(b.completed) return setStatus("MÁR TELJESÍTVE");
+function getBossForMonth(monthKey){
+  state.boss ??= {};
+  state.boss.byMonth ??= {};
+  const mk = monthKey || fmtMonth(new Date());
+  if(!state.boss.byMonth[mk]){
+    state.boss.byMonth[mk] = { name: bossNameForMonth(mk), type:"", completed:false, selectedAt:0, completedAt:0 };
+  }else{
+    const b = state.boss.byMonth[mk];
+    b.name = b.name || bossNameForMonth(mk);
+    b.type = b.type || "";
+    b.completed = !!b.completed;
+    b.selectedAt = Number(b.selectedAt||0);
+    b.completedAt = Number(b.completedAt||0);
+  }
+  return state.boss.byMonth[mk];
+}
+
+function getBossForDate(dateKey){
+  const d = parseDateKey(dateKey);
+  const mk = d ? fmtMonth(new Date(d+"T12:00:00")) : fmtMonth(new Date());
+  return getBossForMonth(mk);
+}
+
+function selectBoss(monthKey, type){
+  const b = getBossForMonth(monthKey);
   b.type = type;
+  b.completed = false;
+  b.selectedAt = Date.now();
+  b.completedAt = 0;
   saveState();
   renderQuests();
 }
-function clearMonthlyBoss(monthKey){
-  const b = ensureMonthlyBoss(monthKey);
-  if(b.completed) return;
+
+function clearBoss(monthKey){
+  const b = getBossForMonth(monthKey);
   b.type = "";
+  b.completed = false;
+  b.selectedAt = 0;
+  b.completedAt = 0;
   saveState();
   renderQuests();
 }
-function completeMonthlyBoss(monthKey){
-  const b = ensureMonthlyBoss(monthKey);
+
+function completeBoss(monthKey){
+  const b = getBossForMonth(monthKey);
   if(!b.type || b.completed) return;
+
   b.completed = true;
   b.completedAt = Date.now();
   saveState();
 
   const effects = getPerkEffects();
-  const base = 260;
+  const base = 320; // monthly is bigger than daily
   const bonus = effects.bossRewardPlus;
   const gain = Math.floor(base * (1+bonus));
-  addExp(gain, `Havi Boss: ${b.bossName}`);
+  addExp(gain, "Havi Boss");
+
   // Drop: badge with better odds
   const rarity = pickRarity({
     Common: 35,
-    Rare: 35 + Math.round(15*bonus),
-    Epic: 22 + Math.round(10*bonus),
-    Legendary: 8 + Math.round(5*bonus)
+    Rare: 38 + Math.round(12*bonus),
+    Epic: 20 + Math.round(10*bonus),
+    Legendary: 7 + Math.round(6*bonus)
   });
   const name = randomBadgeName(rarity);
   if(addBadge(name, rarity)){
@@ -800,11 +867,11 @@ function lockDay(dateKey){
   }else if(dayHasAnyActivity(d)){
     expGain += 30;
   }
-  // Monthly Boss completion check (1x/hó)
-  const mk = monthKeyFromDateKey(dateKey);
-  const b = ensureMonthlyBoss(mk);
-  if(b.type && !b.completed && d.checks?.BOSS){
-    completeMonthlyBoss(mk);
+
+  // Boss completion check: if boss quest checked, award
+  const b = getBossForDate(dateKey);
+  if(b.type && (d.checks?.BOSS || b.completed)){
+    if(!b.completed) completeBoss(fmtMonth(new Date(dateKey+"T12:00:00"))); // completes and awards
   }
 
   if(expGain>0) addExp(expGain, cleared ? "Daily clear" : "Részleges");
@@ -1032,16 +1099,12 @@ function bindQuests(){
     state.ui.activeDate = fmtDate(first);
     saveState();
     renderQuests();
-    renderSchedule();
-    renderMeal();
   });
   document.getElementById("activeDate")?.addEventListener("change", (e)=>{
     const dk = parseDateKey(e.target.value) || fmtDate(new Date());
     state.ui.activeDate = dk;
     saveState();
     renderQuests();
-    renderSchedule();
-    renderMeal();
   });
 
   document.getElementById("lockDayBtn")?.addEventListener("click", ()=>{
@@ -1069,60 +1132,14 @@ function bindQuests(){
     setStatus(state.ui.focusMode ? "FOCUS MODE ON" : "FOCUS MODE OFF");
   });
 
-  // monthly boss actions
-  document.getElementById("bossOptWalk")?.addEventListener("click", ()=> {
-    const mk = monthKeyFromDateKey(state.ui.activeDate);
-    selectMonthlyBoss(mk, "WALK20");
-  });
-  document.getElementById("bossOptBlock")?.addEventListener("click", ()=> {
-    const mk = monthKeyFromDateKey(state.ui.activeDate);
-    selectMonthlyBoss(mk, "EXTRA_BLOCK");
-  });
-  document.getElementById("bossClear")?.addEventListener("click", ()=> {
-    const mk = monthKeyFromDateKey(state.ui.activeDate);
-    clearMonthlyBoss(mk);
-  });
+  // boss actions
+  document.getElementById("bossOptWalk")?.addEventListener("click", ()=> selectBoss(state.ui.activeMonth, "WALK20"));
+  document.getElementById("bossOptBlock")?.addEventListener("click", ()=> selectBoss(state.ui.activeMonth, "EXTRA_BLOCK"));
+  document.getElementById("bossClear")?.addEventListener("click", ()=> clearBoss(state.ui.activeMonth));
 
   // weekly claim
   document.getElementById("claimWeeklyBtn")?.addEventListener("click", claimWeeklyReward);
 }
-
-function bindSchedule(){
-  const m = document.getElementById("scheduleMonth");
-  const d = document.getElementById("scheduleDate");
-  const todayBtn = document.getElementById("scheduleTodayBtn");
-
-  m?.addEventListener("change", (e)=>{
-    state.ui.activeMonth = e.target.value || fmtMonth(new Date());
-    const first = startOfMonthDate(state.ui.activeMonth);
-    state.ui.activeDate = fmtDate(first);
-    saveState();
-    renderQuests();
-    renderSchedule();
-    renderMeal();
-  });
-
-  d?.addEventListener("change", (e)=>{
-    const dk = parseDateKey(e.target.value) || fmtDate(new Date());
-    state.ui.activeDate = dk;
-    state.ui.activeMonth = String(dk).slice(0,7);
-    saveState();
-    renderQuests();
-    renderSchedule();
-    renderMeal();
-  });
-
-  todayBtn?.addEventListener("click", ()=>{
-    const dk = fmtDate(new Date());
-    state.ui.activeDate = dk;
-    state.ui.activeMonth = String(dk).slice(0,7);
-    saveState();
-    renderQuests();
-    renderSchedule();
-    renderMeal();
-  });
-}
-
 
 function quickAdd(field, amount){
   const key = state.ui.activeDate;
@@ -1972,23 +1989,29 @@ function renderQuests(){
 
   // focus mode class
   document.body.classList.toggle("focusMode", !!state.ui.focusMode);
-  // Monthly Boss UI
-  const mk = monthKeyFromDateKey(state.ui.activeDate);
-  const boss = ensureMonthlyBoss(mk);
+
+  // Boss UI
+  const boss = getBossForMonth(state.ui.activeMonth);
   const bossPill = document.getElementById("bossPill");
   if(bossPill){
-    bossPill.textContent = boss.completed ? "TELJESÍTVE" : (boss.type ? "AKTÍV" : "NINCS");
+    bossPill.textContent = boss.type ? (boss.completed ? "TELJESÍTVE" : "AKTÍV") : "NINCS";
   }
-  const bossHint = document.getElementById("bossHint");
-  if(bossHint){
-    let action = "válassz feladatot";
-    if(boss.type==="WALK20") action = "+20 perc séta";
-    if(boss.type==="EXTRA_BLOCK") action = "+1 extra blokk edzés";
-    bossHint.textContent = `Havi Boss: ${boss.bossName} — ${action}. (Teljesítés: pipáld ki a napi listában és zárd le a napot.)`;
+
+const bossHint = document.getElementById("bossHint");
+if(bossHint){
+  const mk = state.ui.activeMonth;
+  if(boss.type){
+    const task = boss.type==="WALK20" ? "+20 perc séta" : "+1 extra blokk edzés";
+    bossHint.textContent = `Havi Boss (${mk}): ${boss.name} · ${task}`;
+  }else{
+    bossHint.textContent = `Havi Boss (${mk}): ${boss.name} · válassz 1 extra küldetést.`;
   }
+}
+  const dstate = ensureQuestDay(state.ui.activeDate);
   const bossActions = document.getElementById("bossActions");
   if(bossActions){
-    bossActions.querySelectorAll("button").forEach(btn=> btn.disabled = boss.completed);
+    const disabled = boss.completed;
+    bossActions.querySelectorAll("button").forEach(b=> b.disabled = disabled);
   }
 
   // Penalty card
@@ -2219,10 +2242,9 @@ function renderWeekStrip(monthKey, activeDateKey){
         d2.checks[id] = cb.checked;
         saveState();
 
-        // special: Monthly Boss completion
+        // special: Boss completion
         if(id==="BOSS" && cb.checked){
-          const mk = monthKeyFromDateKey(dk);
-          completeMonthlyBoss(mk);
+          completeBoss(fmtMonth(new Date(dk+"T12:00:00")));
         }
         // special: Penalty completion immediate allowed (even without lock)
         if(id==="PENALTY" && cb.checked){
@@ -2265,402 +2287,203 @@ function renderWeekStrip(monthKey, activeDateKey){
   document.getElementById("claimWeeklyBtn") && (document.getElementById("claimWeeklyBtn").disabled = claimed || progress<5);
 }
 
-function shiftUiClass(shift){
-  if(shift==="É") return "shiftE";
-  if(shift==="N") return "shiftN";
-  if(shift==="P") return "shiftP";
-  return "";
-}
-
-function normalizeTimeRangeLabel(timeStr){
-  const s = String(timeStr||"").trim();
-  if(!s) return { label:"—", start:"", end:"" };
-  const m = s.match(/(\d{1,2}:\d{2})\s*[–—\-]\s*(\d{1,2}:\d{2})/);
-  if(m) return { label:`${m[1]}–${m[2]}`, start:m[1], end:m[2] };
-  const m2 = s.match(/(\d{1,2}:\d{2})/);
-  if(m2) return { label:m2[1], start:m2[1], end:"" };
-  return { label:s, start:"", end:"" };
-}
-
-function getRoutineTypeForSchedule(dateKey, shift){
-  const entry = (state.routines && state.routines[dateKey]) ? state.routines[dateKey] : null;
-  if(shift==="P"){
-    const t = String(entry?.type || "P1").toUpperCase();
-    return ["P1","P2","P3","P4"].includes(t) ? t : "P1";
-  }
-  if(shift==="É") return "É";
-  if(shift==="N") return "N";
-  // fallback
-  const t = String(entry?.type || "P1").toUpperCase();
-  return ["P1","P2","P3","P4","N","É"].includes(t) ? t : "P1";
-}
-
-function isRoutineLocked(dateKey){
-  const entry = (state.routines && state.routines[dateKey]) ? state.routines[dateKey] : null;
-  return !!entry?.locked;
-}
-
-function setRoutineState(dateKey, patch){
-  if(!state.routines || typeof state.routines !== 'object') state.routines = {};
-  const prev = state.routines[dateKey] && typeof state.routines[dateKey]==='object' ? state.routines[dateKey] : {};
-  state.routines[dateKey] = { ...prev, ...patch };
-  saveState();
-}
-
 function renderSchedule(){
   const list = document.getElementById("scheduleList");
   if(!list) return;
   list.innerHTML = "";
-
-  // Sync Schedule selectors with global UI state
-  const monthInput = document.getElementById("scheduleMonth");
-  const dateInput = document.getElementById("scheduleDate");
-  const weekPill = document.getElementById("scheduleWeekPill");
-
-  const activeDateKey = parseDateKey(state.ui.activeDate) || fmtDate(new Date());
-  const activeMonthKey = state.ui.activeMonth || String(activeDateKey).slice(0,7);
-
-  // normalize + persist
-  state.ui.activeDate = activeDateKey;
-  state.ui.activeMonth = activeMonthKey;
-
-  if(monthInput) monthInput.value = activeMonthKey;
-  if(dateInput) dateInput.value = activeDateKey;
-  if(weekPill) weekPill.textContent = `Hét: ${getISOWeekKey(activeDateKey)}`;
-
-  const cal = Array.isArray(data.calendar_2026) ? data.calendar_2026 : [];
-  const calIndex = data.byDateCalendar || indexByDate(cal);
-
-  // Heti nézet (Hétfő → Vasárnap) az aktív nap körül
-  const center = new Date(activeDateKey+"T12:00:00");
-  const dayNr = (center.getDay()+6)%7; // Mon=0..Sun=6
-  const mon = new Date(center); mon.setDate(center.getDate()-dayNr);
-
-  const weekKeys = [];
-  for(let i=0;i<7;i++){
-    const d = new Date(mon); d.setDate(mon.getDate()+i);
-    weekKeys.push(fmtDate(d));
+  const rows = Array.isArray(data.calendar_2026) ? data.calendar_2026 : [];
+  if(!rows.length){
+    const el=document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs calendar_2026 adat.";
+    list.appendChild(el);
+    return;
   }
+  const today = fmtDate(new Date());
+  const upcoming = rows
+    .map(r=>({ r, dk: extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r["date"]||"") }))
+    .filter(x=> x.dk && x.dk >= today)
+    .sort((a,b)=> a.dk.localeCompare(b.dk))
+    .slice(0, 14);
 
-  // Aktív nap legyen fent
-  const orderedKeys = [activeDateKey, ...weekKeys.filter(k=>k!==activeDateKey)];
+  const templates = data.routine_templates || {};
 
-  // Summary (heti bontás)
-  const cnt = {"N":0, "É":0, "P":0, "":0};
-  for(const dk of weekKeys){
-    const r = calIndex[dk];
-    const shiftRaw = r ? (r["Műszak"] ?? r["Muszak"] ?? r.shift ?? r.Shift ?? "") : "";
+  upcoming.forEach(x=>{
+    const r=x.r, dt=x.dk;
+    const shiftRaw = r["Műszak"] || r["Muszak"] || r["shift"] || "-";
     const shift = normalizeShiftCode(shiftRaw);
-    cnt[shift] = (cnt[shift]||0) + 1;
-  }
+    const note = r["Megjegyzés"] || r["Megjegyzes"] || r["note"] || "";
+    const planRow = data.byDateDaily?.[dt] || null;
+    const workout = getWorkoutSuggestion(planRow);
 
-  const sum = document.createElement("div");
-  sum.className = "item";
-  sum.innerHTML = `
-    <div class="row space">
-      <div>
-        <div class="itemTitle">Beosztás · Heti nézet</div>
-        <div class="itemMeta">Aktív nap: <b>${activeDateKey}</b> · Hét: <b>${getISOWeekKey(activeDateKey)}</b></div>
-        <div class="itemMeta" style="margin-top:6px">
-          <span class="pill shiftN" style="margin-right:6px">Nappali</span>
-          <span class="pill shiftE" style="margin-right:6px">Éjjeles</span>
-          <span class="pill shiftP">Pihenő</span>
-        </div>
+    // routine state
+    state.routines ??= {};
+    state.routines[dt] ??= { type:null, locked:false };
+    const rs = state.routines[dt];
+
+    if(!rs.type){
+      rs.type = shift==="N" ? "N" : shift==="É" ? "É" : "P1";
+    }else{
+      if(shift==="P" && !String(rs.type).startsWith("P")) rs.type="P1";
+      if(shift!=="P" && String(rs.type).startsWith("P")) rs.type = shift==="N" ? "N" : "É";
+    }
+
+    const locked = !!rs.locked;
+    const isP = shift==="P";
+    const items = templates[rs.type] || [];
+
+    const card=document.createElement("div");
+    card.className="item";
+    card.innerHTML = `
+      <div class="row space">
+        <div class="itemTitle">${dt}</div>
+        <div class="pill">Műszak: <b>${shift}</b>${locked ? " · LEZÁRVA" : ""}</div>
       </div>
-      <div class="pill">N: ${cnt["N"]||0} · É: ${cnt["É"]||0} · P: ${cnt["P"]||0}</div>
-    </div>
-  `;
-  list.appendChild(sum);
-
-  const templates = (data.routine_templates && typeof data.routine_templates === 'object') ? data.routine_templates : null;
-  const dayLabels = ["H","K","Sze","Cs","P","Szo","V"]; // Hétfő..Vasárnap
-  const labelByKey = {};
-  weekKeys.forEach((k,i)=> labelByKey[k]=dayLabels[i]||"");
-
-  orderedKeys.forEach(dk=>{
-    const calRow = calIndex[dk] || null;
-    const shiftRaw = calRow ? (calRow["Műszak"] ?? calRow["Muszak"] ?? calRow.shift ?? calRow.Shift ?? "") : "";
-    const note = calRow ? String(calRow["Megjegyzés"] ?? calRow["Megjegyzes"] ?? calRow.note ?? "") : "";
-    const shift = normalizeShiftCode(shiftRaw);
-
-    const plan = data.byDateDaily?.[dk] || null;
-    const dayName = plan?.["Nap"] ?? plan?.["Day"] ?? "";
-    const timeTxt = plan?.["Idő"] ?? plan?.["Ido"] ?? plan?.["Time"] ?? "";
-    const workout = getWorkoutSuggestion(plan);
-    const workoutCode = String(plan?.["Edzés kód"] ?? plan?.["Edzes kod"] ?? "").trim();
-
-    const shiftCls = shiftUiClass(shift);
-    const routineType = getRoutineTypeForSchedule(dk, shift);
-    const locked = isRoutineLocked(dk);
-    const routineRows = templates?.[routineType] || [];
-
-    const dayEl = document.createElement('div');
-    dayEl.className = `item scheduleDay ${shiftCls}${dk===activeDateKey ? ' activeDay' : ''}`;
-
-    // Header
-    const head = document.createElement('div');
-    head.className = 'row space';
-
-    const left = document.createElement('div');
-    left.innerHTML = `
-      <div class="itemTitle">${labelByKey[dk] ? (labelByKey[dk] + ' · ') : ''}${dk}${dayName ? ' · '+dayName : ''}</div>
-      <div class="itemMeta">${timeTxt ? timeTxt : ''}${note ? (timeTxt ? ' · ' : '') + escapeHtml(note) : ''}</div>
+      ${note ? `<div class="itemMeta">${note}</div>` : ``}
+      <div class="divider"></div>
+      <div class="itemMeta"><b>Edzés javaslat:</b> ${workout || "—"}</div>
+      <div class="divider"></div>
+      <div class="row space">
+        <div class="itemTitle" style="font-size:14px">Napi rutin</div>
+        ${isP ? `
+          <label class="field" style="min-width:220px; margin:0">
+            <span>Szabadnap típus</span>
+            <select id="routineSel_${dt}" ${locked?"disabled":""}>
+              <option value="P1" ${rs.type==="P1"?"selected":""}>P1</option>
+              <option value="P2" ${rs.type==="P2"?"selected":""}>P2</option>
+              <option value="P3" ${rs.type==="P3"?"selected":""}>P3</option>
+              <option value="P4" ${rs.type==="P4"?"selected":""}>P4</option>
+            </select>
+          </label>
+        ` : `<div class="pill">Sablon: <b>${rs.type || "—"}</b></div>`}
+      </div>
+      <div class="stack" id="routineList_${dt}" style="margin-top:10px"></div>
+      <div class="row" style="margin-top:10px">
+        <button class="btn" id="routineSave_${dt}" ${locked?"disabled":""}>Mentés</button>
+        <button class="btn ghost" id="routineUnlock_${dt}" ${locked?"":"disabled"}>Feloldás</button>
+      </div>
     `;
+    list.appendChild(card);
 
-    const right = document.createElement('div');
-    right.className = 'row';
-
-    const shiftPill = document.createElement('div');
-    shiftPill.className = `pill shiftPill ${shiftCls}`;
-    shiftPill.textContent = `Műszak: ${shift || '—'}`;
-    right.appendChild(shiftPill);
-
-    if(workoutCode){
-      const wc = document.createElement('div');
-      wc.className = 'pill';
-      wc.textContent = workoutCode;
-      right.appendChild(wc);
+    const box = card.querySelector(`#routineList_${CSS.escape(dt)}`);
+    box.innerHTML = "";
+    if(!items.length){
+      const el=document.createElement("div");
+      el.className="item";
+      el.textContent="Nincs rutin sablon.";
+      box.appendChild(el);
+    }else{
+      items.forEach(it=>{
+        const line=document.createElement("div");
+        line.className="check";
+        const time = it.time ? `${it.time} - ` : "";
+        const note2 = it.note ? ` · ${it.note}` : "";
+        line.innerHTML = `<label><b>${time}${it.activity}</b><span style="color:var(--muted)">${note2}</span></label><span class="pill">RUTIN</span>`;
+        box.appendChild(line);
+      });
     }
 
-    if(dk===activeDateKey){
-      const tag = document.createElement('div');
-      tag.className = 'pill activeTag';
-      tag.textContent = 'AKTÍV';
-      right.appendChild(tag);
-    }
-
-    head.appendChild(left);
-    head.appendChild(right);
-    dayEl.appendChild(head);
-
-    // Click header -> set active day
-    head.addEventListener('click', ()=>{
-      if(state.ui.activeDate === dk) return;
-      state.ui.activeDate = dk;
-      state.ui.activeMonth = String(dk).slice(0,7);
+    card.querySelector(`#routineSel_${CSS.escape(dt)}`)?.addEventListener("change", (e)=>{
+      rs.type = e.target.value;
+      rs.locked = false;
       saveState();
-      renderQuests();
       renderSchedule();
-      renderMeal();
     });
-
-    if(truthyCell(workout)){
-      const w = document.createElement('div');
-      w.className = 'itemMeta';
-      w.innerHTML = `<b>Edzés javaslat:</b> ${escapeHtml(String(workout).trim())}`;
-      dayEl.appendChild(w);
-    }
-
-    // Routine block
-    const routineBlock = document.createElement('div');
-    routineBlock.className = 'routineBlock';
-
-    const routineTop = document.createElement('div');
-    routineTop.className = 'row space';
-
-    const rtLeft = document.createElement('div');
-    rtLeft.innerHTML = `<div class="routineTitle">Napi rutin</div>`;
-
-    const rtRight = document.createElement('div');
-    rtRight.className = 'row';
-
-    // Rest day selector (P)
-    if(shift === 'P'){
-      const label = document.createElement('div');
-      label.className = 'itemMeta';
-      label.textContent = 'Szabadnap típus';
-
-      const sel = document.createElement('select');
-      sel.className = 'scheduleSelect';
-      ['P1','P2','P3','P4'].forEach(t=>{
-        const opt = document.createElement('option');
-        opt.value = t;
-        opt.textContent = t;
-        sel.appendChild(opt);
-      });
-      sel.value = routineType;
-      sel.disabled = locked;
-
-      const saveBtn = document.createElement('button');
-      saveBtn.className = 'btn small';
-      saveBtn.textContent = 'Mentés';
-      saveBtn.disabled = locked;
-
-      const unlockBtn = document.createElement('button');
-      unlockBtn.className = 'btn ghost small';
-      unlockBtn.textContent = 'Feloldás';
-      unlockBtn.disabled = !locked;
-
-      sel.addEventListener('change', ()=>{
-        if(isRoutineLocked(dk)) return;
-        setRoutineState(dk, { type: sel.value, locked: false });
-        renderSchedule();
-      });
-
-      saveBtn.addEventListener('click', ()=>{
-        if(isRoutineLocked(dk)) return;
-        setRoutineState(dk, { type: sel.value, locked: true });
-        setStatus('RUTIN MENTVE');
-        renderSchedule();
-      });
-
-      unlockBtn.addEventListener('click', ()=>{
-        if(!isRoutineLocked(dk)) return;
-        if(state.settings.antiCheat){
-          const reason = prompt('Feloldás indoka (manual edit):');
-          if(!reason) return;
-          if(!Array.isArray(state.meta.manualEdits)) state.meta.manualEdits = [];
-          state.meta.manualEdits.push({ dateKey: dk, ts: Date.now(), reason: String(reason).slice(0,200) });
-        }
-        setRoutineState(dk, { locked: false });
-        setStatus('FELOLDVA');
-        renderSchedule();
-      });
-
-      rtRight.appendChild(label);
-      rtRight.appendChild(sel);
-      rtRight.appendChild(saveBtn);
-      rtRight.appendChild(unlockBtn);
-    }else{
-      const chip = document.createElement('div');
-      chip.className = 'pill';
-      chip.textContent = `Rutin: ${routineType}`;
-      rtRight.appendChild(chip);
-    }
-
-    routineTop.appendChild(rtLeft);
-    routineTop.appendChild(rtRight);
-    routineBlock.appendChild(routineTop);
-
-    const routineList = document.createElement('div');
-    routineList.className = 'routineList';
-
-    if(!templates){
-      const empty = document.createElement('div');
-      empty.className = 'itemMeta';
-      empty.textContent = 'Nincs betöltve a „Napi rutin” sablon (routine_templates).';
-      routineList.appendChild(empty);
-    }else if(!routineRows.length){
-      const empty = document.createElement('div');
-      empty.className = 'itemMeta';
-      empty.textContent = `Nincs rutin sablon ehhez: ${routineType}`;
-      routineList.appendChild(empty);
-    }else{
-      routineRows.forEach(rr=>{
-        const t = normalizeTimeRangeLabel(rr.time);
-
-        const row = document.createElement('div');
-        row.className = 'routineRow';
-
-        const time = document.createElement('div');
-        time.className = 'timeBadge';
-        time.textContent = t.label;
-
-        const txt = document.createElement('div');
-        txt.className = 'routineText';
-        txt.innerHTML = `
-          <div class="routineActivity"><b>${escapeHtml(String(rr.activity||''))}</b>${rr.note ? `<span class="routineNote"> · ${escapeHtml(String(rr.note))}</span>` : ''}</div>
-        `;
-
-        const tag = document.createElement('div');
-        tag.className = 'pill small';
-        tag.textContent = 'RUTIN';
-
-        row.appendChild(time);
-        row.appendChild(txt);
-        row.appendChild(tag);
-        routineList.appendChild(row);
-      });
-    }
-
-    routineBlock.appendChild(routineList);
-    dayEl.appendChild(routineBlock);
-    list.appendChild(dayEl);
+    card.querySelector(`#routineSave_${CSS.escape(dt)}`)?.addEventListener("click", ()=>{
+      rs.locked = true;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN MENTVE");
+    });
+    card.querySelector(`#routineUnlock_${CSS.escape(dt)}`)?.addEventListener("click", ()=>{
+      rs.locked = false;
+      saveState();
+      renderSchedule();
+      setStatus("RUTIN FELOLDVA");
+    });
   });
+
+  saveState();
 }
 
-
 function renderMeal(){
+  const pill = document.getElementById("mealPill");
+  const todayKey = fmtDate(new Date());
+  if(pill) pill.textContent = `Ma: ${todayKey}`;
+
   const todayBox = document.getElementById("mealToday");
   const list = document.getElementById("mealList");
   if(!todayBox || !list) return;
 
+  todayBox.innerHTML = "";
+  list.innerHTML = "";
+
   const rows = Array.isArray(data.menu_2026) ? data.menu_2026 : [];
-  if(rows.length===0){
-    todayBox.innerHTML = `<div class="item">Nincs menu_2026 adat.</div>`;
-    list.innerHTML = "";
+  if(!rows.length){
+    const el=document.createElement("div");
+    el.className="item";
+    el.textContent="Nincs menu_2026 adat.";
+    todayBox.appendChild(el);
     return;
   }
 
-  const todayKey = fmtDate(new Date());
-  const monthKey = state.ui.activeMonth || fmtMonth(new Date());
+  const pick = rows.find(r => (extractDateKey(r) || "") === todayKey) || rows[0];
+  const dt = extractDateKey(pick) || (pick["Dátum"]||pick["Datum"]||"-");
+  const soup = pick["Leves"] || pick["Soup"] || "";
+  const main = pick["Főétel"] || pick["Foetel"] || pick["Main"] || pick["meal"] || "";
 
-  function dateOf(r){
-    return extractDateKey(r) || String(r["Dátum"]||r["Datum"]||r.date||r.Date||"");
-  }
-  function pickField(r, keys){
-    for(const k of keys){
-      if(r && r[k] !== undefined && r[k] !== null && String(r[k]).trim() !== "") return String(r[k]).trim();
+  // --- Today card
+  const card=document.createElement("div");
+  card.className="item";
+  const header=document.createElement("div");
+  header.className="row space";
+  header.innerHTML = `<div><div class="itemTitle">Mai menü</div><div class="itemMeta">${dt}</div></div>`;
+  card.appendChild(header);
+
+  function addDish(label, dishName){
+    const dish = String(dishName||"").trim();
+    const wrap=document.createElement("div");
+    wrap.className="mealDish";
+
+    const head=document.createElement("div");
+    head.className="mealDishHead";
+    const left=document.createElement("div");
+    left.innerHTML = `<span class="mealDishLabel">${label}</span> <b>${dish || "-"}</b>`;
+    head.appendChild(left);
+    wrap.appendChild(head);
+
+    const rec = findRecipeForDish(dish);
+    if(rec){
+      wrap.appendChild(buildRecipeDetails(rec));
     }
-    return "";
+    card.appendChild(wrap);
   }
 
-  const soupKeys = ["Leves","Leves (ha főzés/maradék)","Leves (ha fozes/maradek)"];
-  const mainKeys = ["Főétel","Foetel","Főetel"];
-  const typeKeys = ["Menü típus","Menu tipus","Menü tipus","Típus","Tipus"];
-  const kcalKeys = ["Ebéd+vacsora kcal (becsült)","Ebed+vacsora kcal (becsult)","Kcal"];
-  const packKeys = ["Csomagolható","Csomagolhato"];
+  addDish("Leves", soup);
+  addDish("Főétel", main);
 
-  const pick = rows.find(r=> dateOf(r)===todayKey) || rows.find(r=> dateOf(r).slice(0,7)===monthKey) || rows[0];
+  todayBox.appendChild(card);
 
-  const soup = pickField(pick, soupKeys);
-  const main = pickField(pick, mainKeys);
-  const type = pickField(pick, typeKeys);
-  const kcal = pickField(pick, kcalKeys);
-  const pack = pickField(pick, packKeys);
+  // --- List (first 40)
+  rows.slice(0, 40).forEach(r=>{
+    const dt2 = extractDateKey(r) || (r["Dátum"]||r["Datum"]||"-");
+    const s2 = r["Leves"] || r["Soup"] || "";
+    const m2 = r["Főétel"] || r["Foetel"] || r["Main"] || "";
+    const el=document.createElement("div");
+    el.className="item";
+    el.innerHTML = `<div class="itemTitle">${dt2}</div><div class="itemMeta"><b>${[s2,m2].filter(Boolean).join(" · ") || "-"}</b></div>`;
 
-  todayBox.innerHTML = `
-    <div class="item">
-      <div class="row space">
-        <div class="itemTitle">Mai menü (${todayKey})</div>
-        <div class="pill">${type || "—"}</div>
-      </div>
-      <div class="itemMeta">${[soup, main].filter(Boolean).join(" · ") || "—"}</div>
-      <div class="itemMeta">${kcal ? `Kcal: <b>${kcal}</b>` : ""}${pack ? ` · Csomagolható: <b>${pack}</b>` : ""}</div>
-    </div>
-  `;
+    const sRec = findRecipeForDish(s2);
+    if(sRec){
+      const d = buildRecipeDetails(sRec, `Leves: ${s2}`);
+      el.appendChild(d);
+    }
+    const mRec = findRecipeForDish(m2);
+    if(mRec){
+      const d = buildRecipeDetails(mRec, `Főétel: ${m2}`);
+      el.appendChild(d);
+    }
 
-  const monthRows = rows
-    .map(r=>({r, dk: dateOf(r)}))
-    .filter(x=> x.dk && String(x.dk).slice(0,7)===monthKey)
-    .sort((a,b)=> a.dk.localeCompare(b.dk));
-
-  const rowsToShow = monthRows.length ? monthRows : rows
-    .map(r=>({r, dk: dateOf(r)}))
-    .filter(x=> x.dk)
-    .sort((a,b)=> a.dk.localeCompare(b.dk))
-    .slice(0, 40);
-
-  list.innerHTML = "";
-  rowsToShow.forEach(x=>{
-    const r = x.r;
-    const dk = x.dk;
-    const s2 = pickField(r, soupKeys);
-    const m2 = pickField(r, mainKeys);
-    const t2 = pickField(r, typeKeys);
-    const k2 = pickField(r, kcalKeys);
-    const p2 = pickField(r, packKeys);
-
-    const el = document.createElement("div");
-    el.className = "item";
-    el.innerHTML = `
-      <div class="row space">
-        <div class="itemTitle">${dk}</div>
-        <div class="pill">${t2 || "—"}</div>
-      </div>
-      <div class="itemMeta">${[s2, m2].filter(Boolean).join(" · ") || "—"}</div>
-      ${(k2 || p2) ? `<div class="itemMeta">${k2 ? `Kcal: <b>${k2}</b>` : ""}${p2 ? ` · Csomagolható: <b>${p2}</b>` : ""}</div>` : ``}
-    `;
     list.appendChild(el);
   });
 }
@@ -2681,8 +2504,8 @@ let data = {
   menu_2026:null,
   calendar_2026:null,
   routine_templates:null,
-  byDateDaily: {},
-  byDateCalendar: {}
+  recipes:null,
+  byDateDaily: {}
 };
 
 document.addEventListener("DOMContentLoaded", async ()=>{
@@ -2691,7 +2514,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   bindProfile();
   bindMeasurements();
   bindQuests();
-  bindSchedule();
 
   // immediate
   renderProfile();
@@ -2703,7 +2525,6 @@ document.addEventListener("DOMContentLoaded", async ()=>{
   const loaded = await loadAllData();
   data = { ...data, ...loaded };
   data.byDateDaily = indexByDate(data.daily_plan_2026);
-  data.byDateCalendar = indexByDate(data.calendar_2026);
 
   // merge defaults from settings json (only if empty)
   if(data.settings && typeof data.settings === "object"){

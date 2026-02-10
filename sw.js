@@ -1,21 +1,22 @@
 /* Simple PWA-lite cache */
-const CACHE_NAME = "sl-tracker-cache-v2026-02-10-4";
+const CACHE_NAME = "sl-tracker-cache-v2";
 const ASSETS = [
   "./",
   "./index.html",
   "./style.css",
   "./app.js",
   "./manifest.webmanifest",
-  "./favicon.png",
-  "./smilestatue.png",
   "./icon-192.png",
   "./icon-512.png",
+  "./favicon.png",
+  "./smilestatue.png",
   "./data/settings.json",
   "./data/training_levels.json",
   "./data/daily_plan_2026.json",
   "./data/menu_2026.json",
   "./data/calendar_2026.json",
-  "./data/routine_templates.json"
+  "./data/routine_templates.json",
+  "./data/recipes.json"
 ];
 
 self.addEventListener("install", (event) => {
